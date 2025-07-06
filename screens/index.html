@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>timeXchange - Exchange Services, Not Money</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <script src="https://www.paypal.com/sdk/js?client-id=AU0miETujwkRSY57Nhq7LetPRQUupcnSnMjRUrSSxpKzf-d-8YJHGIi8MH7GlD-4EmdZjFHmuRjyy5Rg&currency=USD&vault=true"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <img src="../photos/icon-horizontal.png" alt="timeXchange Logo" class="logo-icon">
+            </a>
+            <ul class="nav-links">
+                <li><a href="#" onclick="showPage('home')">Home</a></li>
+                <li><a href="#" onclick="showPage('about')">About</a></li>
+                <li><a href="#" onclick="showPage('policies')">Policies</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Home Page -->
+    <div id="home" class="page active">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="floating-icon">⏰</div>
+            <div class="floating-icon">🔄</div>
+            <div class="floating-icon">🤝</div>
+            <div class="hero-content">
+                <h1>timeXchange</h1>
+                <p>Exchange Services, Not Money</p>
+                
+                <!-- Enhanced Download Section -->
+                <div class="download-section">
+                    <div class="container">
+                        <div class="download-content">
+                            <div class="download-text">
+                                <h2>Get timeXchange</h2>
+                                <p>Join thousands of users who are already exchanging services and building meaningful connections. Download our app and start trading your skills today.</p>
+                                <div class="download-buttons">
+                                    <a href="#" class="download-btn">
+                                        <span>📱</span>
+                                        Download for iOS
+                                    </a>
+                                    <a href="#" class="download-btn">
+                                        <span>🤖</span>
+                                        Download for Android
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="phone-mockup">
+                                <div class="phone-frame">
+                                    <div class="phone-ui-elements">
+                                        <div class="ui-dot"></div>
+                                        <div class="ui-dot"></div>
+                                        <div class="ui-dot"></div>
+                                    </div>
+                                    <div class="phone-screen">
+                                        <div class="app-icon">
+                                            <img src="../photos/icon.png" alt="timeXchange App Icon" class="app-icon-img">
+                                        </div>
+                                        <div class="app-name">timeXchange</div>
+                                        <div class="app-tagline">Exchange Services, Not Money</div>
+                                        <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                                            <div style="width: 30px; height: 30px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">🔄</div>
+                                            <div style="width: 30px; height: 30px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">🤝</div>
+                                            <div style="width: 30px; height: 30px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">⭐</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features">
+            <div class="container">
+                <h2 class="section-title">Why timeXchange?</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔄</div>
+                        <h3>Service Exchange</h3>
+                        <p>Trade your skills and services without using money. Help someone with design, get help with coding!</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⏰</div>
+                        <h3>Time-Based Trading</h3>
+                        <p>All services are valued by time. One hour of your expertise equals one hour of someone else's.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🤝</div>
+                        <h3>Community Driven</h3>
+                        <p>Build meaningful connections while getting things done. Join a community that values collaboration.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⭐</div>
+                        <h3>Verified Reviews</h3>
+                        <p>Rate and review services to maintain quality. Trust is built through transparent feedback.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3>Secure Platform</h3>
+                        <p>Your data is protected with end-to-end encryption. Trade with confidence and peace of mind.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🌍</div>
+                        <h3>Global Reach</h3>
+                        <p>Connect with service providers worldwide. Access skills and expertise from anywhere.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Subscription Plans -->
+        <section class="subscription">
+            <div class="container">
+                <h2>Choose Your Plan</h2>
+                <div class="plans-grid">
+                    <div class="plan-card">
+                        <h3>Basic</h3>
+                        <div class="plan-price">Free</div>
+                        <ul class="plan-features">
+                            <li>Welcome time bonus (limited time only)</li>
+                            <li>Unlimited service exchanges</li>
+                            <li>Basic profile features</li>
+                            <li>Community access</li>
+                            <li>Standard support</li>
+                        </ul>
+                        <button class="get-started-btn">Get Started</button>
+                    </div>
+                    <div class="plan-card gold">
+                        <h3>Gold</h3>
+                        <div class="plan-price">$9.99<span style="font-size: 1rem;">/month</span></div>
+                        <div class="trial-badge">1 Month Free Trial</div>
+                        <ul class="plan-features">
+                            <li>Daily time allowance</li>
+                            <li>Priority matching</li>
+                            <li>Priority support</li>
+                        </ul>
+                        <div id="paypal-gold" class="paypal-container"></div>
+                    </div>
+                    <div class="plan-card platinum">
+                        <h3>Platinum</h3>
+                        <div class="plan-price">$29.99<span style="font-size: 1rem;">/month</span></div>
+                        <div class="trial-badge">1 Month Free Trial</div>
+                        <ul class="plan-features">
+                            <li>Everything in Gold</li>
+                            <li>Persistent time allowance</li>
+                            <li>Advanced support</li>
+                        </ul>
+                        <div id="paypal-platinum" class="paypal-container"></div>
+                    </div>
+                </div>
+                
+                <!-- Security Section -->
+                <div class="security-section">
+                    <div class="security-content">
+                        <div class="security-icon">🔒</div>
+                        <div class="security-text">
+                            <h3>Secure Payment Processing</h3>
+                            <p>All payments are processed securely through PayPal, the world's most trusted payment platform. Your financial information is protected with bank-level encryption and never stored on our servers.</p>
+                            <div class="security-features">
+                                <div class="security-feature">
+                                    <span>🛡️</span>
+                                    <span>Bank-level encryption</span>
+                                </div>
+                                <div class="security-feature">
+                                    <span>🔐</span>
+                                    <span>PCI DSS compliant</span>
+                                </div>
+                                <div class="security-feature">
+                                    <span>✅</span>
+                                    <span>PayPal buyer protection</span>
+                                </div>
+                                <div class="security-feature">
+                                    <span>🔒</span>
+                                    <span>Secure SSL connection</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- About Page -->
+    <div id="about" class="page">
+        <section class="about">
+            <div class="container">
+                <div class="about-content">
+                    <div class="about-text">
+                        <h2>Our Vision</h2>
+                        <p>timeXchange was born from a simple belief: everyone has valuable skills to offer, and everyone has needs that others can fulfill. We're building a world where communities thrive through mutual support and collaboration.</p>
+                        <p>By removing money from the equation, we focus on what truly matters - human connection, skill sharing, and creating value for each other. Our platform empowers people to help each other grow while building meaningful relationships.</p>
+                        <p>Join us in revolutionizing how we think about work, community, and value exchange. Together, we're creating a more connected and collaborative world.</p>
+                    </div>
+                    <div class="about-visual">
+                        <img src="../photos/icon.png" alt="timeXchange Vision" class="about-icon">
+                    </div>
+                </div>
+                
+                <h2 class="section-title">Meet Our Team</h2>
+                <div class="team-grid">
+                    <div class="team-member">
+                        <div class="team-avatar">
+                            <img src="../photos/kehinde.jpg" alt="Kehinde" class="team-photo">
+                        </div>
+                        <h3>Kehinde</h3>
+                        <p>Visionary</p>
+                        <p>The driving force behind timeXchange's innovative vision for community-driven service exchange.</p>
+                    </div>
+                    <div class="team-member">
+                        <div class="team-avatar">
+                            <img src="../photos/emmanuel.png" alt="Emmanuel" class="team-photo">
+                        </div>
+                        <h3>Emmanuel</h3>
+                        <p>Director</p>
+                        <p>Leading the strategic direction and operations to bring timeXchange's vision to life.</p>
+                    </div>
+                    <div class="team-member">
+                        <div class="team-avatar">
+                            <img src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" alt="Default Profile" class="team-photo">
+                        </div>
+                        <h3>Vacant Position</h3>
+                        <p class="vacant-title">Head of Testing</p>
+                        <p class="vacant-description">We're looking for a skilled testing professional to ensure our platform meets the highest quality standards.</p>
+                        <!-- <div class="vacant-badge">Hiring</div> -->
+                    </div>
+                    <div class="team-member">
+                        <div class="team-avatar">
+                            <img src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" alt="Default Profile" class="team-photo">
+                        </div>
+                        <h3>Vacant Position</h3>
+                        <p class="vacant-title">Lead Digital Marketer</p>
+                        <p class="vacant-description">Join our team to help grow timeXchange's presence and reach more communities worldwide.</p>
+                        <!-- <div class="vacant-badge">Hiring</div> -->
+                    </div>
+                </div>
+
+                <!-- Contact Us Section -->
+                <section class="contact-section">
+                    <h2 class="section-title">Contact Us</h2>
+                    <div class="contact-content">
+                        <div class="contact-info">
+                            <div class="contact-item">
+                                <div class="contact-icon">📧</div>
+                                <div class="contact-details">
+                                    <h3>Email</h3>
+                                    <p>hello@timexchange.com</p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-icon">📱</div>
+                                <div class="contact-details">
+                                    <h3>Phone</h3>
+                                    <p>+1 (555) 123-4567</p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-icon">📍</div>
+                                <div class="contact-details">
+                                    <h3>Address</h3>
+                                    <p>123 Innovation Drive<br>Tech City, TC 12345<br>United States</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="contact-form">
+                            <h3>Send us a Message</h3>
+                            <form id="contactForm">
+                                <div class="form-group">
+                                    <input type="text" id="name" name="name" placeholder="Your Name" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="email" id="email" name="email" placeholder="Your Email" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" id="subject" name="subject" placeholder="Subject" required>
+                                </div>
+                                <div class="form-group">
+                                    <textarea id="message" name="message" placeholder="Your Message" rows="5" required></textarea>
+                                </div>
+                                <button type="submit" class="submit-btn">Send Message</button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </section>
+    </div>
+
+    <!-- Policies Page -->
+    <div id="policies" class="page">
+        <section class="policies">
+            <div class="container">
+                <h1 class="section-title">Legal Policies</h1>
+                
+                <!-- Privacy Policy -->
+                <div class="policy-section">
+                    <h2>Privacy Policy</h2>
+                    <p><strong>Last updated:</strong> March 2025</p>
+                    
+                    <h3>Information We Collect</h3>
+                    <p>We collect information you provide directly to us, such as when you create an account, complete your profile, or communicate with us. This may include:</p>
+                    <ul>
+                        <li>Name, email address, and contact information</li>
+                        <li>Profile information and service descriptions</li>
+                        <li>Communication preferences</li>
+                        <li>Payment information (processed securely through PayPal)</li>
+                    </ul>
+
+                    <h3>How We Use Your Information</h3>
+                    <p>We use the information we collect to:</p>
+                    <ul>
+                        <li>Provide, maintain, and improve our services</li>
+                        <li>Process transactions and send related information</li>
+                        <li>Send technical notices and support messages</li>
+                        <li>Respond to your comments and questions</li>
+                        <li>Protect against fraudulent or illegal activity</li>
+                    </ul>
+
+                    <h3>Information Sharing</h3>
+                    <p>We do not sell, trade, or otherwise transfer your personal information to third parties without your consent, except as described in this policy.</p>
+                </div>
+
+                <!-- Terms of Service -->
+                <div class="policy-section">
+                    <h2>Terms of Service</h2>
+                    <p><strong>Last updated:</strong> January 2024</p>
+                    
+                    <h3>Acceptance of Terms</h3>
+                    <p>By accessing and using timeXchange, you accept and agree to be bound by the terms and provision of this agreement.</p>
+
+                    <h3>Service Description</h3>
+                    <p>timeXchange is a platform that enables users to exchange services based on time value rather than monetary value. Users can offer and request services within our community.</p>
+
+                    <h3>User Responsibilities</h3>
+                    <ul>
+                        <li>Provide accurate and complete information</li>
+                        <li>Maintain the security of your account</li>
+                        <li>Comply with all applicable laws and regulations</li>
+                        <li>Treat other users with respect and professionalism</li>
+                    </ul>
+                </div>
+
+                <!-- App Store Policies -->
+                <div class="policy-section">
+                    <h2>App Store Compliance</h2>
+                    
+                    <h3>Data Privacy</h3>
+                    <p>Our app complies with App Store and Google Play Store privacy requirements:</p>
+                    <ul>
+                        <li>We collect only necessary data for app functionality</li>
+                        <li>User data is encrypted and securely stored</li>
+                        <li>We do not share personal data with third parties without consent</li>
+                        <li>Users can request data deletion at any time</li>
+                    </ul>
+
+                    <h3>Camera Access</h3>
+                    <p>Our app requests camera access for the following purposes:</p>
+                    <ul>
+                        <li>Profile photo uploads</li>
+                        <li>Service documentation</li>
+                        <li>Verification processes</li>
+                    </ul>
+                    <p>Camera access is optional and can be denied or revoked at any time through device settings.</p>
+
+                    <h3>Location Access</h3>
+                    <p>Our app requests location access for the following purposes:</p>
+                    <ul>
+                        <li>Finding nearby service providers</li>
+                        <li>Local community matching</li>
+                        <li>Service area verification</li>
+                    </ul>
+                    <p>Location access is optional and can be denied or revoked at any time through device settings.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <img src="../photos/icon.png" alt="timeXchange Logo" class="footer-logo-img">
+                        <span>timeXchange</span>
+                    </div>
+                    <p>Exchange Services, Not Money</p>
+                    <p>&copy; 2024 timeXchange. All rights reserved. ™</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#" onclick="showPage('home')">Home</a></li>
+                        <li><a href="#" onclick="showPage('about')">About</a></li>
+                        <li><a href="#" onclick="showPage('policies')">Policies</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect</h3>
+                    <div class="social-links">
+                        <a href="https://www.linkedin.com/in/em100/" target="_blank" class="social-link">
+                            <span>🔗</span> LinkedIn
+                        </a>
+                        <a href="mailto:supporto@timexchange.com" class="social-link">
+                            <span>📧</span> Email
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Registered Company • timeXchange Inc.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/script.js"></script>
+</body>
+</html>
