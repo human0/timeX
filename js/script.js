@@ -1,9 +1,49 @@
 // Page navigation functionality
-function showPage(pageId) {
+function showPage(pageId, updateHash = true) {
+    // Hide all pages
     document.querySelectorAll('.page').forEach(page => {
         page.classList.remove('active');
     });
-    document.getElementById(pageId).classList.add('active');
+    
+    // Show the selected page
+    const targetPage = document.getElementById(pageId);
+    if (targetPage) {
+        targetPage.classList.add('active');
+        
+        // Update URL hash only if requested and different from current
+        if (updateHash) {
+            const currentHash = window.location.hash.slice(1);
+            if (currentHash !== pageId) {
+                window.location.hash = pageId;
+            }
+        }
+    }
+}
+
+// Handle URL hash changes
+function handleHashChange() {
+    const hash = window.location.hash.slice(1);
+    const validPages = ['home', 'about', 'policies'];
+    
+    if (hash && validPages.includes(hash)) {
+        showPage(hash, false); // Don't update hash to prevent infinite loop
+    } else {
+        // Default to home page if no valid hash
+        showPage('home', false); // Don't update hash to prevent infinite loop
+    }
+}
+
+// Initialize page based on URL hash on page load
+function initializePageFromHash() {
+    const hash = window.location.hash.slice(1);
+    const validPages = ['home', 'about', 'policies'];
+    
+    if (hash && validPages.includes(hash)) {
+        showPage(hash);
+    } else {
+        // Default to home page
+        showPage('home');
+    }
 }
 
 // PayPal Integration
@@ -108,6 +148,12 @@ function handleContactForm(event) {
 
 // Initialize page functionality when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize page from URL hash
+    initializePageFromHash();
+    
+    // Add hashchange event listener
+    window.addEventListener('hashchange', handleHashChange);
+    
     // Initialize PayPal
     checkPayPalAndInitialize();
     
