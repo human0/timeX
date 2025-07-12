@@ -185,7 +185,7 @@ nav {
 .download-text h2 {
     font-size: 2.5rem;
     margin-bottom: 1rem;
-    background: linear-gradient(135deg, #10b981, #34d399);
+    background: linear-gradient(135deg, #10b981, #fff);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -277,8 +277,8 @@ nav {
 }
 
 .app-icon-img {
-    width: 100%;
-    height: 100%;
+    width: 80%;
+    height: 80%;
     object-fit: cover;
     border-radius: 20px;
     object-fit: contain;
@@ -337,6 +337,19 @@ nav {
     box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
 }
 
+.download-btn.disabled {
+    color: #bbb;
+    cursor: default;
+    transition: none;
+    display: disabled;
+}
+
+.download-btn.disabled:hover {
+    /* background: rgba(16, 185, 129, 1); */
+    transform: translateY(0px);
+    /* box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4); */
+}
+
 /* Features Section */
 .features {
     padding: 5rem 0;
@@ -351,7 +364,7 @@ nav {
 }
 
 .feature-card {
-    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    background: url('../photos/professionals.png') center center/cover no-repeat;
     padding: 2rem;
     border-radius: 20px;
     text-align: center;
@@ -359,6 +372,46 @@ nav {
     position: relative;
     overflow: hidden;
     border: 2px solid rgba(59, 130, 246, 0.1);
+    color: #fff;
+    box-shadow: 0 8px 32px rgba(30,58,138,0.08);
+    padding-top: 150px;
+}
+
+.feature-card:nth-child(2) {
+    background: url('../photos/education.png') center center/cover no-repeat;
+}
+
+.feature-card:nth-child(3) {
+    background: url('../photos/charity.png') center center/cover no-repeat;
+}
+
+.feature-card:nth-child(4) {
+    background: url('../photos/quality2.png') center center/cover no-repeat;
+}
+
+.feature-card:nth-child(5) {
+    background: url('../photos/security.png') center center/cover no-repeat;
+}
+
+.feature-card:nth-child(6) {
+    background: url('../photos/networking.png') center center/cover no-repeat;
+}
+
+
+/* .feature-card::after {
+    top: 500px;
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.8);
+    pointer-events: none;
+    z-index: 1;
+} */
+
+.feature-card > * {
+    position: relative;
+    z-index: 2;
+    
 }
 
 .feature-card::before {
@@ -389,13 +442,14 @@ nav {
 
 .feature-card h3 {
     font-size: 1.5rem;
-    margin-bottom: 1rem;
+    background: rgba(255,255,255,0.8);
     color: #1e40af;
 }
 
 .feature-card p {
     color: #666;
     line-height: 1.6;
+   background: rgba(255,255,255,0.8);
 }
 
 /* Subscription Plans */
@@ -445,15 +499,40 @@ nav {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    background-size: 200% 200%;
-    animation: goldShimmer 3s ease-in-out infinite;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent, rgba(255, 255, 255, 0.1), transparent);
+    background-size: 300% 300%;
+    animation: goldShimmer 8s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.plan-card.gold::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.2) 0%, transparent 50%);
+    animation: goldSparkle 12s ease-in-out infinite;
+    pointer-events: none;
 }
 
 @keyframes goldShimmer {
-    0% { background-position: -200% -200%; }
-    50% { background-position: 200% 200%; }
-    100% { background-position: -200% -200%; }
+    0% { background-position: -300% -300%; }
+    25% { background-position: 300% -300%; }
+    50% { background-position: 300% 300%; }
+    75% { background-position: -300% 300%; }
+    100% { background-position: -300% -300%; }
+}
+
+@keyframes goldSparkle {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    20% { opacity: 0.6; transform: scale(1.03); }
+    40% { opacity: 0.8; transform: scale(1.05); }
+    60% { opacity: 0.6; transform: scale(1.02); }
+    80% { opacity: 0.9; transform: scale(1.08); }
 }
 
 .plan-card.platinum {
@@ -470,15 +549,123 @@ nav {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    background-size: 200% 200%;
-    animation: platinumShimmer 4s ease-in-out infinite;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent, rgba(255, 255, 255, 0.15), transparent);
+    background-size: 300% 300%;
+    animation: platinumShimmer 10s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.plan-card.platinum::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 70%, rgba(255, 255, 255, 0.4) 0%, transparent 40%),
+                radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.4) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.3) 0%, transparent 60%);
+    animation: platinumSparkle 14s ease-in-out infinite;
+    pointer-events: none;
 }
 
 @keyframes platinumShimmer {
-    0% { background-position: -200% -200%; }
-    50% { background-position: 200% 200%; }
-    100% { background-position: -200% -200%; }
+    0% { background-position: -300% -300%; }
+    33% { background-position: 300% -300%; }
+    66% { background-position: 300% 300%; }
+    100% { background-position: -300% -300%; }
+}
+
+@keyframes platinumSparkle {
+    0%, 100% { opacity: 0.4; transform: scale(1) rotate(0deg); }
+    15% { opacity: 0.7; transform: scale(1.02) rotate(3deg); }
+    30% { opacity: 0.9; transform: scale(1.03) rotate(5deg); }
+    45% { opacity: 0.6; transform: scale(1.01) rotate(-2deg); }
+    60% { opacity: 1; transform: scale(1.05) rotate(8deg); }
+    75% { opacity: 0.7; transform: scale(1.02) rotate(-3deg); }
+    90% { opacity: 0.8; transform: scale(1.04) rotate(6deg); }
+}
+
+/* Floating Sparkle Particles */
+.sparkle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: sparkleFloat 6s ease-in-out infinite;
+}
+
+.sparkle::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 1px;
+    width: 2px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+}
+
+.sparkle::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: -2px;
+    width: 2px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+}
+
+@keyframes sparkleFloat {
+    0%, 100% { 
+        opacity: 0; 
+        transform: translateY(0px) scale(0.5); 
+    }
+    15% { 
+        opacity: 0.6; 
+        transform: translateY(-8px) scale(0.8); 
+    }
+    30% { 
+        opacity: 1; 
+        transform: translateY(-15px) scale(1); 
+    }
+    50% { 
+        opacity: 0.9; 
+        transform: translateY(-25px) scale(1.2); 
+    }
+    70% { 
+        opacity: 0.6; 
+        transform: translateY(-20px) scale(1); 
+    }
+    85% { 
+        opacity: 0.3; 
+        transform: translateY(-12px) scale(0.7); 
+    }
+}
+
+/* Gold plan specific sparkles */
+.plan-card.gold .sparkle {
+    background: rgba(251, 191, 36, 0.9);
+    box-shadow: 0 0 6px rgba(251, 191, 36, 0.6);
+}
+
+.plan-card.gold .sparkle::before,
+.plan-card.gold .sparkle::after {
+    background: rgba(251, 191, 36, 0.7);
+}
+
+/* Platinum plan specific sparkles */
+.plan-card.platinum .sparkle {
+    background: rgba(156, 163, 175, 0.9);
+    box-shadow: 0 0 6px rgba(156, 163, 175, 0.6);
+}
+
+.plan-card.platinum .sparkle::before,
+.plan-card.platinum .sparkle::after {
+    background: rgba(156, 163, 175, 0.7);
 }
 
 .plan-card:hover {
@@ -503,8 +690,9 @@ nav {
 }
 
 .trial-badge {
-    background: linear-gradient(135deg, #10b981, #34d399);
-    color: white;
+    background: linear-gradient(135deg, rgba(255,255,255,150), #f0f2f1);
+    border-width: 20px;
+    color: #0a865c;
     padding: 0.5rem 1rem;
     border-radius: 20px;
     font-size: 0.9rem;
@@ -603,8 +791,44 @@ nav {
 }
 
 .paypal-container > div {
-    width: 100%;
-    max-width: 200px;
+    width: 100% !important;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+/* Terms Checkbox Styling */
+.terms-checkbox {
+    margin: 1rem 0;
+    padding: 0.5rem 0;
+}
+
+.terms-checkbox label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #222;
+    cursor: pointer;
+    line-height: 1.4;
+}
+
+.terms-checkbox input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    /* accent-color: #10b981; */
+}
+
+.terms-checkbox a {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.terms-checkbox a:hover {
+    /* color: #1e40af; */
+    text-decoration: underline;
 }
 
 /* About Section */
@@ -1033,6 +1257,7 @@ nav {
 /* Floating elements */
 .floating-icon {
     position: absolute;
+    color: #fff;
     font-size: 2rem;
     opacity: 0.1;
     animation: float 6s ease-in-out infinite;
@@ -1099,3 +1324,48 @@ nav {
 .security-feature span:first-child {
     font-size: 1.2rem;
 } 
+
+.cta-premium {
+  /* display: inline-block; */
+  color: #1cd78c;
+  /* font-weight: bold; */
+}
+.cta-premium:hover, .cta-premium:focus {
+  color: #1cd78c;
+  border-color: #fff;
+  text-decoration: none;
+}
+.cta-highlight {
+  color: #1cd78c;
+  padding: 0 0.3em;
+  border-radius: 0.5em;
+}
+
+
+
+.nav-transparent {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+.nav-transparent .nav-links a,
+.nav-transparent .logo,
+.nav-transparent .logo span {
+    color: #10b981 !important; /* green-500 */
+}
+.nav-transparent .logo-icon {
+    filter: brightness(0) saturate(100%) invert(62%) sepia(84%) saturate(453%) hue-rotate(108deg) brightness(92%) contrast(92%);
+}
+
+/* Modal Styles */
+.modal {
+  position: fixed; z-index: 9999; left: 0; top: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center;
+}
+.modal-content {
+  background: #fff; padding: 2em; border-radius: 12px; max-width: 400px; width: 90%; text-align: center; position: relative;
+}
+.close-modal {
+  position: absolute; top: 10px; right: 20px; font-size: 2em; cursor: pointer; color: #888;
+}
+#signupForm input { width: 90%; margin: 0.5em 0; padding: 0.7em; border-radius: 6px; border: 1px solid #ccc; }
+#signupForm button { background: #10b981; color: #fff; border: none; padding: 0.7em 2em; border-radius: 6px; cursor: pointer; }

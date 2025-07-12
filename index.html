@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>timeXchange - Exchange Services, Not Money</title>
+    <title>Trading time for services</title>
     <link rel="stylesheet" href="css/styles.css">
     <script src="https://www.paypal.com/sdk/js?client-id=AU0miETujwkRSY57Nhq7LetPRQUupcnSnMjRUrSSxpKzf-d-8YJHGIi8MH7GlD-4EmdZjFHmuRjyy5Rg&currency=USD&vault=true"></script>
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'>      
 </head>
 <body>
     <!-- Navigation -->
-    <nav>
+    <nav id="mainNav">
         <div class="nav-container">
             <a href="#" class="logo">
                 <img src="photos/icon-horizontal.png" alt="timeXchange Logo" class="logo-icon">
@@ -17,6 +18,7 @@
             <ul class="nav-links">
                 <li><a href="#" onclick="showPage('home')">Home</a></li>
                 <li><a href="#about" onclick="showPage('about')">About</a></li>
+                <li><a href="#about" onclick="showPage('contact'); setTimeout(() => { document.getElementById('contact').scrollIntoView({behavior: 'smooth'}); }, 300); return true;"> Get in touch</a></li>            
                 <li><a href="#policies" onclick="showPage('policies')">Policies</a></li>
             </ul>
         </div>
@@ -26,29 +28,35 @@
     <div id="home" class="page active">
         <!-- Hero Section -->
         <section class="hero">
-            <div class="floating-icon">⏰</div>
-            <div class="floating-icon">🔄</div>
-            <div class="floating-icon">🤝</div>
+            <div class="floating-icon"><i class="fa fa-clock-o fa-spin fa-2x "></i></div>
+            <div class="floating-icon"><i class="fa fa-clock-o fa-spin fa-2x "></i></div>
+            <div class="floating-icon"><i class="fa fa-clock-o fa-spin fa-2x "></i></div>
             <div class="hero-content">
-                <h1>timeXchange</h1>
-                <p>Exchange Services, Not Money</p>
-                
+                <h1>Time X</h1>
+                <p>Trading time for services</p>
+            
                 <!-- Enhanced Download Section -->
                 <div class="download-section">
                     <div class="container">
                         <div class="download-content">
                             <div class="download-text">
-                                <h2>Get timeXchange</h2>
-                                <p>Join thousands of users who are already exchanging services and building meaningful connections. Download our app and start trading your skills today.</p>
+                                <h2>Coming soon ...</h2>
+                                <p>
+                                Join a thriving community of service exchangers building meaningful connections. 
+                                <a href="#subscription" class="cta-premium">Get your Early Member Package <i class='fa fa-gift' style="font-size: 28px; vertical-align: middle;"></i>
+                                </a>
+                                
+                                </p>                                
                                 <div class="download-buttons">
-                                    <a href="#" class="download-btn">
-                                        <span>📱</span>
+                                    <a href="#" class="download-btn disabled">
+                                        <span class="icon"><i class="fa fa-apple" style="font-size:28px; width: 12px; height: 12px; padding-right: 20px;"></i></span>
                                         Download for iOS
                                     </a>
-                                    <a href="#" class="download-btn">
-                                        <span>🤖</span>
-                                        Download for Android
+                                    <a href="#" class="download-btn disabled">
+                                        <span class="icon"><i class="fa fa-android" style="font-size:28px; width: 12px; height: 12px; padding-right: 20px;"></i></span>
+                                         Download for Android
                                     </a>
+                                    <!-- <em>Launching 1st November 2025.</em> -->
                                 </div>
                             </div>
                             <div class="phone-mockup">
@@ -62,12 +70,12 @@
                                         <div class="app-icon">
                                             <img src="photos/icon.png" alt="timeXchange App Icon" class="app-icon-img">
                                         </div>
-                                        <div class="app-name">timeXchange</div>
-                                        <div class="app-tagline">Exchange Services, Not Money</div>
+                                        <div class="app-name">Time X</div>
+                                        <div class="app-tagline">Trading time for services</div>
                                         <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-                                            <div style="width: 30px; height: 30px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">🔄</div>
-                                            <div style="width: 30px; height: 30px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">🤝</div>
-                                            <div style="width: 30px; height: 30px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">⭐</div>
+                                            <i class="fa fa-android fa-2x" aria-hidden="true"></i>
+                                            <i class="fa fa-apple fa-2x"></i>
+                                            <i class="fa fa-clock-o fa-spin fa-2x "></i>
                                         </div>
                                     </div>
                                 </div>
@@ -81,36 +89,30 @@
         <!-- Features Section -->
         <section class="features">
             <div class="container">
-                <h2 class="section-title">Why timeXchange?</h2>
+                <h2 class="section-title">Why Time Xchange?</h2>
                 <div class="features-grid">
                     <div class="feature-card">
-                        <div class="feature-icon">🔄</div>
-                        <h3>Service Exchange</h3>
-                        <p>Trade your skills and services without using money. Help someone with design, get help with coding!</p>
+                        <h3>Professional services</h3>
+                        <p>Free services. Anything you need in exchange for your time. Service for service batering market.</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-icon">⏰</div>
-                        <h3>Time-Based Trading</h3>
-                        <p>All services are valued by time. One hour of your expertise equals one hour of someone else's.</p>
+                        <h3>Educational support</h3>
+                        <p>All exchanges are valued by time. One hour of your knowledge equals one hour of someone else's.</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-icon">🤝</div>
-                        <h3>Community Driven</h3>
+                        <h3>Giving back</h3>
                         <p>Build meaningful connections while getting things done. Join a community that values collaboration.</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-icon">⭐</div>
-                        <h3>Verified Reviews</h3>
+                        <h3>Quality assurance</h3>
                         <p>Rate and review services to maintain quality. Trust is built through transparent feedback.</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-icon">🔒</div>
-                        <h3>Secure Platform</h3>
+                        <h3>Secure platform</h3>
                         <p>Your data is protected with end-to-end encryption. Trade with confidence and peace of mind.</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-icon">🌍</div>
-                        <h3>Global Reach</h3>
+                        <h3>Global community</h3>
                         <p>Connect with service providers worldwide. Access skills and expertise from anywhere.</p>
                     </div>
                 </div>
@@ -118,18 +120,21 @@
         </section>
 
         <!-- Subscription Plans -->
-        <section class="subscription">
+        <section class="subscription" id="subscription">
             <div class="container">
                 <h2>Choose Your Plan</h2>
                 <div class="plans-grid">
                     <div class="plan-card">
                         <h3>Basic</h3>
                         <div class="plan-price">Free</div>
+                        <div class="trial-badge">Early Member Package <i class='fa fa-gift' style="font-size: 28px; vertical-align: middle;"></i></div>
                         <ul class="plan-features">
-                            <li>Welcome time bonus (limited time only)</li>
-                            <li>Unlimited service exchanges</li>
-                            <li>Basic profile features</li>
-                            <li>Community access</li>
+                            <!-- <div style="padding-bottom: 40px;">                 
+                                <a href="#" class="cta-premium">Get your Early Member Package <i class='fa fa-gift' style="font-size: 28px; vertical-align: middle;"></i></a>
+                            </div> -->
+                            <li>5 exchanges per day</li>
+                            <li>Early member allowance</li>
+                            <li>1 hour</li>
                             <li>Standard support</li>
                         </ul>
                         <button class="get-started-btn">Get Started</button>
@@ -139,47 +144,62 @@
                         <div class="plan-price">$9.99<span style="font-size: 1rem;">/month</span></div>
                         <div class="trial-badge">1 Month Free Trial</div>
                         <ul class="plan-features">
+                            <li>50 exchanges per day</li>
                             <li>Daily time allowance</li>
-                            <li>Priority matching</li>
+                            <li>1 hour per day</li>
                             <li>Priority support</li>
                         </ul>
-                        <div id="paypal-gold" class="paypal-container"></div>
+                        <div class="terms-checkbox">
+                            <label>
+                                <input type="checkbox" id="terms-gold" onchange="togglePayPalButton('gold')">
+                                I agree to the <a href="#policies" target="_blank"">Terms and Conditions <i class="fa fa-external-link" aria-hidden="true"></i> </a>
+                            </label>
+                        </div>
+                        <div id="paypal-gold" class="paypal-container" style="opacity: 0.5; pointer-events: none;"></div>
                     </div>
                     <div class="plan-card platinum">
                         <h3>Platinum</h3>
                         <div class="plan-price">$29.99<span style="font-size: 1rem;">/month</span></div>
                         <div class="trial-badge">1 Month Free Trial</div>
                         <ul class="plan-features">
-                            <li>Everything in Gold</li>
-                            <li>Persistent time allowance</li>
+                            <li>Unlimited exchanges per day</li>
+                            <li>Monthly time allowance</li>
+                            <li>30 hours per month</li>
                             <li>Advanced support</li>
                         </ul>
-                        <div id="paypal-platinum" class="paypal-container"></div>
+                        <div class="terms-checkbox">
+                            <label>
+                                <input type="checkbox" id="terms-platinum" onchange="togglePayPalButton('platinum')">
+                                I agree to the <a href="#policies" onclick="showPage('policies')">Terms and Conditions <i class="fa fa-external-link" aria-hidden="true"></i></a>
+                            </label>
+                        </div>
+                        <div id="paypal-platinum" class="paypal-container" style="opacity: 0.5; pointer-events: none;"></div>
                     </div>
                 </div>
                 
                 <!-- Security Section -->
                 <div class="security-section">
                     <div class="security-content">
-                        <div class="security-icon">🔒</div>
+                        
                         <div class="security-text">
-                            <h3>Secure Payment Processing</h3>
+                            <h3><span><i class='fa fa-lock' style="font-size: 42px;"></i></span>
+                            Secure Payment Processing</h3>
                             <p>All payments are processed securely through PayPal, the world's most trusted payment platform. Your financial information is protected with bank-level encryption and never stored on our servers.</p>
                             <div class="security-features">
                                 <div class="security-feature">
-                                    <span>🛡️</span>
+                                    <span><i class='fa fa-check' style="font-size: 24px; vertical-align: middle;"></i></span>
                                     <span>Bank-level encryption</span>
                                 </div>
                                 <div class="security-feature">
-                                    <span>🔐</span>
+                                    <span><i class='fa fa-check' style="font-size: 24px; vertical-align: middle;"></i></span>
                                     <span>PCI DSS compliant</span>
                                 </div>
                                 <div class="security-feature">
-                                    <span>✅</span>
+                                    <span><i class='fa fa-check' style="font-size: 24px; vertical-align: middle;"></i></span>
                                     <span>PayPal buyer protection</span>
                                 </div>
                                 <div class="security-feature">
-                                    <span>🔒</span>
+                                    <span><i class='fa fa-check' style="font-size: 24px; vertical-align: middle;"></i></span>
                                     <span>Secure SSL connection</span>
                                 </div>
                             </div>
@@ -202,7 +222,7 @@
                         <p>Join us in revolutionizing how we think about work, community, and value exchange. Together, we're creating a more connected and collaborative world.</p>
                     </div>
                     <div class="about-visual">
-                        <img src="photos/icon.png" alt="timeXchange Vision" class="about-icon">
+                        <img src="photos/icon.png" alt="timeXChange Vision" class="about-icon">
                     </div>
                 </div>
                 
@@ -245,29 +265,31 @@
                 </div>
 
                 <!-- Contact Us Section -->
-                <section class="contact-section">
+                <section id="contact" class="contact-section">
                     <h2 class="section-title">Contact Us</h2>
                     <div class="contact-content">
                         <div class="contact-info">
                             <div class="contact-item">
-                                <div class="contact-icon">📧</div>
+                                <div class="contact-icon"><span><i class="fa fa-envelope "></i> </span></div>
                                 <div class="contact-details">
                                     <h3>Email</h3>
-                                    <p>hello@timexchange.com</p>
+                                    <p>support@timexchange.com</p>
+                                    <!-- <p>emmanuel@timexchange.com</p> -->
+                                    <p>admin@timexchange.com</p>
                                 </div>
                             </div>
                             <div class="contact-item">
-                                <div class="contact-icon">📱</div>
+                                <div class="contact-icon"><span><i class="fa fa-phone "></i> </span></div>
                                 <div class="contact-details">
                                     <h3>Phone</h3>
-                                    <p>+1 (555) 123-4567</p>
+                                    <p>+27616172532</p>
                                 </div>
                             </div>
                             <div class="contact-item">
-                                <div class="contact-icon">📍</div>
+                                <div class="contact-icon"><span><i class="fa fa-map "></i> </span></div>
                                 <div class="contact-details">
                                     <h3>Address</h3>
-                                    <p>123 Innovation Drive<br>Tech City, TC 12345<br>United States</p>
+                                    <p>Fernwood Cl<br>Milnerton Ru, Blouberg<br>Western Cape, South Africa</p>
                                 </div>
                             </div>
                         </div>
@@ -390,28 +412,32 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <div class="footer-logo">
-                        <img src="photos/icon.png" alt="timeXchange Logo" class="footer-logo-img">
+                        <img src="photos/icon.png" alt="timeXchange Logo" class="footer-logo-img" style="background-color: #fff;">
                         <span>timeXchange</span>
                     </div>
-                    <p>Exchange Services, Not Money</p>
-                    <p>&copy; 2024 timeXchange. All rights reserved. ™</p>
+                    <p>Trading time for services</p>
+                    <p>&copy; 2025 timeXchange. All rights reserved. ™</p>
                 </div>
                 <div class="footer-section">
                     <h3>Quick Links</h3>
                     <ul>
                         <li><a href="#home" onclick="showPage('home')">Home</a></li>
-                        <li><a href="#about" onclick="showPage('about')">About</a></li>
-                        <li><a href="#policies" onclick="showPage('policies')">Policies</a></li>
+                        <li><a href="#about" onclick="showPage('about')">About us</a></li>
+                        <li><a href="#contact" onclick="showPage('contact')">Get in touch</a></li>
+                        <li><a href="#policies" onclick="showPage('policies')">Our Policies</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
                     <h3>Connect</h3>
                     <div class="social-links">
                         <a href="https://www.linkedin.com/in/em100/" target="_blank" class="social-link">
-                            <span>🔗</span> LinkedIn
+                            <span><i class="fa fa-linkedin "></i> </span> LinkedIn
                         </a>
-                        <a href="mailto:supporto@timexchange.com" class="social-link">
-                            <span>📧</span> Email
+                        <a href="mailto:support@timexchange.com" class="social-link">
+                            <span><i class="fa fa-envelope "></i> </span>support
+                        </a>
+                        <a href="mailto:admin@timexchange.com" class="social-link">
+                            <span><i class="fa fa-envelope "></i> </span>Tehnical support
                         </a>
                     </div>
                 </div>
@@ -422,6 +448,117 @@
         </div>
     </footer>
 
+    <!-- Signup Modal -->
+<div id="signupModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <span class="close-modal" onclick="closeModal()">&times;</span>
+    <h2>Congratulations</h2>
+    <p>You got an <strong style="color: green;">Early Member Access Package</strong>!<br>
+    Register now to secure your benefits.</p>
+    <form id="signupForm">
+      <input type="text" id="signupName" placeholder="Your Name" required>
+      <input type="email" id="signupEmail" placeholder="Your Email" required>
+      <input type="password" id="signupPassword" placeholder="New Account Password" required>
+      <input type="password" id="signupPassword2" placeholder="Confirm Password" required>
+      <button type="submit">Sign me up</button>
+    </form>
+    <div id="signupError" style="display:none; color:red; margin-top:1em;"></div>
+    <div id="signupSuccess" style="display:none; color:green; margin-top:1em;">Thank you for registering!</div>
+  </div>
+</div>
+
+<!-- Welcome Modal with Confetti -->
+<div id="welcomeModal" class="modal" style="display:none; align-items: center; justify-content: center;">
+  <div class="modal-content" style="text-align: center;">
+    <span class="close-modal" onclick="closeWelcomeModal()">&times;</span>
+    <h2>Welcome to timeXchange!</h2>
+    <p>Your Early Member Access Package is secured.<br>We're excited to have you join our community!</p>
+    <img src="https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif" alt="Confetti" style="width: 200px; height: auto; margin: 1em auto; display: block;" />
+    <button onclick="closeWelcomeModal()" style="margin-top: 1em;">Close</button>
+  </div>
+</div>
+
     <script src="js/script.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+  // Your Firebase config here
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  // Modal logic
+  function openModal() {
+    document.getElementById('signupModal').style.display = 'flex';
+  }
+  function closeModal() {
+    document.getElementById('signupModal').style.display = 'none';
+    document.getElementById('signupForm').reset();
+    document.getElementById('signupSuccess').style.display = 'none';
+    document.getElementById('signupError').style.display = 'none';
+  }
+
+  // Show modal on Get Started click
+  document.querySelectorAll('.get-started-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      openModal();
+    });
+  });
+
+  // Handle signup form with API POST
+  document.getElementById('signupForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const name = document.getElementById('signupName').value.trim();
+    const email = document.getElementById('signupEmail').value.trim();
+    const password = document.getElementById('signupPassword').value;
+    const password2 = document.getElementById('signupPassword2').value;
+    const errorDiv = document.getElementById('signupError');
+    errorDiv.style.display = 'none';
+    errorDiv.textContent = '';
+
+    if (password !== password2) {
+      errorDiv.textContent = "Passwords do not match.";
+      errorDiv.style.display = 'block';
+      return;
+    }
+    if (password.length < 6) {
+      errorDiv.textContent = "Password must be at least 6 characters.";
+      errorDiv.style.display = 'block';
+      return;
+    }
+
+    try {
+      const res = await fetch('https://tbserver-1059280513734.africa-south1.run.app/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        document.getElementById('signupSuccess').style.display = 'block';
+        document.getElementById('signupForm').reset();
+        setTimeout(() => {
+          closeModal();
+          alert('Congratulations! Your Early Member Access Package is secured. Welcome to timeXchange!');
+        }, 1200);
+      } else {
+        errorDiv.textContent = data.message || "Signup failed. Please try again.";
+        errorDiv.style.display = 'block';
+      }
+    } catch (err) {
+      errorDiv.textContent = "Network error. Please try again.";
+      errorDiv.style.display = 'block';
+    }
+  });
+</script>
 </body>
-</html> 
+</html>

@@ -181,6 +181,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.feature-card, .plan-card, .team-member, .contact-item, .policy-section, .security-section').forEach(el => {
         observer.observe(el);
     });
+    
+    // Create sparkles for subscription plans
+    createSparkles();
 });
 
 // Add navbar background on scroll
@@ -220,12 +223,69 @@ function addLoadingState(button) {
 document.addEventListener('click', function(e) {
     if (e.target.classList.contains('get-started-btn')) {
         const resetLoading = addLoadingState(e.target);
-        
-        // Simulate processing time
-        setTimeout(() => {
-            alert('Welcome to timeXchange! Your free account has been created.');
+
+        // Show signup modal instead of alert
+        if (typeof openModal === "function") {
+            openModal();
             resetLoading();
-        }, 1000);
+        } else {
+            setTimeout(() => {
+                alert('Welcome to timeXchange! Your free account has been created.');
+                resetLoading();
+            }, 1000);
+        }
+    }
+});
+
+// Handle signup form with API POST
+document.addEventListener('DOMContentLoaded', function() {
+    const signupForm = document.getElementById('signupForm');
+    if (signupForm) {
+        signupForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const name = document.getElementById('signupName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            const password2 = document.getElementById('signupPassword2').value;
+            const errorDiv = document.getElementById('signupError');
+            errorDiv.style.display = 'none';
+            errorDiv.textContent = '';
+
+            if (password !== password2) {
+                errorDiv.textContent = "Passwords do not match.";
+                errorDiv.style.display = 'block';
+                return;
+            }
+            if (password.length < 6) {
+                errorDiv.textContent = "Password must be at least 6 characters.";
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            try {
+                const res = await fetch('https://tbserver-1059280513734.africa-south1.run.app/auth/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    document.getElementById('signupSuccess').style.display = 'block';
+                    signupForm.reset();
+                    setTimeout(() => {
+                        closeModal();
+                        // Show welcome modal with confetti
+                        document.getElementById('welcomeModal').style.display = 'flex';
+                    }, 1200);
+                } else {
+                    errorDiv.textContent = data.message || "Signup failed. Please try again.";
+                    errorDiv.style.display = 'block';
+                }
+            } catch (err) {
+                errorDiv.textContent = "Network error. Please try again.";
+                errorDiv.style.display = 'block';
+            }
+        });
     }
 });
 
@@ -257,6 +317,15 @@ document.addEventListener('click', function(e) {
     }
 });
 
+window.addEventListener('scroll', function() {
+    const nav = document.getElementById('mainNav');
+    if (window.scrollY > 10) {
+        nav.classList.add('nav-transparent');
+    } else {
+        nav.classList.remove('nav-transparent');
+    }
+});
+
 // Add CSS for notification animation
 const style = document.createElement('style');
 style.textContent = `
@@ -265,4 +334,51 @@ style.textContent = `
         to { transform: translateX(0); opacity: 1; }
     }
 `;
-document.head.appendChild(style); 
+document.head.appendChild(style);
+
+// Add closeWelcomeModal function
+function closeWelcomeModal() {
+    document.getElementById('welcomeModal').style.display = 'none';
+}
+
+// Toggle PayPal buttons based on terms acceptance
+function togglePayPalButton(planType) {
+    const checkbox = document.getElementById(`terms-${planType}`);
+    const paypalContainer = document.getElementById(`paypal-${planType}`);
+    
+    if (checkbox.checked) {
+        paypalContainer.style.opacity = '1';
+        paypalContainer.style.pointerEvents = 'auto';
+    } else {
+        paypalContainer.style.opacity = '0.5';
+        paypalContainer.style.pointerEvents = 'none';
+    }
+}
+
+// Create floating sparkles for subscription plans
+function createSparkles() {
+    const goldPlan = document.querySelector('.plan-card.gold');
+    const platinumPlan = document.querySelector('.plan-card.platinum');
+    
+    // Create sparkles for Gold plan
+    for (let i = 0; i < 8; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        sparkle.style.left = Math.random() * 100 + '%';
+        sparkle.style.top = Math.random() * 100 + '%';
+        sparkle.style.animationDelay = Math.random() * 6 + 's';
+        sparkle.style.animationDuration = (4 + Math.random() * 4) + 's';
+        goldPlan.appendChild(sparkle);
+    }
+    
+    // Create sparkles for Platinum plan
+    for (let i = 0; i < 10; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        sparkle.style.left = Math.random() * 100 + '%';
+        sparkle.style.top = Math.random() * 100 + '%';
+        sparkle.style.animationDelay = Math.random() * 6 + 's';
+        sparkle.style.animationDuration = (5 + Math.random() * 5) + 's';
+        platinumPlan.appendChild(sparkle);
+    }
+}
