@@ -501,7 +501,7 @@ nav {
     bottom: 0;
     background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent, rgba(255, 255, 255, 0.1), transparent);
     background-size: 300% 300%;
-    animation: goldShimmer 8s ease-in-out infinite;
+    animation: goldShimmer 20s ease-in-out infinite;
     pointer-events: none;
 }
 
@@ -515,7 +515,7 @@ nav {
     background: radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
                 radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
                 radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.2) 0%, transparent 50%);
-    animation: goldSparkle 12s ease-in-out infinite;
+    animation: goldSparkle 30s ease-in-out infinite;
     pointer-events: none;
 }
 
@@ -551,7 +551,7 @@ nav {
     bottom: 0;
     background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent, rgba(255, 255, 255, 0.15), transparent);
     background-size: 300% 300%;
-    animation: platinumShimmer 10s ease-in-out infinite;
+    animation: platinumShimmer 20s ease-in-out infinite;
     pointer-events: none;
 }
 
@@ -565,7 +565,7 @@ nav {
     background: radial-gradient(circle at 30% 70%, rgba(255, 255, 255, 0.4) 0%, transparent 40%),
                 radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.4) 0%, transparent 40%),
                 radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.3) 0%, transparent 60%);
-    animation: platinumSparkle 14s ease-in-out infinite;
+    animation: platinumSparkle 30s ease-in-out infinite;
     pointer-events: none;
 }
 
@@ -700,13 +700,14 @@ nav {
     margin-bottom: 1rem;
     display: inline-block;
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-    animation: pulse 2s infinite;
+    animation: pulse 40s ease-in-out infinite;
 }
 
 @keyframes pulse {
-    0% { transform: scale(1); }
+    0%, 100% { transform: scale(1); }
+    25% { transform: scale(1.02); }
     50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
+    75% { transform: scale(1.02); }
 }
 
 .plan-card.gold .plan-price {
