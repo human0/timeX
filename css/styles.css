@@ -1330,11 +1330,12 @@ nav {
   /* display: inline-block; */
   color: #1cd78c;
   /* font-weight: bold; */
+  text-decoration: none;
 }
 .cta-premium:hover, .cta-premium:focus {
   color: #1cd78c;
   border-color: #fff;
-  text-decoration: none;
+  text-decoration: underline;
 }
 .cta-highlight {
   color: #1cd78c;
