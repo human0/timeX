@@ -184,6 +184,27 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Create sparkles for subscription plans
     createSparkles();
+
+    // Email verification logic
+    const token = getQueryParam('token');
+    if (token) {
+        showVerifyingModal();
+        fetch(`https://tbserver-1059280513734.africa-south1.run.app/auth/verify-email?token=${encodeURIComponent(token)}`)
+            .then(res => res.json().then(data => ({ ok: res.ok, data })))
+            .then(({ ok, data }) => {
+                hideVerifyingModal();
+                if (ok) {
+                    document.getElementById('welcomeModal').style.display = 'flex';
+                    centerWelcomeModal();
+                } else {
+                    showVerificationModal(data.message || 'Verification failed. The link may be invalid or expired.', false);
+                }
+            })
+            .catch(() => {
+                hideVerifyingModal();
+                showVerificationModal('A network error occurred. Please try again later.', false);
+            });
+    }
 });
 
 // Add navbar background on scroll
@@ -272,10 +293,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (res.ok) {
                     document.getElementById('signupSuccess').style.display = 'block';
                     signupForm.reset();
+                    errorDiv.textContent = "";
                     setTimeout(() => {
                         closeModal();
-                        // Show welcome modal with confetti
-                        document.getElementById('welcomeModal').style.display = 'flex';
                     }, 1200);
                 } else {
                     errorDiv.textContent = data.message || "Signup failed. Please try again.";
@@ -382,3 +402,110 @@ function createSparkles() {
         platinumPlan.appendChild(sparkle);
     }
 }
+
+// Utility: Get URL parameter
+function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+}
+
+// Utility: Center modal helper
+function centerModalStyle(modal) {
+    modal.style.display = 'flex';
+    modal.style.alignItems = 'center';
+    modal.style.justifyContent = 'center';
+    modal.style.position = 'fixed';
+    modal.style.top = '0';
+    modal.style.left = '0';
+    modal.style.width = '100vw';
+    modal.style.height = '100vh';
+    modal.style.zIndex = '10000';
+    modal.style.background = 'rgba(0,0,0,0.4)';
+}
+
+// Show verification result modal
+function showVerificationModal(message, isSuccess) {
+    let modal = document.getElementById('verifyModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'verifyModal';
+        modal.className = 'modal';
+        centerModalStyle(modal);
+        modal.innerHTML = `
+          <div class="modal-content" style="text-align:center; max-width: 90vw; margin: 0 auto;">
+            <span class="close-modal" onclick="document.getElementById('verifyModal').style.display='none'">&times;</span>
+            <h2>${isSuccess ? 'Email Verified!' : 'Verification Failed'}</h2>
+            <p>${message}</p>
+            <button onclick="document.getElementById('verifyModal').style.display='none'">Close</button>
+          </div>
+        `;
+        document.body.appendChild(modal);
+    } else {
+        centerModalStyle(modal);
+        modal.querySelector('h2').textContent = isSuccess ? 'Email Verified!' : 'Verification Failed';
+        modal.querySelector('p').textContent = message;
+        modal.style.display = 'flex';
+    }
+}
+
+// Show verifying modal with spinner
+function showVerifyingModal() {
+    let modal = document.getElementById('verifyingModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'verifyingModal';
+        modal.className = 'modal';
+        centerModalStyle(modal);
+        modal.innerHTML = `
+          <div class="modal-content" style="text-align:center; max-width: 90vw; margin: 0 auto;">
+            <div style="margin: 2em 0;">
+              <div class="spinner" style="margin-bottom: 1em; width: 40px; height: 40px; border: 4px solid #ccc; border-top: 4px solid #10b981; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+              <p>Verifying your email, please wait...</p>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+        // Add spinner animation CSS if not present
+        if (!document.getElementById('spinner-style')) {
+            const style = document.createElement('style');
+            style.id = 'spinner-style';
+            style.textContent = `@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`;
+            document.head.appendChild(style);
+        }
+    } else {
+        centerModalStyle(modal);
+        modal.style.display = 'flex';
+    }
+}
+
+function hideVerifyingModal() {
+    const modal = document.getElementById('verifyingModal');
+    if (modal) modal.style.display = 'none';
+}
+
+// Ensure welcomeModal is centered when shown
+function centerWelcomeModal() {
+    const modal = document.getElementById('welcomeModal');
+    if (modal) {
+        modal.style.display = 'flex';
+        modal.style.alignItems = 'center';
+        modal.style.justifyContent = 'center';
+        modal.style.position = 'fixed';
+        modal.style.top = '0';
+        modal.style.left = '0';
+        modal.style.width = '100vw';
+        modal.style.height = '100vh';
+        modal.style.zIndex = '10000';
+        modal.style.background = 'rgba(0,0,0,0.4)';
+    }
+}
+
+// Patch: Whenever welcomeModal is shown, center it
+const origShowWelcome = document.getElementById('welcomeModal')?.style.display;
+Object.defineProperty(document.getElementById('welcomeModal') || {}, 'style', {
+    set: function(val) {
+        this._style = val;
+        if (val && val.display === 'flex') centerWelcomeModal();
+    },
+    get: function() { return this._style; }
+});

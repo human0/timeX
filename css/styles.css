@@ -803,24 +803,27 @@ nav {
     padding: 0.5rem 0;
 }
 
+/* Make checkbox, text, and link flow as a sentence in one line */
 .terms-checkbox label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.9rem;
-    color: #222;
-    cursor: pointer;
-    line-height: 1.4;
+  display: inline;
+  font-size: 0.9rem;
+  color: #222;
+  cursor: pointer;
+  line-height: 1.4;
+  font-weight: normal;
 }
-
 .terms-checkbox input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-    /* accent-color: #10b981; */
+  vertical-align: middle;
+  margin-right: 0.4em;
+}
+.terms-checkbox a {
+  display: inline;
+  margin: 0;
 }
 
 .terms-checkbox a {
+    display: inline-block;
+    margin-top: 0.3em;
     color: #3b82f6;
     text-decoration: none;
     font-weight: 500;
@@ -878,7 +881,7 @@ nav {
 }
 
 .team-grid {
-    display: grid;
+    display: none;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 2rem;
 }
@@ -1158,45 +1161,46 @@ nav {
     line-height: 1.6;
 }
 
+/* Ensure Quick Links and Connect lists are aligned the same way */
 .footer-section ul {
-    list-style: none;
+  list-style: none;
+  padding-left: 0;
+  margin-left: 0;
+  text-align: left;
 }
-
 .footer-section ul li {
-    margin-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+  text-align: left;
+}
+.social-links {
+  display: block;
+  padding-left: 0;
+  margin-left: 0;
+  text-align: left;
+}
+.social-link {
+  display: flex;
+  align-items: center;
+  color: white;
+  text-decoration: none;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+  margin-bottom: 0.5rem;
+}
+.social-link:hover {
+  opacity: 1;
+  color: #e5ebe9;
 }
 
 .footer-section ul li a {
-    color: white;
-    text-decoration: none;
-    opacity: 0.8;
-    transition: all 0.3s ease;
+  color: white;
+  text-decoration: none;
+  opacity: 0.8;
+  transition: all 0.3s ease;
 }
-
 .footer-section ul li a:hover {
-    opacity: 1;
-    color: #10b981;
-}
-
-.social-links {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.social-link {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: white;
-    text-decoration: none;
-    opacity: 0.8;
-    transition: all 0.3s ease;
-}
-
-.social-link:hover {
-    opacity: 1;
-    color: #10b981;
+  opacity: 1;
+  color: #10b981;
 }
 
 .footer-bottom {
@@ -1371,3 +1375,72 @@ nav {
 }
 #signupForm input { width: 90%; margin: 0.5em 0; padding: 0.7em; border-radius: 6px; border: 1px solid #ccc; }
 #signupForm button { background: #10b981; color: #fff; border: none; padding: 0.7em 2em; border-radius: 6px; cursor: pointer; }
+
+/* Burger menu styles */
+#burger-menu {
+  display: none;
+}
+.burger-bar {
+  display: block;
+  width: 28px;
+  height: 4px;
+  background: white;
+  margin: 5px 0;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+/* Mobile nav styles - drop down from top with translucent background */
+.mobile-nav {
+  display: none;
+  position: fixed;
+  top: 60px;
+  left: 0;
+  width: 100vw;
+  max-width: 100vw;
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(30,58,138,0.08);
+  z-index: 2000;
+  border-radius: 0 0 16px 16px;
+  overflow: hidden;
+  transform: translateY(-40px);
+  opacity: 0;
+  transition: transform 0.3s cubic-bezier(.4,2,.6,1), opacity 0.3s;
+}
+.mobile-nav.open {
+  display: block;
+  transform: translateY(0);
+  opacity: 1;
+}
+.mobile-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 1.5em 0.5em;
+}
+.mobile-nav ul li {
+  margin: 0.5em 0;
+  text-align: left;
+}
+.mobile-nav ul li a {
+  color: #1e3a8a;
+  text-decoration: none;
+  font-size: 1.2em;
+  padding: 0.7em 1em;
+  display: block;
+  border-radius: 8px;
+  transition: background 0.2s, color 0.2s;
+}
+.mobile-nav ul li a:hover {
+  background: #10b981;
+  color: #fff;
+}
+
+@media (max-width: 900px) {
+  .nav-links {
+    display: none !important;
+  }
+  #burger-menu {
+    display: block !important;
+  }
+}
