@@ -185,7 +185,8 @@ nav {
 .download-text h2 {
     font-size: 2.5rem;
     margin-bottom: 1rem;
-    background: linear-gradient(135deg, #10b981, #fff);
+    background: white;
+    opacity: 0.8;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -881,7 +882,7 @@ nav {
 }
 
 .team-grid {
-    display: none;
+    display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 2rem;
 }
@@ -1331,10 +1332,11 @@ nav {
 } 
 
 .cta-premium {
-  /* display: inline-block; */
-  color: #1cd78c;
-  /* font-weight: bold; */
-  text-decoration: none;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #10b981, #fff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 .cta-premium:hover, .cta-premium:focus {
   color: #1cd78c;
