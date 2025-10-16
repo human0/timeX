@@ -48,7 +48,7 @@
             <div class="floating-icon"><i class="fa fa-clock-o fa-spin fa-2x "></i></div>
             <div class="hero-content">
                 <h1>Time X</h1>
-                <p>Service barter ecosystem</p>
+                <p>Service exchange ecosystem</p>
             
                 <!-- Enhanced Download Section -->
                 <div class="download-section">
@@ -88,7 +88,7 @@
                                             <img src="photos/icon.png" alt="timeXchange App Icon" class="app-icon-img">
                                         </div>
                                         <div class="app-name">Time X</div>
-                                        <div class="app-tagline">Service barter ecosystem</div>
+                                        <div class="app-tagline">Service exchange ecosystem</div>
                                         <div style="display: flex; gap: 1rem; margin-top: 1rem;">
                                             <i class="fa fa-android fa-2x" aria-hidden="true"></i>
                                             <i class="fa fa-apple fa-2x"></i>
@@ -110,7 +110,7 @@
                 <div class="features-grid">
                     <div class="feature-card">
                         <h3>Professional services</h3>
-                        <p>Free services. Anything you need in exchange for your time. Service batering ecosystem.</p>
+                        <p>Free services. Anything you need in exchange for your time. Service batering system.</p>
                     </div>
                     <div class="feature-card">
                         <h3>Educational support</h3>
@@ -250,8 +250,14 @@
                     </div>
                 </div>
                 
-                <h2 class="section-title" hidden>Meet Our Team</h2>
-                <div class="team-grid">
+                <!-- Team Section Toggle -->
+                <div id="team-toggle" style="cursor:pointer; user-select:none; display:flex; align-items:center; gap:0.5em; justify-content:center; font-weight:600; color:#1e40af; margin:2rem 0 1rem 0; font-size:1.5rem;">
+                    <span id="team-arrow" style="font-size:0.8em;">&#x25BC;</span>
+                    <span id="team-label">Meet the team</span>
+                </div>
+
+                <div id="team-section" class="team-section" style="display:none;">
+                    <div class="team-grid">
                     <div class="team-member">
                         <div class="team-avatar">
                             <img src="photos/kehinde.jpg" alt="Kehinde" class="team-photo">
@@ -316,6 +322,7 @@
                         <p class="vacant-description">Join our team to help grow timeXchange's presence and reach more communities worldwide.</p>
                         <!-- <div class="vacant-badge">Hiring</div> -->
                     </div>
+                </div>
                 </div>
 
                 <!-- Contact Us Section -->
@@ -469,7 +476,7 @@
                         <img src="photos/icon.png" alt="timeXchange Logo" class="footer-logo-img" style="background-color: #fff;">
                         <span>timeXchange</span>
                     </div>
-                    <p>Your time for our services</p>
+                    <p>Service exchange ecosystem</p>
                     <p>&copy; 2025 timeXchange. All rights reserved. ™</p>
                 </div>
                 <div class="footer-section">
@@ -562,6 +569,21 @@
       subSection.style.display = 'none';
       subArrow.innerHTML = '&#x25BC;'; // Down arrow
      // subLabel.textContent = 'See Subscription Plans';
+    }
+  });
+
+  // Team section toggle logic
+  const teamToggle = document.getElementById('team-toggle');
+  const teamSection = document.getElementById('team-section');
+  const teamArrow = document.getElementById('team-arrow');
+  const teamLabel = document.getElementById('team-label');
+  teamToggle.addEventListener('click', function() {
+    if (teamSection.style.display === 'none' || teamSection.style.display === '') {
+      teamSection.style.display = 'block';
+      teamArrow.innerHTML = '&#x25B2;'; // Up arrow
+    } else {
+      teamSection.style.display = 'none';
+      teamArrow.innerHTML = '&#x25BC;'; // Down arrow
     }
   });
 

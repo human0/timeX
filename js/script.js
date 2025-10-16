@@ -193,14 +193,22 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(res => res.json().then(data => ({ ok: res.ok, data })))
             .then(({ ok, data }) => {
                 hideVerifyingModal();
-                if (ok) {
+                
+                // Log response for debugging
+                console.log('Verification response:', { status: ok, data });
+                
+                // Check for success message (server returns data.message on success)
+                if (data.message) {
+                    console.log('Verification successful!');
                     document.getElementById('welcomeModal').style.display = 'flex';
                     centerWelcomeModal();
                 } else {
-                    showVerificationModal(data.message || 'Verification failed. The link may be invalid or expired.', false);
+                    console.error('Verification error:', data.error);
+                    showVerificationModal(data.error || 'Verification failed. The link may be invalid or expired.', false);
                 }
             })
-            .catch(() => {
+            .catch((err) => {
+                console.error('Verification error:', err);
                 hideVerifyingModal();
                 showVerificationModal('A network error occurred. Please try again later.', false);
             });
@@ -290,7 +298,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     body: JSON.stringify({ name, email, password })
                 });
                 const data = await res.json();
-                if (res.ok) {
+                
+                // Log response for debugging
+                console.log('Signup response:', { status: res.status, ok: res.ok, data });
+                
+                // Check API response for success (your API returns data.success boolean)
+                if (data.success) {
+                    console.log('Signup successful!');
                     document.getElementById('signupSuccess').style.display = 'block';
                     signupForm.reset();
                     errorDiv.textContent = "";
@@ -298,10 +312,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         closeModal();
                     }, 1200);
                 } else {
-                    errorDiv.textContent = data.message || "Signup failed. Please try again.";
+                    console.error('Error:', data.error);
+                    errorDiv.textContent = data.error || "Signup failed. Please try again.";
                     errorDiv.style.display = 'block';
                 }
             } catch (err) {
+                console.error('Signup error:', err);
                 errorDiv.textContent = "Network error. Please try again.";
                 errorDiv.style.display = 'block';
             }
