@@ -1,0 +1,27 @@
+{
+    "name": "TimeXchange - Service Exchange Ecosystem",
+    "short_name": "TimeXchange",
+    "description": "Innovative service exchange ecosystem where you can trade your skills and time for services you need.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#1e3a8a",
+    "theme_color": "#3b82f6",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "photos/icon.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "photos/icon.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": ["business", "productivity", "social"],
+    "lang": "en",
+    "dir": "ltr"
+}
