@@ -686,9 +686,46 @@ nav {
 }
 
 .plan-price {
-    font-size: 3rem;
-    font-weight: 700;
+    font-size: 2.4rem;
+    font-weight: 600;
+    margin-top: 1rem;
     margin-bottom: 1rem;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.currency-symbol {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.price-amount {
+    font-size: 2.4rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 1);
+    line-height: 1;
+}
+
+.price-period {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Gold and Platinum plan specific styles */
+.plan-card.gold .currency-symbol,
+.plan-card.gold .price-amount,
+.plan-card.platinum .currency-symbol,
+.plan-card.platinum .price-amount {
+    color: rgba(31, 41, 55, 0.95);
+}
+
+.plan-card.gold .price-period,
+.plan-card.platinum .price-period {
+    color: rgba(31, 41, 55, 0.7);
 }
 
 .trial-badge {
@@ -699,7 +736,7 @@ nav {
     border-radius: 20px;
     font-size: 0.9rem;
     font-weight: 600;
-    margin-bottom: 1rem;
+    margin-bottom: 3rem;
     display: inline-block;
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
     animation: pulse 40s ease-in-out infinite;
@@ -712,15 +749,6 @@ nav {
     75% { transform: scale(1.02); }
 }
 
-.plan-card.gold .plan-price {
-    color: #1f2937;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.plan-card.platinum .plan-price {
-    color: #1f2937;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
 
 .plan-card.gold h3,
 .plan-card.platinum h3 {

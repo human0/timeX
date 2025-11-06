@@ -52,7 +52,7 @@
         "@context": "https://schema.org",
         "@type": "Organization",
         "name": "TimeXchange",
-        "alternateName": "Time X",
+        "alternateName": "TIME X",
         "url": "https://timexchange.co.za",
         "logo": "https://timexchange.co.za/photos/icon-horizontal.png",
         "description": "Innovative Free services ecosystem where you can trade your skills and time for services you need. Free professional services through time-based bartering system.",
@@ -124,11 +124,8 @@
     <div id="home" class="page active">
         <!-- Hero Section -->
         <section class="hero">
-            <div class="floating-icon"><i class="fa fa-clock-o fa-spin fa-2x "></i></div>
-            <!-- <div class="floating-icon"><i class="fa fa-clock-o fa-spin fa-2x "></i></div> -->
-            <div class="floating-icon"><i class="fa fa-clock-o fa-spin fa-2x "></i></div>
             <div class="hero-content">
-                <h1>Time X</h1>
+                <h1>TIME X</h1>
                 <p>Free services ecosystem</p>
             
                 <!-- Enhanced Download Section -->
@@ -167,12 +164,12 @@
                                         <div class="app-icon">
                                             <img src="photos/icon.png" alt="timeXchange App Icon" class="app-icon-img">
                                         </div>
-                                        <div class="app-name">Time X</div>
+                                        <div class="app-name">TIME X</div>
                                         <div class="app-tagline">Free services ecosystem</div>
                                         <div style="display: flex; gap: 1rem; margin-top: 1rem;">
                                             <i class="fa fa-android fa-2x" aria-hidden="true"></i>
                                             <i class="fa fa-apple fa-2x"></i>
-                                            <i class="fa fa-clock-o fa-spin fa-2x "></i>
+                                            <i class="fa fa-clock-o fa-2x "></i>
                                         </div>
                                     </div>
                                 </div>
@@ -186,7 +183,10 @@
         <!-- Features Section -->
         <section class="features">
             <div class="container">
-                <h2 class="section-title">Why Time Xchange?</h2>
+                <h2 class="section-title">Problem?</h2>
+                <p style="text-align: center; font-size: 1.5rem; max-width: 900px; margin: 2rem auto; line-height: 1.6; color: rgba(11, 10, 10, 0.95);">
+                    Young professionals can not afford to pay for all of the services they need, so we built TIME X to help you get things done.
+                </p>
                 <div class="features-grid">
                     <div class="feature-card">
                         <h3>Free Professional services</h3>
@@ -218,8 +218,8 @@
 
         <!-- Toggle for Subscription Plans -->
         <div id="subscription-toggle" style="cursor:pointer; user-select:none; display:flex; align-items:center; gap:0.5em; justify-content:center; font-weight:600; color:#f8f9fb; margin:0.6=5em 0 0.5em 0;">
+            <span id="subscription-label">Subscribe</span>
             <span id="subscription-arrow" style="font-size:1.2em;">&#x25BC;</span>
-            <span id="subscription-label">Subscribe for free</span>
         </div>
 
         <!-- Subscription Plans -->
@@ -230,27 +230,32 @@
                     <div class="plan-card">
                         <h3>Basic</h3>
                         <div class="plan-price">Free</div>
-                        <div class="trial-badge">Early Member Package 
-                            <i class='fa fa-gift' style="font-size: 28px; vertical-align: middle;"></i>
-                        </div>
+
                         <ul class="plan-features">
                             <!-- <div style="padding-bottom: 40px;">                 
                                 <a href="#" class="cta-premium">Get your Early Member Package <i class='fa fa-gift' style="font-size: 28px; vertical-align: middle;"></i></a>
                             </div> -->
-                            <li>Early member allowance</li>
+                            <li>Once off allowance</li>
                             <li>1 hour</li>
-                            <li>Standard support</li>
+                            <li>Public</li>
                         </ul>
+
+                        <div class="trial-badge">Early Member Package 
+                            <i class='fa fa-gift' style="font-size: 28px; vertical-align: middle;"></i>
+                        </div>
                         <button class="get-started-btn">Get Started</button>
                     </div>
                     <div class="plan-card gold">
                         <h3>Gold</h3>
-                        <div class="plan-price">$9.99<span style="font-size: 1rem;">/month</span></div>
-                        <div class="trial-badge">1 Month Free Trial</div>
+                        <div class="plan-price">
+                            <span class="currency-symbol">$</span>
+                            <span class="price-amount">10</span>
+                            <span class="price-period">P/M</span>
+                        </div>
                         <ul class="plan-features">
-                            <li>Daily time allowance</li>
+                            <li>Daily allowance</li>
                             <li>1 hour per day</li>
-                            <li>Priority support</li>
+                            <li>Golden community</li>
                         </ul>
                         <div class="terms-checkbox">
                             <label>
@@ -264,12 +269,16 @@
                     </div>
                     <div class="plan-card platinum">
                         <h3>Black</h3>
-                        <div class="plan-price">$299.99<span style="font-size: 1rem;">/month</span></div>
-                        <div class="trial-badge">1 Month Free Trial</div>
+                        <div class="plan-price">
+                            <span class="currency-symbol">$</span>
+                            <span class="price-amount">296</span>
+                            <span class="price-period">P/M</span>
+                        </div>
+                        <!-- <div class="trial-badge">1 Month Free Trial</div> -->
                         <ul class="plan-features">
-                            <li>Monthly time allowance</li>
+                            <li>Monthly allowance</li>
                             <li>30 hours per month</li>
-                            <li>Advanced support</li>
+                            <li>VIP</li>
                         </ul>
                         <div class="terms-checkbox">
                             <label>
@@ -321,9 +330,8 @@
                 <div class="about-content">
                     <div class="about-text">
                         <h2>Our Vision</h2>
-                        <p>timeXchange was born from a simple belief: everyone has valuable skills to offer, and everyone has needs that others can fulfill. We're building a world of communities that get stuff done through mutual support and collaboration.</p>
-                        <p>Our platform empowers people to free trade services. Time X maintains fairness with built in time records, so you can get your time back.  </p> 
-                        <p>Join us in reimaging financial freedom, how we think about work, community, and value exchange. </p>
+                        <p>Time X was born from a simple belief: everyone has valuable skills to offer, and everyone has needs that others can fulfill. We're building a world of communities that get stuff done through mutual support and collaboration.</p>
+                        <p>Our platform empowers people to free trade services. Time X maintains fairness with built in time records, so you can get your time back. Join us in reimaging financial freedom, how we think about work, community, and value exchange. </p>
                     </div>
                     <div class="about-visual">
                         <img src="photos/icon.png" alt="timeXChange Vision" class="about-icon">
@@ -340,7 +348,6 @@
                                 <div class="contact-details">
                                     <h3>Email</h3>
                                     <p>support@timexchange.co.za</p>
-                                    <!-- <p>emmanuel@timexchange.com</p> -->
                                     <p>admin@timexchange.co.za</p>
                                 </div>
                             </div>
