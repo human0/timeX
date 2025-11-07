@@ -77,11 +77,11 @@ function initializePayPal() {
             }
         }).render('#paypal-gold');
 
-        // Platinum Plan - $29.99/month
+        // Black Plan - $295.99/month
         paypal.Buttons({
             style: {
                 layout: 'vertical',
-                color: 'silver',
+                color: 'black',
                 shape: 'rect',
                 label: 'subscribe'
             },
@@ -91,8 +91,8 @@ function initializePayPal() {
                 });
             },
             onApprove: function(data, actions) {
-                console.log('Platinum subscription approved:', data);
-                alert('Thank you for subscribing to Platinum! Your subscription is now active.');
+                console.log('Black subscription approved:', data);
+                alert('Thank you for subscribing to Black! Your subscription is now active.');
                 // Here you would typically send the subscription ID to your server
             },
             onError: function(err) {
