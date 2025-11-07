@@ -1386,11 +1386,11 @@ nav {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    text-decoration: none;
 }
 .cta-premium:hover, .cta-premium:focus {
   color: #1cd78c;
   border-color: #fff;
-  text-decoration: underline;
 }
 .cta-highlight {
   color: #1cd78c;
