@@ -1268,6 +1268,10 @@ nav {
         display: none;
     }
     
+    .hero-bg-video {
+        display: none;
+    }
+    
     .hero h1 {
         font-size: 2.5rem;
     }
@@ -1306,6 +1310,13 @@ nav {
     
     .footer-content {
         grid-template-columns: 1fr;
+    }
+}
+
+/* Hide video on tablets and smaller */
+@media (max-width: 1024px) {
+    .hero-bg-video {
+        display: none;
     }
 }
 
