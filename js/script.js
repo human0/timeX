@@ -525,3 +525,17 @@ Object.defineProperty(document.getElementById('welcomeModal') || {}, 'style', {
     },
     get: function() { return this._style; }
 });
+
+// Fade in video after it loads
+document.addEventListener('DOMContentLoaded', function() {
+    const heroVideo = document.querySelector('.hero-bg-video');
+    if (heroVideo) {
+        heroVideo.addEventListener('loadeddata', function() {
+            heroVideo.classList.add('loaded');
+        });
+        // Fallback: if video is already loaded
+        if (heroVideo.readyState >= 2) {
+            heroVideo.classList.add('loaded');
+        }
+    }
+});

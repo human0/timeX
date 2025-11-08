@@ -122,6 +122,12 @@ nav {
     z-index: -2;
     filter: brightness(0.7);
     pointer-events: none;
+    opacity: 0;
+    transition: opacity 1s ease-in;
+}
+
+.hero-bg-video.loaded {
+    opacity: 1;
 }
 
 .hero::before {
