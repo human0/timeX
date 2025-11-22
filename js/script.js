@@ -200,8 +200,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Check for success message (server returns data.message on success)
                 if (data.message) {
                     console.log('Verification successful!');
-                    document.getElementById('welcomeModal').style.display = 'flex';
-                    centerWelcomeModal();
+                    // Ensure DOM is ready before accessing welcomeModal
+                    const welcomeModal = document.getElementById('welcomeModal');
+                    if (welcomeModal && welcomeModal.style) {
+                        welcomeModal.style.display = 'flex';
+                    } else {
+                        console.error('welcomeModal element not found in DOM or style property unavailable');
+                        showVerificationModal(data.message, true);
+                    }
                 } else {
                     console.error('Verification error:', data.error);
                     showVerificationModal(data.error || 'Verification failed. The link may be invalid or expired.', false);
@@ -374,7 +380,10 @@ document.head.appendChild(style);
 
 // Add closeWelcomeModal function
 function closeWelcomeModal() {
-    document.getElementById('welcomeModal').style.display = 'none';
+    const welcomeModal = document.getElementById('welcomeModal');
+    if (welcomeModal) {
+        welcomeModal.style.display = 'none';
+    }
 }
 
 // Toggle PayPal buttons based on terms acceptance
@@ -516,15 +525,7 @@ function centerWelcomeModal() {
     }
 }
 
-// Patch: Whenever welcomeModal is shown, center it
-const origShowWelcome = document.getElementById('welcomeModal')?.style.display;
-Object.defineProperty(document.getElementById('welcomeModal') || {}, 'style', {
-    set: function(val) {
-        this._style = val;
-        if (val && val.display === 'flex') centerWelcomeModal();
-    },
-    get: function() { return this._style; }
-});
+// Patch removed - styles are now in HTML, no need to center via JavaScript
 
 // Fade in video after it loads
 document.addEventListener('DOMContentLoaded', function() {
