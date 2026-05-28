@@ -767,6 +767,25 @@ nav {
     animation: pulse 40s ease-in-out infinite;
 }
 
+.plan-card.gold .trial-badge {
+    margin-bottom: 1rem;
+}
+
+/* "Best value" badge for Black plan */
+.best-value-badge {
+    background: linear-gradient(135deg, #111827, #374151);
+    color: rgba(255, 255, 255, 0.95);
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: inline-block;
+    box-shadow: 0 6px 16px rgba(17, 24, 39, 0.25);
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+}
+
 @keyframes pulse {
     0%, 100% { transform: scale(1); }
     25% { transform: scale(1.02); }
@@ -852,40 +871,23 @@ nav {
     margin: 0 auto;
 }
 
-/* Terms Checkbox Styling */
-.terms-checkbox {
-    margin: 1rem 0;
-    padding: 0.5rem 0;
+/* Terms / consent text above PayPal */
+.terms-inline {
+    margin: 1rem 0 0.5rem 0;
+    font-size: 0.9rem;
+    color: #222;
+    line-height: 1.4;
 }
 
-/* Make checkbox, text, and link flow as a sentence in one line */
-.terms-checkbox label {
-  display: inline;
-  font-size: 0.9rem;
-  color: #222;
-  cursor: pointer;
-  line-height: 1.4;
-  font-weight: normal;
-}
-.terms-checkbox input[type="checkbox"] {
-  vertical-align: middle;
-  margin-right: 0.4em;
-}
-.terms-checkbox a {
-  display: inline;
-  margin: 0;
-}
-
-.terms-checkbox a {
+.terms-inline a {
     display: inline-block;
-    margin-top: 0.3em;
     color: #3b82f6;
     text-decoration: none;
     font-weight: 500;
     transition: color 0.3s ease;
 }
 
-.terms-checkbox a:hover {
+.terms-inline a:hover {
     /* color: #1e40af; */
     text-decoration: underline;
 }
