@@ -316,20 +316,6 @@ function addLoadingState(button) {
     };
 }
 
-// Handle "Get Started" button for free plan
-document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('get-started-btn')) {
-        const resetLoading = addLoadingState(e.target);
-
-        // App is live: send users to the download links
-        showPage('home');
-        setTimeout(() => {
-            scrollToSection('download');
-            resetLoading();
-        }, 250);
-    }
-});
-
 // Handle signup form with API POST
 document.addEventListener('DOMContentLoaded', function() {
     const signupForm = document.getElementById('signupForm');
