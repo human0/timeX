@@ -1,3 +1,25 @@
+// Booking configuration — set calLink to your Cal.com event URL (e.g. "yourname/30min")
+// Leave empty to use the built-in booking request form instead.
+const BOOKING_CONFIG = {
+    calLink: '',
+    adminEmail: 'admin@timexchange.co.za'
+};
+
+const BOOKING_REQUEST_URL = 'https://tbserver-1059280513734.africa-south1.run.app/bookings/request';
+
+function navigateToSection(pageId, sectionId) {
+    showPage(pageId, false);
+    if (window.location.hash.slice(1) !== sectionId) {
+        history.replaceState(null, '', `#${sectionId}`);
+    }
+    setTimeout(() => {
+        const el = document.getElementById(sectionId);
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, 300);
+}
+
 // Page navigation functionality
 function showPage(pageId, updateHash = true) {
     // Hide all pages
@@ -20,16 +42,19 @@ function showPage(pageId, updateHash = true) {
     }
 }
 
+const SECTION_HASHES = { booking: 'about', contact: 'about' };
+
 // Handle URL hash changes
 function handleHashChange() {
     const hash = window.location.hash.slice(1);
     const validPages = ['home', 'about', 'policies'];
-    
-    if (hash && validPages.includes(hash)) {
-        showPage(hash, false); // Don't update hash to prevent infinite loop
+
+    if (hash && SECTION_HASHES[hash]) {
+        navigateToSection(SECTION_HASHES[hash], hash);
+    } else if (hash && validPages.includes(hash)) {
+        showPage(hash, false);
     } else {
-        // Default to home page if no valid hash
-        showPage('home', false); // Don't update hash to prevent infinite loop
+        showPage('home', false);
     }
 }
 
@@ -37,11 +62,12 @@ function handleHashChange() {
 function initializePageFromHash() {
     const hash = window.location.hash.slice(1);
     const validPages = ['home', 'about', 'policies'];
-    
-    if (hash && validPages.includes(hash)) {
+
+    if (hash && SECTION_HASHES[hash]) {
+        navigateToSection(SECTION_HASHES[hash], hash);
+    } else if (hash && validPages.includes(hash)) {
         showPage(hash);
     } else {
-        // Default to home page
         showPage('home');
     }
 }
@@ -175,6 +201,161 @@ function checkPayPalAndInitialize() {
     }
 }
 
+function initBooking() {
+    const calEmbed = document.getElementById('cal-booking-embed');
+    const fallback = document.getElementById('booking-fallback');
+    const dateInput = document.getElementById('bookingDate');
+
+    if (dateInput) {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        dateInput.min = tomorrow.toISOString().split('T')[0];
+    }
+
+    if (BOOKING_CONFIG.calLink) {
+        if (fallback) fallback.style.display = 'none';
+        if (calEmbed) {
+            calEmbed.style.display = 'block';
+            initCalEmbed(calEmbed);
+        }
+    } else {
+        if (calEmbed) calEmbed.style.display = 'none';
+        if (fallback) fallback.style.display = 'block';
+    }
+
+    const bookingForm = document.getElementById('bookingForm');
+    if (bookingForm) {
+        bookingForm.addEventListener('submit', handleBookingForm);
+    }
+}
+
+function initCalEmbed(container) {
+    (function (C, A, L) {
+        const p = function (a, ar) { a.q.push(ar); };
+        const d = C.document;
+        C.Cal = C.Cal || function () {
+            const cal = C.Cal;
+            const ar = arguments;
+            if (!cal.loaded) {
+                cal.ns = {};
+                cal.q = cal.q || [];
+                d.head.appendChild(d.createElement('script')).src = A;
+                cal.loaded = true;
+            }
+            if (ar[0] === L) {
+                const api = function () { p(api, arguments); };
+                const namespace = ar[1];
+                api.q = api.q || [];
+                if (typeof namespace === 'string') {
+                    cal.ns[namespace] = api;
+                    p(api, ar);
+                    p(cal, ar);
+                } else {
+                    p(cal, ar);
+                }
+                return;
+            }
+            p(cal, ar);
+        };
+    })(window, 'https://app.cal.com/embed/embed.js', 'init');
+
+    Cal('init', 'timeXchangeBooking', { origin: 'https://cal.com' });
+    Cal.ns.timeXchangeBooking('inline', {
+        elementOrSelector: container,
+        calLink: BOOKING_CONFIG.calLink,
+        layout: 'month_view',
+        config: { theme: 'light' }
+    });
+}
+
+async function handleBookingForm(event) {
+    event.preventDefault();
+
+    const form = event.target;
+    const btn = document.getElementById('bookingSubmitBtn');
+    const successEl = document.getElementById('bookingSuccess');
+    const errorEl = document.getElementById('bookingError');
+    const formData = new FormData(form);
+
+    const booking = {
+        name: formData.get('name').trim(),
+        email: formData.get('email').trim(),
+        date: formData.get('date'),
+        time: formData.get('time'),
+        duration: formData.get('duration'),
+        topic: formData.get('topic').trim()
+    };
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!booking.name || !booking.email || !booking.date || !booking.time || !booking.topic) {
+        errorEl.textContent = 'Please fill in all fields.';
+        errorEl.style.display = 'block';
+        successEl.style.display = 'none';
+        return;
+    }
+    if (!emailRegex.test(booking.email)) {
+        errorEl.textContent = 'Please enter a valid email address.';
+        errorEl.style.display = 'block';
+        successEl.style.display = 'none';
+        return;
+    }
+
+    const originalText = btn.textContent;
+    btn.textContent = 'Sending...';
+    btn.disabled = true;
+    errorEl.style.display = 'none';
+
+    const payload = {
+        ...booking,
+        durationMinutes: parseInt(booking.duration, 10),
+        timezone: 'Africa/Johannesburg',
+        page: window.location.href,
+        occurredAt: new Date().toISOString()
+    };
+
+    let sent = false;
+    try {
+        const res = await fetch(BOOKING_REQUEST_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        if (res.ok) sent = true;
+    } catch {
+        // Server endpoint may not exist yet; fall back to mailto
+    }
+
+    if (!sent) {
+        const subject = encodeURIComponent(`Time X Booking Request — ${booking.date} at ${booking.time}`);
+        const body = encodeURIComponent(
+            `Booking Request\n\n` +
+            `Name: ${booking.name}\n` +
+            `Email: ${booking.email}\n` +
+            `Date: ${booking.date}\n` +
+            `Time: ${booking.time} SAST\n` +
+            `Duration: ${booking.duration} minutes\n\n` +
+            `Topic:\n${booking.topic}`
+        );
+        const mailLink = document.createElement('a');
+        mailLink.href = `mailto:${BOOKING_CONFIG.adminEmail}?subject=${subject}&body=${body}`;
+        mailLink.click();
+        successEl.innerHTML = '<i class="fa fa-check-circle"></i> Your booking details are ready. Please send the email that opened to confirm your slot.';
+    } else {
+        successEl.innerHTML = '<i class="fa fa-check-circle"></i> Your booking request was sent. We\'ll confirm by email soon.';
+    }
+
+    successEl.style.display = 'block';
+    form.reset();
+    const dateInputEl = document.getElementById('bookingDate');
+    if (dateInputEl) {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        dateInputEl.min = tomorrow.toISOString().split('T')[0];
+    }
+    btn.textContent = originalText;
+    btn.disabled = false;
+}
+
 // Contact form handling
 function handleContactForm(event) {
     event.preventDefault();
@@ -219,6 +400,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize PayPal
     checkPayPalAndInitialize();
     
+    // Initialize booking
+    initBooking();
+
     // Add contact form event listener
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
@@ -240,7 +424,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }, observerOptions);
 
     // Observe elements for animation
-    document.querySelectorAll('.feature-card, .plan-card, .team-member, .contact-item, .policy-section, .security-section').forEach(el => {
+    document.querySelectorAll('.feature-card, .plan-card, .team-member, .contact-item, .booking-form-card, .policy-section, .security-section').forEach(el => {
         observer.observe(el);
     });
     

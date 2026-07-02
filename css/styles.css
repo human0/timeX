@@ -1036,6 +1036,111 @@ nav {
     color: #1e40af;
 }
 
+/* Booking Section */
+.booking-section {
+    padding: 5rem 0;
+    background: white;
+}
+
+.booking-intro {
+    text-align: center;
+    font-size: 1.1rem;
+    max-width: 700px;
+    margin: 1rem auto 3rem;
+    line-height: 1.6;
+    color: #64748b;
+}
+
+.booking-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.cal-embed {
+    min-height: 600px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.booking-form-card {
+    background: #f8fafc;
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.booking-form-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #1e40af;
+    text-align: center;
+}
+
+.booking-note {
+    text-align: center;
+    color: #64748b;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+}
+
+.booking-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.booking-form-card label {
+    display: block;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.booking-form-card .form-group select {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 1rem;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.booking-form-card .form-group select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.tz-hint {
+    font-weight: 400;
+    color: #94a3b8;
+    font-size: 0.85rem;
+}
+
+.booking-success {
+    text-align: center;
+    color: #059669;
+    margin-top: 1rem;
+    font-weight: 500;
+}
+
+.booking-error {
+    text-align: center;
+    color: #dc2626;
+    margin-top: 1rem;
+}
+
+.book-time-btn {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+}
+
+.book-time-btn:hover {
+    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4) !important;
+}
+
 /* Contact Section */
 .contact-section {
     padding: 5rem 0;
@@ -1323,6 +1428,14 @@ nav {
         height: 150px;
     }
     
+    .booking-form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .cal-embed {
+        min-height: 500px;
+    }
+
     .contact-content {
         grid-template-columns: 1fr;
         gap: 2rem;

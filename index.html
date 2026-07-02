@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- Primary SEO Meta Tags -->
-    <title>TimeXchange - Service exchange ecosystem | Barter Services Online</title>
-    <meta name="title" content="TimeXchange - Service exchange ecosystem | Exchange Services Online">
-    <meta name="description" content="Join TimeXchange, the innovative Service exchange ecosystem where you can trade your skills and time for services you need. Free professional services through time-based bartering system.">
-    <meta name="keywords" content="service exchange, barter services, exchange services, time exchange, professional services, skill trading, service marketplace, time banking, community services, free services, skill sharing">
-    <meta name="author" content="TimeXchange">
+    <title>Time Xchange - Service exchange ecosystem | Barter Services Online</title>
+    <meta name="title" content="Time Xchange - Service exchange ecosystem | Exchange Services Online">
+    <meta name="description" content="Join Time Xchange, the community exchange ecosystem that records contributions and ensures everyone gives and receives fairly. Connect with support through transparent time and skills accountability.">
+    <meta name="keywords" content="community exchange, contribution records, exchange services, time exchange, professional services, skill sharing, community services, contribution tracking, support network">
+    <meta name="author" content="Time Xchange">
     <meta name="robots" content="index, follow">
     <meta name="language" content="English">
     <meta name="revisit-after" content="7 days">
@@ -17,17 +17,17 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://timexchange.co.za/">
-    <meta property="og:title" content="TimeXchange - Service exchange ecosystem">
-    <meta property="og:description" content="Join the innovative Service exchange ecosystem where you can trade your skills and time for services you need. Free professional services through natural time exchange.">
+    <meta property="og:title" content="Time Xchange - Service exchange ecosystem">
+    <meta property="og:description" content="Join the community exchange ecosystem that records contribution and ensures everyone gives and receives fairly through transparent time accountability.">
     <meta property="og:image" content="https://timexchange.co.za/photos/icon-horizontal.png">
-    <meta property="og:site_name" content="TimeXchange">
+    <meta property="og:site_name" content="Time Xchange">
     <meta property="og:locale" content="en_ZA">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://timexchange.co.za/">
-    <meta property="twitter:title" content="TimeXchange - Service exchange ecosystem">
-    <meta property="twitter:description" content="Join the innovative Service exchange ecosystem where you can trade your skills and time for services you need.">
+    <meta property="twitter:title" content="Time Xchange - Service exchange ecosystem">
+    <meta property="twitter:description" content="Join the community exchange ecosystem that records contribution and ensures everyone gives and receives fairly through transparent time accountability.">
     <meta property="twitter:image" content="https://timexchange.co.za/photos/icon-horizontal.png">
     
     <!-- Favicon and App Icons -->
@@ -51,11 +51,11 @@
     {
         "@context": "https://schema.org",
         "@type": "Organization",
-        "name": "TimeXchange",
+        "name": "Time Xchange",
         "alternateName": "TIME X",
         "url": "https://timexchange.co.za",
         "logo": "https://timexchange.co.za/photos/icon-horizontal.png",
-        "description": "Innovative Service exchange ecosystem where you can trade your skills and time for services you need. Free professional services through time-based bartering system.",
+        "description": "Innovative community exchange ecosystem that records contributions and helps everyone give and receive fairly through transparent time accountability.",
         "foundingDate": "2024",
         "address": {
             "@type": "PostalAddress",
@@ -79,7 +79,7 @@
             "description": "Time-based service and skill exchange platform",
             "provider": {
                 "@type": "Organization",
-                "name": "TimeXchange"
+                "name": "Time Xchange"
             }
         }
     }
@@ -91,12 +91,13 @@
     <nav id="mainNav">
         <div class="nav-container">
             <a href="#" class="logo">
-                <img src="photos/icon-horizontal.png" alt="timeXchange Logo" class="logo-icon">
+                <img src="photos/icon-horizontal.png" alt="Time Xchange Logo" class="logo-icon">
             </a>
             <ul class="nav-links">
                 <li><a href="#" onclick="showPage('home')">Home</a></li>
                 <li><a href="#about" onclick="showPage('about')">About</a></li>
-                <li><a href="#about" onclick="showPage('contact'); setTimeout(() => { document.getElementById('contact').scrollIntoView({behavior: 'smooth'}); }, 300); return true;"> Get in touch</a></li>            
+                <li><a href="#booking" onclick="navigateToSection('about', 'booking'); return false;">Book time</a></li>
+                <li><a href="#contact" onclick="navigateToSection('about', 'contact'); return false;">Get in touch</a></li>
                 <li><a href="#policies" onclick="showPage('policies')">Policies</a></li>
             </ul>
             <!-- Burger menu button for mobile -->
@@ -111,7 +112,8 @@
             <ul>
                 <li><a href="#" onclick="showPage('home'); closeMobileNav();">Home</a></li>
                 <li><a href="#about" onclick="showPage('about'); closeMobileNav();">About</a></li>
-                <li><a href="#about" onclick="showPage('contact'); setTimeout(() => { document.getElementById('contact').scrollIntoView({behavior: 'smooth'}); closeMobileNav(); }, 300); return true;"> Get in touch</a></li>            
+                <li><a href="#booking" onclick="navigateToSection('about', 'booking'); closeMobileNav(); return false;">Book time</a></li>
+                <li><a href="#contact" onclick="navigateToSection('about', 'contact'); closeMobileNav(); return false;">Get in touch</a></li>
                 <li><a href="#policies" onclick="showPage('policies'); closeMobileNav();">Policies</a></li>
             </ul>
         </div>
@@ -138,9 +140,13 @@
                             <div class="download-text">
                                 <h2>Now Available</h2>
                                 <p>
-                                    Time X is a time management and freelancing app that rewards every second you work with time credits; Helping you network, collaborate, and grow your community in a fair ecosystem.
+                                    Time X is a community exchange ecosystem that records contributions and helps everyone network, collaborate, and build a fair contribution community.
                                 </p>
                                 <div class="download-buttons">
+                                    <a href="#booking" class="download-btn book-time-btn" onclick="navigateToSection('about', 'booking'); return false;">
+                                        <span class="icon"><i class="fa fa-calendar" style="font-size:28px; width: 12px; height: 12px; padding-right: 20px;"></i></span>
+                                        Book my time
+                                    </a>
                                     <a href="https://apps.apple.com/za/app/time-x/id6748560628" class="download-btn">
                                         <span class="icon"><i class="fa fa-apple" style="font-size:28px; width: 12px; height: 12px; padding-right: 20px;"></i></span>
                                         Download for iOS
@@ -160,10 +166,10 @@
                                     </div>
                                     <div class="phone-screen">
                                         <div class="app-icon">
-                                            <img src="photos/icon.png" alt="timeXchange App Icon" class="app-icon-img">
+                                            <img src="photos/icon.png" alt="Time Xchange App Icon" class="app-icon-img">
                                         </div>
                                         <div class="app-name">TIME X</div>
-                                        <div class="app-tagline">Service exchange ecosystem</div>
+                                        <div class="app-tagline">Community exchange ecosystem</div>
                                         <div style="display: flex; gap: 1rem; margin-top: 1rem;">
                                             <i class="fa fa-android fa-2x" aria-hidden="true"></i>
                                             <i class="fa fa-apple fa-2x"></i>
@@ -183,8 +189,8 @@
             <div class="container">
                 <h2 class="section-title">Motivation</h2>
                 <p style="text-align: center; font-size: 1.2rem; max-width: 900px; margin: 2rem auto; line-height: 1.6; color: rgba(11, 10, 10, 0.95);">
-                    Given today’s economy, students and young professionals require intentional support to grow Optimally.
-                    Time X makes that support practical by rewarding real work with time credits, so people can access help, contribute their skills, and grow together.
+                    Given today’s economy, students and young professionals require intentional support to grow optimally.
+                    Time X makes that support practical by recording real work contributions, so people can access help, contribute their skills, and grow together.
                 <div class="features-grid">
                     <div class="feature-card">
                         <h3>Professional services</h3>
@@ -192,7 +198,7 @@
                     </div>
                     <div class="feature-card">
                         <h3>Educational support</h3>
-                        <p>All exchanges are valued by time. A student giving one hour of help in maths, can earn him/her an one hour of help in history.</p>
+                        <p>All exchanges are valued by time. A student giving one hour of help in maths can earn one hour of help in history.</p>
                     </div>
                     <div class="feature-card">
                         <h3>Giving back</h3>
@@ -204,11 +210,11 @@
                     </div>
                     <div class="feature-card">
                         <h3>Secure platform</h3>
-                        <p>TimeX ensures security by using industry-standard authentication, database services, and end-to-end data encryption.</p>
+                        <p>Time X ensures security by using industry-standard authentication, database services, and end-to-end data encryption.</p>
                     </div>
                     <div class="feature-card">
                         <h3>Global community</h3>
-                        <p>Our users can connect with service providers worldwide; accessing remote services golobally, or lacal talent nearby.</p>
+                        <p>Our users can connect with service providers worldwide, accessing remote services globally or local talent nearby.</p>
                     </div>
                 </div>
             </div>
@@ -331,12 +337,84 @@
                     <div class="about-text">
                         <h2>Our Vision</h2>
                         <p>Time X was born from a simple belief: everyone has valuable skills to offer, and everyone has needs that others can fulfill. We're building a world of communities that get stuff done through mutual support and collaboration.</p>
-                        <p>Our platform empowers people to free trade services. Time X maintains fairness with built in time records, so you can get your time back. Join us in reimaging financial freedom, how we think about work, community, and value exchange. </p>
+                        <p>Our platform empowers people to share services with clear contribution records. Time X maintains fairness with built-in contribution tracking, so trusted communities can support each other reliably.</p>
                     </div>
                     <div class="about-visual">
-                        <img src="photos/icon.png" alt="timeXChange Vision" class="about-icon">
+                        <img src="photos/icon.png" alt="Time Xchange Vision" class="about-icon">
                     </div>
                 </div>
+
+                <!-- Book My Time Section -->
+                <section id="booking" class="booking-section">
+                    <h2 class="section-title">Book My Time</h2>
+                    <p class="booking-intro">
+                        Schedule a call to discuss Time X, partnerships, or how our service exchange ecosystem can work for you.
+                        Choose an available slot below and we'll send you a calendar invite.
+                    </p>
+                    <div class="booking-container">
+                        <div id="cal-booking-embed" class="cal-embed" aria-label="Booking calendar"></div>
+                        <div id="booking-fallback" class="booking-form-card">
+                            <h3>Request a Time Slot</h3>
+                            <p class="booking-note">Select your preferred date and time. We'll confirm by email within one business day.</p>
+                            <form id="bookingForm">
+                                <div class="booking-form-row">
+                                    <div class="form-group">
+                                        <label for="bookingName">Your Name</label>
+                                        <input type="text" id="bookingName" name="name" placeholder="Your Name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="bookingEmail">Your Email</label>
+                                        <input type="email" id="bookingEmail" name="email" placeholder="your@email.com" required>
+                                    </div>
+                                </div>
+                                <div class="booking-form-row">
+                                    <div class="form-group">
+                                        <label for="bookingDate">Preferred Date</label>
+                                        <input type="date" id="bookingDate" name="date" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="bookingTime">Preferred Time <span class="tz-hint">(SAST)</span></label>
+                                        <select id="bookingTime" name="time" required>
+                                            <option value="" disabled selected>Select a time</option>
+                                            <option value="09:00">09:00</option>
+                                            <option value="09:30">09:30</option>
+                                            <option value="10:00">10:00</option>
+                                            <option value="10:30">10:30</option>
+                                            <option value="11:00">11:00</option>
+                                            <option value="11:30">11:30</option>
+                                            <option value="12:00">12:00</option>
+                                            <option value="12:30">12:30</option>
+                                            <option value="13:00">13:00</option>
+                                            <option value="13:30">13:30</option>
+                                            <option value="14:00">14:00</option>
+                                            <option value="14:30">14:30</option>
+                                            <option value="15:00">15:00</option>
+                                            <option value="15:30">15:30</option>
+                                            <option value="16:00">16:00</option>
+                                            <option value="16:30">16:30</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bookingDuration">Duration</label>
+                                    <select id="bookingDuration" name="duration" required>
+                                        <option value="30">30 minutes</option>
+                                        <option value="60">1 hour</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bookingTopic">What would you like to discuss?</label>
+                                    <textarea id="bookingTopic" name="topic" placeholder="e.g. Partnership, demo, onboarding help..." rows="3" required></textarea>
+                                </div>
+                                <button type="submit" class="submit-btn" id="bookingSubmitBtn">Request Booking</button>
+                                <p id="bookingSuccess" class="booking-success" style="display:none;">
+                                    <i class="fa fa-check-circle"></i> Your booking request was sent. We'll confirm by email soon.
+                                </p>
+                                <p id="bookingError" class="booking-error" style="display:none;"></p>
+                            </form>
+                        </div>
+                    </div>
+                </section>
 
                 <!-- Contact Us Section -->
                 <section id="contact" class="contact-section">
@@ -430,10 +508,10 @@
                     <p><strong>Last updated:</strong> January 2024</p>
                     
                     <h3>Acceptance of Terms</h3>
-                    <p>By accessing and using timeXchange, you accept and agree to be bound by the terms and provision of this agreement.</p>
+                    <p>By accessing and using Time Xchange, you accept and agree to be bound by the terms and provisions of this agreement.</p>
 
                     <h3>Service Description</h3>
-                    <p>timeXchange is a platform that enables users to exchange services based on time value rather than monetary value. Users can offer and request services within our community.</p>
+                    <p>Time Xchange is a platform that records service contributions by time, helping communities exchange support fairly. Users can offer and request services while the app maintains transparent contribution records, not peer-to-peer money transfers.</p>
 
                     <h3>User Responsibilities</h3>
                     <ul>
@@ -487,18 +565,19 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <div class="footer-logo">
-                        <img src="photos/icon.png" alt="timeXchange Logo" class="footer-logo-img" style="background-color: #fff;">
-                        <span>timeXchange</span>
+                        <img src="photos/icon.png" alt="Time Xchange Logo" class="footer-logo-img" style="background-color: #fff;">
+                        <span>Time Xchange</span>
                     </div>
                     <p>Service exchange ecosystem</p>
-                    <p>&copy; 2025 timeXchange. All rights reserved. ™</p>
+                    <p>&copy; 2025 Time Xchange. All rights reserved. ™</p>
                 </div>
                 <div class="footer-section">
                     <h3>Quick Links</h3>
                     <ul>
                         <li><a href="#home" onclick="showPage('home')">Home</a></li>
                         <li><a href="#about" onclick="showPage('about')">About us</a></li>
-                        <li><a href="#contact" onclick="showPage('contact')">Get in touch</a></li>
+                        <li><a href="#booking" onclick="navigateToSection('about', 'booking'); return false;">Book time</a></li>
+                        <li><a href="#contact" onclick="navigateToSection('about', 'contact'); return false;">Get in touch</a></li>
                         <li><a href="#policies" onclick="showPage('policies')">Our Policies</a></li>
                     </ul>
                 </div>
@@ -518,7 +597,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>Registered Company • timeXchange (Pty) Ltd • South Africa</p>
+                <p>Registered Company • Time Xchange (Pty) Ltd • South Africa</p>
             </div>
         </div>
     </footer>
@@ -546,7 +625,7 @@
 <div id="welcomeModal" class="modal" style="display:none; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10000; background: rgba(0,0,0,0.4);">
   <div class="modal-content" style="text-align: center;">
     <span class="close-modal" onclick="closeWelcomeModal()">&times;</span>
-    <h2>Welcome to timeXchange!</h2>
+    <h2>Welcome to Time Xchange!</h2>
     <p>Your Early Member Access Package is secured.<br>We're excited to have you join our community!</p>
     <img src="https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif" alt="Confetti" style="width: 200px; height: auto; margin: 1em auto; display: block;" />
     <button onclick="closeWelcomeModal()" style="margin-top: 1em;">Close</button>

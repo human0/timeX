@@ -1,6 +1,6 @@
 {
-    "name": "TimeXchange - Service Exchange Ecosystem",
-    "short_name": "TimeXchange",
+    "name": "Time Xchange - Service Exchange Ecosystem",
+    "short_name": "Time Xchange",
     "description": "Innovative service exchange ecosystem where you can trade your skills and time for services you need.",
     "start_url": "/",
     "display": "standalone",
