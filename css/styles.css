@@ -1189,6 +1189,26 @@ nav {
     color: #666;
 }
 
+.policy-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: #1e40af;
+    color: #fff !important;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.policy-cta:hover {
+    background: #1d4ed8;
+}
+
+.policy-section a {
+    color: #2563eb;
+}
+
 /* Footer */
 .footer {
     background: linear-gradient(135deg, #1e293b 0%, #334155 100%);

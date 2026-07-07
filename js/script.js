@@ -33,7 +33,12 @@ function showPage(pageId, updateHash = true) {
     }
 }
 
-const SECTION_HASHES = { contact: 'about' };
+const SECTION_HASHES = {
+    contact: 'about',
+    'privacy-policy': 'policies',
+    'terms-of-service': 'policies',
+    'auto-renewable-subscriptions': 'policies',
+};
 
 // Handle URL hash changes
 function handleHashChange() {
