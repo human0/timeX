@@ -60,7 +60,8 @@
     <script>
         (function () {
             const API_BASE = 'https://tbserver-1059280513734.africa-south1.run.app';
-            const SITE_HOME = 'https://timexchange.co.za/#job-hunt';
+            const SITE_ORIGIN = 'https://timexchange.co.za';
+            const SITE_HOME = SITE_ORIGIN + '/#job-hunt';
 
             const params = new URLSearchParams(window.location.search);
             const payment = params.get('payment');
@@ -80,8 +81,11 @@
             }
 
             function goToJobHunt(extraQuery) {
-                const query = extraQuery || '';
-                window.location.replace(SITE_HOME + query);
+                if (extraQuery) {
+                    window.location.replace(SITE_ORIGIN + '/' + extraQuery + '#job-hunt');
+                } else {
+                    window.location.replace(SITE_HOME);
+                }
             }
 
             async function syncPayment() {
@@ -161,11 +165,8 @@
                     titleEl.textContent = 'Booking confirmed';
                     messageEl.textContent = 'Thank you — your consultation is booked. Redirecting…';
                     sessionStorage.removeItem('jobHuntPendingBooking');
-                    if (window.opener) {
-                        setTimeout(() => window.close(), 1200);
-                    } else {
-                        setTimeout(() => goToJobHunt('?payment=success&bookingId=' + encodeURIComponent(bookingId)), 1200);
-                    }
+                    sessionStorage.removeItem('jobHuntCheckoutUrl');
+                    setTimeout(() => goToJobHunt('?payment=success&bookingId=' + encodeURIComponent(bookingId)), 1200);
                     return;
                 }
 
@@ -181,7 +182,7 @@
                 messageEl.innerHTML =
                     'Your payment may still be processing with your bank. ' +
                     'If you were charged, we will confirm shortly by email. ' +
-                    '<a href="' + SITE_HOME + '?payment=success&bookingId=' + encodeURIComponent(bookingId) + '">Return to AI Job Hunt</a> to check status.';
+                    '<a href="' + SITE_ORIGIN + '/?payment=success&amp;bookingId=' + encodeURIComponent(bookingId) + '#job-hunt">Return to AI Job Hunt</a> to check status.';
             }
 
             run();

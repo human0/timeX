@@ -4,13 +4,13 @@
 (function () {
     const API_BASE = 'https://tbserver-1059280513734.africa-south1.run.app';
     const PENDING_BOOKING_KEY = 'jobHuntPendingBooking';
+    const CHECKOUT_URL_KEY = 'jobHuntCheckoutUrl';
 
     const state = {
         weekStart: startOfWeek(new Date()),
         selectedSlot: null,
         bookingId: null,
         pollTimer: null,
-        popupPollTimer: null,
         priceZar: 800,
         availabilitySlots: null,
     };
@@ -339,9 +339,9 @@
 
     function showProcessingPaymentMessage(yocoStatus) {
         const status = (yocoStatus || '').toLowerCase();
-        if (status === 'processing') {
+        if (status === 'processing' || status === 'started') {
             els.paymentWaiting.textContent =
-                'Your bank is still approving the payment. If the Yoco page is stuck, check for a 3-D Secure popup from your bank, or try again with a different card.';
+                'Your bank is still approving the payment. Complete any OTP or 3-D Secure step from your bank, then wait here. Do not use test cards with live payments.';
             els.paymentError.hidden = true;
             return true;
         }
@@ -369,6 +369,7 @@
             if (booking.status === 'confirmed') {
                 stopPolling();
                 sessionStorage.removeItem(PENDING_BOOKING_KEY);
+                sessionStorage.removeItem(CHECKOUT_URL_KEY);
                 els.paymentWaiting.hidden = true;
                 els.confirmedMessage.textContent = formatSlotLabel(booking.slotStart, booking.slotEnd);
                 showStep(els.stepConfirmed);
@@ -412,61 +413,14 @@
             clearInterval(state.pollTimer);
             state.pollTimer = null;
         }
-        if (state.popupPollTimer) {
-            clearInterval(state.popupPollTimer);
-            state.popupPollTimer = null;
-        }
     }
 
     function openYocoCheckout(redirectUrl, bookingId) {
         state.bookingId = bookingId;
         sessionStorage.setItem(PENDING_BOOKING_KEY, bookingId);
-        els.payAmount.textContent = `R${state.priceZar}`;
-        showStep(els.stepPayment);
-        els.paymentError.hidden = true;
-        els.paymentWaiting.hidden = false;
-        els.paymentWaiting.textContent = 'Complete payment in the secure window…';
-
-        if (els.payLink) {
-            els.payLink.href = redirectUrl;
-            els.payLink.target = '_blank';
-            els.payLink.rel = 'noopener noreferrer';
-        }
-
-        const width = 520;
-        const height = 780;
-        const left = Math.max(0, window.screenX + (window.outerWidth - width) / 2);
-        const top = Math.max(0, window.screenY + (window.outerHeight - height) / 2);
-        const features = `popup=yes,width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes`;
-
-        const popup = window.open(redirectUrl, 'yocoCheckout', features);
-
-        if (!popup) {
-            els.paymentWaiting.hidden = true;
-            els.paymentError.textContent =
-                'Pop-up blocked. Click "Pay securely with card" below, or allow pop-ups for this site.';
-            els.paymentError.hidden = false;
-            return;
-        }
-
-        stopPolling();
-        startPolling();
-        state.popupPollTimer = setInterval(async () => {
-            if (popup.closed) {
-                stopPolling();
-                await checkBookingStatus(bookingId, true);
-                return;
-            }
-            const confirmed = await checkBookingStatus(bookingId, false);
-            if (confirmed) {
-                stopPolling();
-                try {
-                    popup.close();
-                } catch (_) {
-                    /* ignore */
-                }
-            }
-        }, 3000);
+        sessionStorage.setItem(CHECKOUT_URL_KEY, redirectUrl);
+        // Full-page redirect is required for live 3-D Secure / bank OTP flows (popups hang on desktop).
+        window.location.replace(redirectUrl);
     }
 
     function resumePendingPayment() {
@@ -475,6 +429,10 @@
 
         state.bookingId = pendingBookingId;
         els.payAmount.textContent = `R${state.priceZar}`;
+        const checkoutUrl = sessionStorage.getItem(CHECKOUT_URL_KEY);
+        if (els.payLink && checkoutUrl) {
+            els.payLink.href = checkoutUrl;
+        }
         showStep(els.stepPayment);
         els.paymentWaiting.hidden = false;
         els.paymentWaiting.textContent =
@@ -496,6 +454,10 @@
 
         if (payment === 'cancelled' || payment === 'failed') {
             sessionStorage.removeItem(PENDING_BOOKING_KEY);
+            const checkoutUrl = sessionStorage.getItem(CHECKOUT_URL_KEY);
+            if (els.payLink && checkoutUrl) {
+                els.payLink.href = checkoutUrl;
+            }
             els.paymentError.textContent =
                 payment === 'failed'
                     ? 'Payment failed. Your slot is still held briefly — you can try again.'
@@ -531,7 +493,8 @@
 
         const submitBtn = document.getElementById('jobHuntSubmitBooking');
         submitBtn.disabled = true;
-        submitBtn.textContent = 'Opening secure payment…';
+        submitBtn.textContent = 'Continuing to secure payment…';
+        let redirectingToCheckout = false;
 
         try {
             const res = await fetch(`${API_BASE}/consultations/book`, {
@@ -559,13 +522,16 @@
                 );
             }
 
+            redirectingToCheckout = true;
             openYocoCheckout(data.checkoutRedirectUrl, data.bookingId);
         } catch (err) {
             els.formError.textContent = err.message || 'Could not create booking.';
             els.formError.hidden = false;
         } finally {
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Book kickoff for R800';
+            if (!redirectingToCheckout) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Book kickoff for R800';
+            }
         }
     }
 
@@ -588,6 +554,14 @@
             showStep(els.stepCalendar);
         });
         els.form.addEventListener('submit', submitBooking);
+        if (els.payLink) {
+            els.payLink.addEventListener('click', (event) => {
+                const checkoutUrl = sessionStorage.getItem(CHECKOUT_URL_KEY);
+                if (!checkoutUrl || checkoutUrl === '#') return;
+                event.preventDefault();
+                window.location.replace(checkoutUrl);
+            });
+        }
 
         let compactCalendar = isCompactCalendar();
         let resizeTimer;

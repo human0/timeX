@@ -23,10 +23,11 @@ function showPage(pageId, updateHash = true) {
     if (targetPage) {
         targetPage.classList.add('active');
         
-        // Update URL hash only if requested and different from current
+        // Update URL hash only if requested and navigating to a different page
         if (updateHash) {
             const currentHash = window.location.hash.slice(1);
-            if (currentHash !== pageId) {
+            const currentPageId = getPageIdFromHash(currentHash);
+            if (currentPageId !== pageId) {
                 window.location.hash = pageId;
             }
         }
@@ -49,6 +50,12 @@ function getPageIdFromHash(hash) {
 }
 
 function handleHashChange() {
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.get('payment') && searchParams.get('bookingId')) {
+        showPage('job-hunt', false);
+        return;
+    }
+
     const hash = window.location.hash.slice(1);
     const pageId = getPageIdFromHash(hash);
     const validPages = ['home', 'about', 'job-hunt', 'policies'];
@@ -64,6 +71,12 @@ function handleHashChange() {
 
 // Initialize page based on URL hash on page load
 function initializePageFromHash() {
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.get('payment') && searchParams.get('bookingId')) {
+        showPage('job-hunt', false);
+        return;
+    }
+
     const hash = window.location.hash.slice(1);
     const pageId = getPageIdFromHash(hash);
     const validPages = ['home', 'about', 'job-hunt', 'policies'];
