@@ -1374,6 +1374,7 @@ nav {
 .job-hunt-booking {
     padding: 4rem 0 5rem;
     background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
+    overflow-x: clip;
 }
 
 .job-hunt-booking-layout {
@@ -1381,6 +1382,20 @@ nav {
     grid-template-columns: minmax(240px, 280px) 1fr;
     gap: 2rem;
     align-items: start;
+}
+
+.job-hunt-booking-main {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.job-hunt-step h3 {
+    font-size: 1.35rem;
+    color: #0f172a;
+    margin: 0 0 0.75rem;
+    line-height: 1.3;
 }
 
 .job-hunt-offer-sidebar {
@@ -1521,17 +1536,14 @@ nav {
     box-shadow: 0 2px 8px rgba(37, 99, 235, 0.12);
 }
 
-.job-hunt-booking-main {
-    min-width: 0;
-}
-
 .job-hunt-booking-main .section-title {
     text-align: left;
     margin-bottom: 0.5rem;
+    font-size: 2rem;
 }
 
 .job-hunt-booking-header {
-    margin-bottom: 1.25rem;
+    margin-bottom: 0;
 }
 
 .job-hunt-booking-intro {
@@ -1564,23 +1576,59 @@ nav {
     }
 
     .job-hunt-booking-layout {
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
     }
 
     .job-hunt-booking-main {
         order: 1;
         width: 100%;
+        min-width: 0;
+        gap: 1rem;
     }
 
     .job-hunt-offer-sidebar {
         order: 2;
         position: static;
         width: 100%;
+        min-width: 0;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .job-hunt-booking-main .section-title {
+        font-size: 1.75rem;
+        margin-bottom: 0.5rem;
+        line-height: 1.2;
+    }
+
+    .job-hunt-booking-header {
+        padding: 0 0.15rem;
+    }
+
+    .job-hunt-booking-intro {
+        font-size: 0.92rem;
+        line-height: 1.6;
     }
 
     .job-hunt-booking-main .section-title,
     .job-hunt-booking-intro {
         text-align: center;
+    }
+
+    .job-hunt-step h3 {
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    #job-hunt .job-hunt-booking-app .form-group {
+        margin-bottom: 1rem;
+    }
+
+    #job-hunt .job-hunt-booking-app .form-group input,
+    #job-hunt .job-hunt-booking-app .form-group textarea {
+        padding: 0.85rem 0.9rem;
     }
 
     #job-hunt .container {
@@ -1623,7 +1671,15 @@ nav {
     }
 
     .job-hunt-booking {
-        padding: 2.5rem 0 3rem;
+        padding: 2rem 0 2.5rem;
+    }
+
+    .job-hunt-booking-app {
+        padding: 0.85rem;
+        border-radius: 12px;
+        min-width: 0;
+        width: 100%;
+        box-shadow: 0 6px 24px rgba(15, 23, 42, 0.05);
     }
 
     .job-hunt-offer-panel {
@@ -1641,13 +1697,6 @@ nav {
 
     .job-hunt-offer-price span {
         font-size: 2rem;
-    }
-
-    .job-hunt-booking-app {
-        padding: 1rem;
-        border-radius: 14px;
-        min-width: 0;
-        width: 100%;
     }
 
     .job-hunt-loading:not([hidden]) {
@@ -1759,8 +1808,27 @@ nav {
         padding: 0.9rem 1rem;
     }
 
-    .job-hunt-payment-box {
-        padding: 1.25rem;
+    .job-hunt-payment-box,
+    .job-hunt-payment-card {
+        padding: 1rem;
+        margin-bottom: 0.5rem;
+        background: #f8fafc;
+        border-color: #e2e8f0;
+    }
+
+    .job-hunt-payment-waiting {
+        padding: 0.35rem 0;
+    }
+
+    .job-hunt-payment-note {
+        font-size: 0.88rem;
+        line-height: 1.55;
+        margin: 0.75rem 0 1rem;
+    }
+
+    .job-hunt-form-kicker,
+    .job-hunt-selected-slot {
+        text-align: center;
     }
 
     .job-hunt-confirmed-box {
@@ -1788,12 +1856,39 @@ nav {
         font-size: 1.05rem;
     }
 
+    .job-hunt-booking {
+        padding: 1.75rem 0 2rem;
+    }
+
+    #job-hunt .container {
+        padding-left: 0.85rem;
+        padding-right: 0.85rem;
+    }
+
+    .job-hunt-booking-app {
+        padding: 0.75rem;
+        border-radius: 10px;
+    }
+
     .job-hunt-offer-list li {
         font-size: 0.88rem;
     }
 
     .job-hunt-booking-main .section-title {
-        font-size: 1.5rem;
+        font-size: 1.45rem;
+    }
+
+    .job-hunt-booking-intro {
+        font-size: 0.88rem;
+    }
+
+    .job-hunt-step h3 {
+        font-size: 1.1rem;
+    }
+
+    .job-hunt-offer-panel,
+    .job-hunt-alt-offer {
+        padding: 1.1rem;
     }
 
     .job-hunt-alt-downloads {
@@ -1810,7 +1905,32 @@ nav {
 
     .job-hunt-calendar--weekdays .job-hunt-calendar-header,
     .job-hunt-calendar--weekdays .job-hunt-cal-row {
-        grid-template-columns: 42px repeat(5, minmax(0, 1fr));
+        grid-template-columns: 38px repeat(5, minmax(0, 1fr));
+    }
+
+    .job-hunt-calendar--weekdays .job-hunt-cal-corner,
+    .job-hunt-calendar--weekdays .job-hunt-cal-time {
+        padding: 0.5rem 0.2rem;
+        font-size: 0.62rem;
+    }
+
+    .job-hunt-calendar--weekdays .job-hunt-cal-day-header {
+        padding: 0.45rem 0.1rem;
+    }
+
+    .job-hunt-calendar--weekdays .job-hunt-cal-weekday {
+        font-size: 0.58rem;
+    }
+
+    .job-hunt-calendar--weekdays .job-hunt-cal-date {
+        width: 1.5rem;
+        height: 1.5rem;
+        font-size: 0.75rem;
+    }
+
+    .job-hunt-calendar--weekdays .job-hunt-cal-cell {
+        min-height: 2.75rem;
+        padding: 0.2rem;
     }
 
     .job-hunt-calendar--weekdays .job-hunt-slot-label {
@@ -1819,15 +1939,24 @@ nav {
 
     .job-hunt-calendar--weekdays .job-hunt-slot-btn {
         min-height: 44px;
-        padding: 0.35rem 0.2rem;
+        padding: 0.3rem 0.15rem;
     }
 
     .job-hunt-calendar--weekdays .job-hunt-slot-time {
-        font-size: 0.7rem;
+        font-size: 0.65rem;
     }
 
-    .job-hunt-calendar--weekdays .job-hunt-cal-weekday {
-        font-size: 0.6rem;
+    .job-hunt-week-label {
+        font-size: 0.85rem;
+    }
+
+    .job-hunt-payment-note {
+        font-size: 0.84rem;
+    }
+
+    .job-hunt-pay-btn {
+        font-size: 0.95rem;
+        padding: 0.85rem 0.75rem;
     }
 }
 
@@ -2017,6 +2146,91 @@ nav {
     border-color: #e2e8f0;
 }
 
+.job-hunt-legend-swatch--pending {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.job-hunt-cal-cell--pending {
+    background: #fffbeb;
+}
+
+.job-hunt-slot-pending {
+    width: 100%;
+    min-height: 2.65rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    padding: 0.35rem;
+    border-radius: 10px;
+    border: 2px solid #fbbf24;
+    background: linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%);
+    color: #92400e;
+    box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.2);
+}
+
+.job-hunt-slot-pending-spinner {
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid #fde68a;
+    border-top-color: #d97706;
+    border-radius: 50%;
+    animation: job-hunt-spin 0.75s linear infinite;
+}
+
+.job-hunt-slot-pending-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.job-hunt-pending-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 0.85rem;
+}
+
+.job-hunt-cancel-payment-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0.55rem 1rem;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    background: #fff;
+    color: #b91c1c;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.job-hunt-cancel-payment-btn:hover:not(:disabled) {
+    background: #fef2f2;
+    border-color: #fca5a5;
+    color: #991b1b;
+}
+
+.job-hunt-cancel-payment-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.job-hunt-cancel-payment-btn--compact {
+    min-height: 34px;
+    padding: 0.35rem 0.65rem;
+    font-size: 0.78rem;
+}
+
+.job-hunt-checkout-modal-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
 .job-hunt-calendar-scroll {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -2152,6 +2366,25 @@ nav {
 
 .job-hunt-cal-cell--unavailable {
     cursor: default;
+    position: relative;
+}
+
+.job-hunt-cal-cell--unavailable::after {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: #94a3b8;
+    flex-shrink: 0;
+}
+
+.job-hunt-cal-cell--past::after {
+    background: #cbd5e1;
+    opacity: 0.85;
+}
+
+.job-hunt-cal-cell--booked::after {
+    background: #64748b;
 }
 
 .job-hunt-cal-cell--weekend.job-hunt-cal-cell--unavailable {
@@ -2240,6 +2473,7 @@ nav {
     color: #1e40af;
     font-weight: 600;
     margin-bottom: 1rem;
+    word-break: break-word;
 }
 
 .job-hunt-form-actions {
@@ -2254,6 +2488,44 @@ nav {
     padding: 1.5rem;
     border: 1px solid #e2e8f0;
     margin-bottom: 1rem;
+}
+
+.job-hunt-payment-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+
+.job-hunt-payment-waiting {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.5rem 0;
+    color: #334155;
+}
+
+.job-hunt-payment-waiting p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.45;
+}
+
+.job-hunt-payment-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.job-hunt-payment-price-line {
+    margin: 0;
+    font-size: 1rem;
+    color: #1e293b;
+}
+
+.job-hunt-payment-price-line strong {
+    color: #1e40af;
 }
 
 .job-hunt-payment-box code {
@@ -2271,7 +2543,9 @@ nav {
 }
 
 .job-hunt-pay-btn {
-    display: inline-block;
+    display: block;
+    width: 100%;
+    text-align: center;
     background: #1e40af;
     color: #fff !important;
     font-weight: 700;
@@ -2282,6 +2556,102 @@ nav {
 
 .job-hunt-pay-btn:hover {
     background: #1d4ed8;
+}
+
+body.job-hunt-checkout-open {
+    overflow: hidden;
+}
+
+.job-hunt-checkout-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 12000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.job-hunt-checkout-modal[hidden] {
+    display: none !important;
+}
+
+.job-hunt-checkout-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.62);
+    backdrop-filter: blur(4px);
+}
+
+.job-hunt-checkout-modal-panel {
+    position: relative;
+    z-index: 1;
+    width: min(520px, 100%);
+    max-height: min(92vh, 860px);
+    background: #fff;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 24px 64px rgba(15, 23, 42, 0.28);
+    display: flex;
+    flex-direction: column;
+}
+
+.job-hunt-checkout-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+
+.job-hunt-checkout-modal-title {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.job-hunt-checkout-modal-close {
+    border: none;
+    background: transparent;
+    color: #64748b;
+    font-size: 1.75rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 0.15rem;
+}
+
+.job-hunt-checkout-modal-close:hover {
+    color: #0f172a;
+}
+
+.job-hunt-checkout-frame {
+    width: 100%;
+    height: min(78vh, 720px);
+    border: 0;
+    background: #fff;
+}
+
+@media (max-width: 600px) {
+    .job-hunt-checkout-modal {
+        padding: 0;
+        align-items: stretch;
+    }
+
+    .job-hunt-checkout-modal-panel {
+        width: 100%;
+        max-height: 100vh;
+        height: 100vh;
+        border-radius: 0;
+    }
+
+    .job-hunt-checkout-frame {
+        flex: 1;
+        height: auto;
+        min-height: 0;
+    }
 }
 
 .job-hunt-status-msg {

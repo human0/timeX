@@ -40,7 +40,7 @@
     <link rel="canonical" href="https://timexchange.co.za/">
     
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css?v=6">
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'>
     
     <!-- PayPal SDK -->
@@ -418,6 +418,10 @@
                                     <span class="job-hunt-legend-swatch job-hunt-legend-swatch--unavailable"></span>
                                     Unavailable
                                 </span>
+                                <span class="job-hunt-legend-item">
+                                    <span class="job-hunt-legend-swatch job-hunt-legend-swatch--pending"></span>
+                                    Confirming
+                                </span>
                             </div>
                         </div>
                         <div id="jobHuntSlotsLoading" class="job-hunt-loading" role="status" aria-live="polite">
@@ -426,6 +430,9 @@
                         </div>
                         <div id="jobHuntSlotsError" class="job-hunt-status-msg job-hunt-error" hidden></div>
                         <div id="jobHuntSlotsGrid" class="job-hunt-calendar-scroll" hidden></div>
+                        <div id="jobHuntPendingActions" class="job-hunt-pending-actions" hidden>
+                            <button type="button" id="jobHuntCancelPayment" class="job-hunt-cancel-payment-btn">Cancel booking</button>
+                        </div>
                     </div>
 
                     <div class="job-hunt-step" id="jobHuntStepForm" hidden>
@@ -454,14 +461,15 @@
                     </div>
 
                     <div class="job-hunt-step" id="jobHuntStepPayment" hidden>
-                        <h3>Complete your booking</h3>
-                        <div class="job-hunt-payment-box">
-                            <p>Pay <strong id="jobHuntPayAmount">R800</strong> to lock in your session.</p>
-                            <p class="job-hunt-payment-note">You will be taken to Yoco to pay securely. If you left without paying, use the button below to return to checkout.</p>
-                            <a id="jobHuntPayLink" href="#" class="job-hunt-pay-btn">Continue to secure payment</a>
+                        <div class="job-hunt-payment-card">
+                            <div id="jobHuntPaymentActions" class="job-hunt-payment-actions">
+                                <p class="job-hunt-payment-price-line">Secure payment · <strong id="jobHuntPayAmount">R800</strong></p>
+                                <p class="job-hunt-payment-note">Complete your card payment in the secure window. If you closed it early, use the button below to reopen checkout.</p>
+                                <a id="jobHuntPayLink" href="#" class="job-hunt-pay-btn">Continue to secure payment</a>
+                                <button type="button" id="jobHuntCancelPaymentRetry" class="job-hunt-cancel-payment-btn">Cancel booking</button>
+                            </div>
+                            <div id="jobHuntPaymentError" class="job-hunt-status-msg job-hunt-error" hidden></div>
                         </div>
-                        <div id="jobHuntPaymentWaiting" class="job-hunt-status-msg" hidden>Confirming your payment…</div>
-                        <div id="jobHuntPaymentError" class="job-hunt-status-msg job-hunt-error" hidden></div>
                     </div>
 
                     <div class="job-hunt-step" id="jobHuntStepConfirmed" hidden>
@@ -729,6 +737,21 @@
         </div>
     </footer>
 
+    <!-- Job Hunt Yoco checkout modal -->
+    <div id="jobHuntCheckoutModal" class="job-hunt-checkout-modal" hidden aria-modal="true" role="dialog" aria-labelledby="jobHuntCheckoutModalTitle">
+        <div class="job-hunt-checkout-modal-backdrop" data-checkout-close></div>
+        <div class="job-hunt-checkout-modal-panel">
+            <div class="job-hunt-checkout-modal-header">
+                <p id="jobHuntCheckoutModalTitle" class="job-hunt-checkout-modal-title">Secure card payment</p>
+                <div class="job-hunt-checkout-modal-actions">
+                    <button type="button" id="jobHuntCancelCheckout" class="job-hunt-cancel-payment-btn job-hunt-cancel-payment-btn--compact">Cancel booking</button>
+                    <button type="button" class="job-hunt-checkout-modal-close" data-checkout-close aria-label="Close payment">&times;</button>
+                </div>
+            </div>
+            <iframe id="jobHuntCheckoutFrame" class="job-hunt-checkout-frame" title="Secure card payment via Yoco" allow="payment *"></iframe>
+        </div>
+    </div>
+
     <!-- Signup Modal -->
 <div id="signupModal" class="modal" style="display:none;">
   <div class="modal-content">
@@ -760,7 +783,7 @@
 </div>
 
     <script src="js/script.js"></script>
-    <script src="js/job-hunt.js?v=3"></script>
+    <script src="js/job-hunt.js?v=11"></script>
 <script>
   // Modal logic
   const modal = document.getElementById('signupModal');

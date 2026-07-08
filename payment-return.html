@@ -71,12 +71,22 @@
             const messageEl = document.getElementById('message');
             const spinnerEl = document.getElementById('spinner');
 
-            function notifyOpener(payload) {
-                if (!window.opener) return;
-                try {
-                    window.opener.postMessage({ type: 'jobHuntPayment', ...payload }, window.location.origin);
-                } catch (_) {
-                    window.opener.postMessage({ type: 'jobHuntPayment', ...payload }, '*');
+            function notifyCheckoutHost(payload) {
+                const message = { type: 'jobHuntPayment', ...payload };
+                const origin = window.location.origin;
+                if (window.parent && window.parent !== window) {
+                    try {
+                        window.parent.postMessage(message, origin);
+                    } catch (_) {
+                        window.parent.postMessage(message, '*');
+                    }
+                }
+                if (window.opener && !window.opener.closed) {
+                    try {
+                        window.opener.postMessage(message, origin);
+                    } catch (_) {
+                        window.opener.postMessage(message, '*');
+                    }
                 }
             }
 
@@ -138,7 +148,7 @@
                     spinnerEl.hidden = true;
                     titleEl.textContent = 'Payment cancelled';
                     messageEl.innerHTML = 'Your slot is held briefly. <a href="' + SITE_HOME + '">Return to AI Job Hunt</a> to try again.';
-                    notifyOpener({ payment, bookingId });
+                    notifyCheckoutHost({ payment, bookingId });
                     return;
                 }
 
@@ -146,7 +156,7 @@
                     spinnerEl.hidden = true;
                     titleEl.textContent = 'Payment failed';
                     messageEl.innerHTML = 'The card payment did not go through. <a href="' + SITE_HOME + '">Return to AI Job Hunt</a> to try again.';
-                    notifyOpener({ payment, bookingId });
+                    notifyCheckoutHost({ payment, bookingId });
                     return;
                 }
 
@@ -157,16 +167,26 @@
                     return;
                 }
 
-                notifyOpener({ payment, bookingId });
+                notifyCheckoutHost({ payment, bookingId });
+                const inCheckoutModal = window.parent && window.parent !== window;
                 const booking = await waitForConfirmation(12);
 
                 if (booking && booking.status === 'confirmed') {
                     spinnerEl.hidden = true;
                     titleEl.textContent = 'Booking confirmed';
-                    messageEl.textContent = 'Thank you — your consultation is booked. Redirecting…';
+                    messageEl.textContent = inCheckoutModal
+                        ? 'Thank you — your consultation is booked.'
+                        : 'Thank you — your consultation is booked. Redirecting…';
                     sessionStorage.removeItem('jobHuntPendingBooking');
                     sessionStorage.removeItem('jobHuntCheckoutUrl');
-                    setTimeout(() => goToJobHunt('?payment=success&bookingId=' + encodeURIComponent(bookingId)), 1200);
+                    if (inCheckoutModal) {
+                        return;
+                    }
+                    if (window.opener && !window.opener.closed) {
+                        setTimeout(() => window.close(), 1200);
+                    } else {
+                        setTimeout(() => goToJobHunt('?payment=success&bookingId=' + encodeURIComponent(bookingId)), 1200);
+                    }
                     return;
                 }
 
