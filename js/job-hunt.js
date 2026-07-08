@@ -7,20 +7,18 @@
     const CHECKOUT_URL_KEY = 'jobHuntCheckoutUrl';
     const PENDING_SLOT_KEY = 'jobHuntPendingSlot';
     const BOOKING_EMAIL_KEY = 'jobHuntBookingEmail';
-    const DEFAULT_PAYMENT_NOTE =
-        'Complete your card payment in the secure window. If you closed it early, use the button below to reopen checkout.';
-    const MODAL_CLOSED_NOTE =
-        'Payment window closed. Use Continue to secure payment below to try again.';
+    const AWAITING_CONFIRMATION_KEY = 'jobHuntAwaitingConfirmation';
 
     const state = {
         weekStart: startOfWeek(new Date()),
         selectedSlot: null,
         bookingId: null,
         pollTimer: null,
-        priceZar: 800,
+        priceZar: 500,
         availabilitySlots: null,
         checkoutModalOpen: false,
         pendingSlot: null,
+        awaitingPaymentConfirmation: false,
     };
 
     const els = {};
@@ -75,7 +73,10 @@
         return `${weekStart.getDate()} ${startMonth} – ${weekEnd.getDate()} ${endMonth} ${year}`;
     }
 
-    const CALENDAR_TIME_ROWS = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'];
+    const CALENDAR_TIME_ROWS = [
+        '07:00', '08:00', '09:00', '10:00', '11:00', '12:00',
+        '13:00', '14:00', '15:00', '16:00', '17:00', '18:00',
+    ];
 
     function isSameCalendarDay(a, b) {
         return (
@@ -109,7 +110,7 @@
 
     function isWorkDay(day) {
         const dow = day.getDay();
-        return dow >= 1 && dow <= 5;
+        return dow >= 1 && dow <= 6;
     }
 
     function isPastSlot(day, timeLabel) {
@@ -195,6 +196,40 @@
         return state.pendingSlot;
     }
 
+    function setAwaitingConfirmation(awaiting) {
+        state.awaitingPaymentConfirmation = !!awaiting;
+        try {
+            if (awaiting) {
+                sessionStorage.setItem(AWAITING_CONFIRMATION_KEY, '1');
+            } else {
+                sessionStorage.removeItem(AWAITING_CONFIRMATION_KEY);
+            }
+        } catch (_) {
+            /* ignore */
+        }
+    }
+
+    function restoreAwaitingConfirmation() {
+        if (state.awaitingPaymentConfirmation) return true;
+        try {
+            state.awaitingPaymentConfirmation = sessionStorage.getItem(AWAITING_CONFIRMATION_KEY) === '1';
+        } catch (_) {
+            /* ignore */
+        }
+        return state.awaitingPaymentConfirmation;
+    }
+
+    function clearAwaitingConfirmation() {
+        setAwaitingConfirmation(false);
+    }
+
+    function getPendingSlotMeta() {
+        return {
+            cellClass: 'job-hunt-cal-cell--pending-active',
+            ariaLabel: 'Booking in progress',
+        };
+    }
+
     function renderCalendarGrid(slots) {
         const weekDays = getCalendarDays();
         const slotMap = indexSlotsByCell(slots);
@@ -265,12 +300,12 @@
                 }
 
                 if (isPendingSlotCell(day, timeLabel)) {
-                    cell.classList.add('job-hunt-cal-cell--pending');
-                    cell.setAttribute('aria-label', 'Confirming your booking');
+                    const pendingMeta = getPendingSlotMeta();
+                    cell.classList.add('job-hunt-cal-cell--pending', pendingMeta.cellClass);
+                    cell.setAttribute('aria-label', pendingMeta.ariaLabel);
                     cell.innerHTML =
                         '<div class="job-hunt-slot-pending">' +
                         '<span class="job-hunt-slot-pending-spinner" aria-hidden="true"></span>' +
-                        '<span class="job-hunt-slot-pending-label">Confirming</span>' +
                         '</div>';
                 } else {
                 const slot = slotMap.get(slotLookupKey(day, timeLabel));
@@ -284,16 +319,23 @@
                     cell.appendChild(btn);
                     cell.classList.add('job-hunt-cal-cell--available');
                 } else {
-                    cell.classList.add('job-hunt-cal-cell--unavailable');
                     if (!isBookableWindow(day, timeLabel)) {
-                        cell.classList.add('job-hunt-cal-cell--closed');
+                        cell.classList.add('job-hunt-cal-cell--unavailable', 'job-hunt-cal-cell--striped');
                         cell.setAttribute('aria-label', 'Not available');
                     } else if (isPastSlot(day, timeLabel)) {
-                        cell.classList.add('job-hunt-cal-cell--past');
+                        cell.classList.add(
+                            'job-hunt-cal-cell--unavailable',
+                            'job-hunt-cal-cell--striped',
+                            'job-hunt-cal-cell--past'
+                        );
                         cell.setAttribute('aria-label', 'Past');
                     } else {
                         cell.classList.add('job-hunt-cal-cell--booked');
                         cell.setAttribute('aria-label', 'Fully booked');
+                        cell.innerHTML =
+                            '<div class="job-hunt-slot-booked">' +
+                            '<span class="job-hunt-slot-booked-label">Booked</span>' +
+                            '</div>';
                     }
                 }
                 }
@@ -314,7 +356,6 @@
 
         els.stepCalendar = document.getElementById('jobHuntStepCalendar');
         els.stepForm = document.getElementById('jobHuntStepForm');
-        els.stepPayment = document.getElementById('jobHuntStepPayment');
         els.stepConfirmed = document.getElementById('jobHuntStepConfirmed');
         els.weekLabel = document.getElementById('jobHuntWeekLabel');
         els.slotsLoading = document.getElementById('jobHuntSlotsLoading');
@@ -326,23 +367,17 @@
         els.form = document.getElementById('jobHuntBookingForm');
         els.formError = document.getElementById('jobHuntFormError');
         els.backToSlots = document.getElementById('jobHuntBackToSlots');
-        els.payAmount = document.getElementById('jobHuntPayAmount');
-        els.payLink = document.getElementById('jobHuntPayLink');
-        els.paymentActions = document.getElementById('jobHuntPaymentActions');
-        els.paymentError = document.getElementById('jobHuntPaymentError');
-        els.paymentNote = document.querySelector('#jobHuntStepPayment .job-hunt-payment-note');
         els.confirmedMessage = document.getElementById('jobHuntConfirmedMessage');
         els.checkoutModal = document.getElementById('jobHuntCheckoutModal');
         els.checkoutFrame = document.getElementById('jobHuntCheckoutFrame');
         els.pendingActions = document.getElementById('jobHuntPendingActions');
         els.cancelPayment = document.getElementById('jobHuntCancelPayment');
-        els.cancelPaymentRetry = document.getElementById('jobHuntCancelPaymentRetry');
         els.cancelCheckout = document.getElementById('jobHuntCancelCheckout');
         return true;
     }
 
     function showStep(step) {
-        [els.stepCalendar, els.stepForm, els.stepPayment, els.stepConfirmed].forEach((el) => {
+        [els.stepCalendar, els.stepForm, els.stepConfirmed].forEach((el) => {
             if (el) el.hidden = true;
         });
         if (step) step.hidden = false;
@@ -369,7 +404,7 @@
     }
 
     function updatePendingActionsVisibility() {
-        const visible = hasPendingBooking();
+        const visible = hasPendingBooking() && !state.awaitingPaymentConfirmation;
         if (els.pendingActions) els.pendingActions.hidden = !visible;
     }
 
@@ -387,10 +422,51 @@
         state.bookingId = null;
         state.selectedSlot = null;
         clearPendingSlot();
+        clearAwaitingConfirmation();
         clearCheckoutSession();
         resetSubmitButton();
         updatePendingActionsVisibility();
-        if (els.paymentError) els.paymentError.hidden = true;
+        if (els.slotsError) els.slotsError.hidden = true;
+    }
+
+    async function requestBookingCancel(bookingId, email) {
+        const res = await fetch(
+            `${API_BASE}/consultations/bookings/${encodeURIComponent(bookingId)}/cancel`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email || undefined }),
+            }
+        );
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+            throw new Error(data.error || 'Could not cancel booking');
+        }
+        return data;
+    }
+
+    async function cancelPendingBookingSilently() {
+        const bookingId = state.bookingId || sessionStorage.getItem(PENDING_BOOKING_KEY);
+        stopPolling();
+        closeCheckoutModal();
+
+        if (bookingId) {
+            let email = '';
+            try {
+                email = sessionStorage.getItem(BOOKING_EMAIL_KEY) || '';
+            } catch (_) {
+                /* ignore */
+            }
+            try {
+                await requestBookingCancel(bookingId, email);
+            } catch (_) {
+                /* release local state even if cancel request fails */
+            }
+        }
+
+        clearPendingBookingState();
+        showStep(els.stepCalendar);
+        await fetchAvailability();
     }
 
     async function cancelPendingBooking() {
@@ -408,24 +484,13 @@
             /* ignore */
         }
 
-        const buttons = [els.cancelPayment, els.cancelPaymentRetry, els.cancelCheckout].filter(Boolean);
+        const buttons = [els.cancelPayment, els.cancelCheckout].filter(Boolean);
         buttons.forEach((btn) => {
             btn.disabled = true;
         });
 
         try {
-            const res = await fetch(
-                `${API_BASE}/consultations/bookings/${encodeURIComponent(bookingId)}/cancel`,
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: email || undefined }),
-                }
-            );
-            const data = await res.json();
-            if (!res.ok || !data.success) {
-                throw new Error(data.error || 'Could not cancel booking');
-            }
+            await requestBookingCancel(bookingId, email);
 
             stopPolling();
             closeCheckoutModal();
@@ -433,10 +498,6 @@
             showStep(els.stepCalendar);
             await fetchAvailability();
         } catch (err) {
-            if (els.paymentError) {
-                els.paymentError.textContent = err.message || 'Could not cancel booking.';
-                els.paymentError.hidden = false;
-            }
             if (els.slotsError) {
                 els.slotsError.textContent = err.message || 'Could not cancel booking.';
                 els.slotsError.hidden = false;
@@ -448,7 +509,7 @@
         }
     }
 
-    function showCalendarConfirming(slot) {
+    function showCalendarPending(slot) {
         if (slot) {
             storePendingSlot(slot);
         } else {
@@ -470,8 +531,9 @@
         updatePendingActionsVisibility();
     }
 
-    function clearCalendarConfirming() {
+    function clearCalendarPending() {
         clearPendingSlot();
+        clearAwaitingConfirmation();
         rerenderCalendar();
         updateWeekNavState();
         updatePendingActionsVisibility();
@@ -501,6 +563,7 @@
             if (typeof data.priceZar === 'number') {
                 state.priceZar = data.priceZar;
             }
+            updatePriceLabels();
 
             els.slotsLoading.hidden = true;
             const slots = data.slots || [];
@@ -554,7 +617,7 @@
         if (showWaiting) {
             await ensurePendingSlotFromBooking(bookingId);
             if (els.stepCalendar && els.stepCalendar.hidden) {
-                showCalendarConfirming();
+                showCalendarPending();
             } else {
                 rerenderCalendar();
             }
@@ -581,9 +644,9 @@
                 stopPolling();
                 closeCheckoutModal();
                 clearPendingBookingState();
-                if (booking.status === 'expired') {
-                    els.paymentError.textContent = 'Payment window expired. Please book again.';
-                    els.paymentError.hidden = false;
+                if (booking.status === 'expired' && els.slotsError) {
+                    els.slotsError.textContent = 'Payment window expired. Please book again.';
+                    els.slotsError.hidden = false;
                 }
                 showStep(els.stepCalendar);
                 fetchAvailability();
@@ -611,12 +674,6 @@
         }
     }
 
-    function showPaymentActions() {
-        showStep(els.stepPayment);
-        if (els.paymentActions) els.paymentActions.hidden = false;
-        updatePendingActionsVisibility();
-    }
-
     function openCheckoutModal(redirectUrl, bookingId) {
         if (!els.checkoutModal || !els.checkoutFrame) {
             window.location.assign(redirectUrl);
@@ -628,7 +685,6 @@
         els.checkoutModal.hidden = false;
         document.body.classList.add('job-hunt-checkout-open');
         els.checkoutFrame.src = redirectUrl;
-        startPolling();
         return true;
     }
 
@@ -644,53 +700,16 @@
 
     function launchCheckoutModal(redirectUrl, bookingId) {
         storeCheckoutSession(bookingId, redirectUrl);
-        if (els.payLink) {
-            els.payLink.href = redirectUrl;
-        }
-        els.payAmount.textContent = `R${state.priceZar}`;
-        els.paymentError.hidden = true;
-        setPaymentNote(DEFAULT_PAYMENT_NOTE);
         return openCheckoutModal(redirectUrl, bookingId);
     }
 
-    function handleCheckoutModalClosed() {
+    async function handleCheckoutModalClosed() {
         if (!state.checkoutModalOpen) return;
-        closeCheckoutModal();
-        stopPolling();
-        resetSubmitButton();
-        showPaymentActions();
-        setPaymentNote(MODAL_CLOSED_NOTE);
-    }
-
-    function getPaymentContext() {
-        const bookingId = state.bookingId || sessionStorage.getItem(PENDING_BOOKING_KEY);
-        let checkoutUrl = sessionStorage.getItem(CHECKOUT_URL_KEY);
-        if ((!checkoutUrl || checkoutUrl === '#') && els.payLink) {
-            const href = els.payLink.getAttribute('href') || els.payLink.href;
-            if (href && href !== '#' && !href.endsWith('#')) {
-                checkoutUrl = href;
-            }
+        if (state.awaitingPaymentConfirmation) {
+            closeCheckoutModal(false);
+            return;
         }
-        return { bookingId, checkoutUrl };
-    }
-
-    function continueToPayment() {
-        const { bookingId, checkoutUrl } = getPaymentContext();
-        if (!checkoutUrl) {
-            els.paymentError.textContent =
-                'Payment link is missing. Please book your slot again or contact support.';
-            els.paymentError.hidden = false;
-            return false;
-        }
-        if (bookingId) {
-            state.bookingId = bookingId;
-            storeCheckoutSession(bookingId, checkoutUrl);
-        }
-        if (els.payLink) {
-            els.payLink.href = checkoutUrl;
-        }
-        els.paymentError.hidden = true;
-        return launchCheckoutModal(checkoutUrl, bookingId || state.bookingId);
+        await cancelPendingBookingSilently();
     }
 
     function storeCheckoutSession(bookingId, redirectUrl) {
@@ -710,9 +729,17 @@
         }
     }
 
-    function setPaymentNote(text) {
-        if (els.paymentNote) {
-            els.paymentNote.textContent = text || DEFAULT_PAYMENT_NOTE;
+    function formatBookLabel() {
+        return `Book kickoff for R${state.priceZar}`;
+    }
+
+    function updatePriceLabels() {
+        document.querySelectorAll('[data-job-hunt-price]').forEach((el) => {
+            el.textContent = `R${state.priceZar}`;
+        });
+        const submitBtn = document.getElementById('jobHuntSubmitBooking');
+        if (submitBtn && !submitBtn.disabled) {
+            submitBtn.textContent = formatBookLabel();
         }
     }
 
@@ -720,34 +747,68 @@
         const submitBtn = document.getElementById('jobHuntSubmitBooking');
         if (submitBtn) {
             submitBtn.disabled = false;
-            submitBtn.textContent = 'Book kickoff for R800';
+            submitBtn.textContent = formatBookLabel();
         }
     }
 
     function beginYocoCheckout(redirectUrl, bookingId) {
         state.bookingId = bookingId;
         storeCheckoutSession(bookingId, redirectUrl);
-        showCalendarConfirming(state.selectedSlot);
+        setAwaitingConfirmation(false);
+        showCalendarPending(state.selectedSlot);
         launchCheckoutModal(redirectUrl, bookingId);
         return true;
     }
 
-    function resumePendingPayment() {
+    async function resumePendingPayment() {
         const pendingBookingId = sessionStorage.getItem(PENDING_BOOKING_KEY);
         const checkoutUrl = sessionStorage.getItem(CHECKOUT_URL_KEY);
-        if (!pendingBookingId && !checkoutUrl) return;
+        if (!pendingBookingId) return;
 
-        if (pendingBookingId) {
-            state.bookingId = pendingBookingId;
-        }
+        state.bookingId = pendingBookingId;
         restorePendingSlot();
-        els.payAmount.textContent = `R${state.priceZar}`;
-        if (els.payLink && checkoutUrl) {
-            els.payLink.href = checkoutUrl;
+        restoreAwaitingConfirmation();
+        await ensurePendingSlotFromBooking(pendingBookingId);
+
+        try {
+            const res = await fetch(
+                `${API_BASE}/consultations/bookings/${encodeURIComponent(pendingBookingId)}`
+            );
+            const data = await res.json();
+            if (!res.ok || !data.success) {
+                await cancelPendingBookingSilently();
+                return;
+            }
+
+            const booking = data.booking;
+            if (booking.status === 'confirmed') {
+                clearPendingBookingState();
+                els.confirmedMessage.textContent = formatSlotLabel(booking.slotStart, booking.slotEnd);
+                showStep(els.stepConfirmed);
+                return;
+            }
+
+            if (booking.status === 'expired' || booking.status === 'cancelled') {
+                await cancelPendingBookingSilently();
+                return;
+            }
+
+            if (state.awaitingPaymentConfirmation) {
+                showCalendarPending();
+                startPolling();
+                return;
+            }
+
+            if (checkoutUrl) {
+                showCalendarPending();
+                launchCheckoutModal(checkoutUrl, pendingBookingId);
+                return;
+            }
+
+            await cancelPendingBookingSilently();
+        } catch {
+            await cancelPendingBookingSilently();
         }
-        showPaymentActions();
-        updatePendingActionsVisibility();
-        setPaymentNote(DEFAULT_PAYMENT_NOTE);
     }
 
     async function handlePaymentReturn() {
@@ -763,27 +824,16 @@
         sessionStorage.setItem(PENDING_BOOKING_KEY, bookingId);
 
         if (payment === 'cancelled' || payment === 'failed') {
-            closeCheckoutModal();
-            const checkoutUrl = sessionStorage.getItem(CHECKOUT_URL_KEY);
-            if (els.payLink && checkoutUrl) {
-                els.payLink.href = checkoutUrl;
-            }
-            els.paymentError.textContent =
-                payment === 'failed'
-                    ? 'Payment failed. Your slot is still held briefly — you can try again.'
-                    : 'Payment was cancelled. Your slot is still held briefly — you can try again.';
-            els.paymentError.hidden = false;
-            setPaymentNote(DEFAULT_PAYMENT_NOTE);
-            showPaymentActions();
+            await cancelPendingBookingSilently();
             return;
         }
 
         if (payment === 'success') {
             closeCheckoutModal();
-            setPaymentNote(DEFAULT_PAYMENT_NOTE);
             storePendingSlot(state.selectedSlot);
             await ensurePendingSlotFromBooking(bookingId);
-            showCalendarConfirming();
+            setAwaitingConfirmation(true);
+            showCalendarPending();
             const confirmed = await checkBookingStatus(bookingId, false);
             if (!confirmed) {
                 startPolling();
@@ -845,7 +895,7 @@
         } finally {
             if (!redirectingToCheckout) {
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Book kickoff for R800';
+                submitBtn.textContent = formatBookLabel();
             }
         }
     }
@@ -870,12 +920,6 @@
             showStep(els.stepCalendar);
         });
         els.form.addEventListener('submit', submitBooking);
-        if (els.payLink) {
-            els.payLink.addEventListener('click', (event) => {
-                event.preventDefault();
-                continueToPayment();
-            });
-        }
         if (els.checkoutModal) {
             els.checkoutModal.querySelectorAll('[data-checkout-close]').forEach((el) => {
                 el.addEventListener('click', handleCheckoutModalClosed);
@@ -883,9 +927,6 @@
         }
         if (els.cancelPayment) {
             els.cancelPayment.addEventListener('click', cancelPendingBooking);
-        }
-        if (els.cancelPaymentRetry) {
-            els.cancelPaymentRetry.addEventListener('click', cancelPendingBooking);
         }
         if (els.cancelCheckout) {
             els.cancelCheckout.addEventListener('click', cancelPendingBooking);
@@ -927,8 +968,9 @@
         state.bookingId = bookingId;
         if (event.data.payment === 'success') {
             closeCheckoutModal(false);
+            setAwaitingConfirmation(true);
             ensurePendingSlotFromBooking(bookingId).then(() => {
-                showCalendarConfirming();
+                showCalendarPending();
                 checkBookingStatus(bookingId, false).then((confirmed) => {
                     if (!confirmed) startPolling();
                 });
@@ -936,14 +978,7 @@
             return;
         }
         if (event.data.payment === 'cancelled' || event.data.payment === 'failed') {
-            closeCheckoutModal();
-            resetSubmitButton();
-            els.paymentError.textContent =
-                event.data.payment === 'failed'
-                    ? 'Payment failed. Your slot is still held briefly — you can try again.'
-                    : 'Payment was cancelled. Your slot is still held briefly — you can try again.';
-            els.paymentError.hidden = false;
-            showPaymentActions();
+            cancelPendingBookingSilently();
         }
     }
 

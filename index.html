@@ -40,7 +40,7 @@
     <link rel="canonical" href="https://timexchange.co.za/">
     
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="css/styles.css?v=6">
+    <link rel="stylesheet" href="css/styles.css?v=15">
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'>
     
     <!-- PayPal SDK -->
@@ -325,9 +325,9 @@
                 <p class="job-hunt-eyebrow">Time Exchange</p>
                 <h1>AI Job Hunt</h1>
                 <p class="job-hunt-headline">Apply to up to <strong>500 jobs</strong> without rewriting your CV 500 times.</p>
-                <p class="job-hunt-lead">One 60-minute kickoff session. Then AI matches your profile to live roles, tailors each application, and sends on your behalf.</p>
+                <p class="job-hunt-lead">A 60-minute kickoff session - then AI matches your profile to live roles, tailors your CV for each application, and sends on your behalf.</p>
                 <div class="job-hunt-hero-actions">
-                    <a href="#book-consultation" class="job-hunt-hero-btn">Book kickoff for R800</a>
+                    <a href="#book-consultation" class="job-hunt-hero-btn">Get Started</span></a>
                 </div>
                 <ul class="job-hunt-trust-row">
                     <li><i class="fa fa-paper-plane" aria-hidden="true"></i> Up to 500 applications</li>
@@ -362,12 +362,14 @@
                     <aside class="job-hunt-offer-sidebar">
                     <div class="job-hunt-offer-panel">
                         <p class="job-hunt-offer-label">Kickoff package</p>
-                        <p class="job-hunt-offer-price"><span>R800</span> once-off</p>
+                        <p class="job-hunt-offer-price"><span data-job-hunt-price>R500</span> once-off</p>
                         <ul class="job-hunt-offer-list">
-                            <li>60-minute live setup session</li>
-                            <li>AI Job Hunt configured for your goals</li>
-                            <li>Up to 500 tailored applications</li>
-                            <li>Email confirmation &amp; calendar invite</li>
+                            <li>60-minute live session</li>
+                            <li>Guided configuration</li>
+                            <li>Send up to 500 applications</li>
+                            <li>Skip the applicant queue</li>
+                            <li>Avoid dummy job posts</li>
+                            <li>Very high success rate</li>
                         </ul>
                         <p class="job-hunt-offer-guarantee"><i class="fa fa-shield" aria-hidden="true"></i> Secure card payment via Yoco</p>
                     </div>
@@ -375,7 +377,7 @@
                     <div class="job-hunt-alt-offer">
                         <p class="job-hunt-alt-offer-label">Another option</p>
                         <h3 class="job-hunt-alt-offer-title">Get it free on Time X</h3>
-                        <p class="job-hunt-alt-offer-text">If you cannot afford the kickoff fee, download the Time X app and book a free consultation there. Offer your own services on Time X and you can access AI Job Hunt at no cost.</p>
+                        <p class="job-hunt-alt-offer-text">We understand the job hunt is a financial challenging period. We invite you to download Time X and book this session there for free. Unlock free consultations like this on Time X, by Offering your own services to the community.</p>
                         <div class="job-hunt-alt-downloads">
                             <a href="https://apps.apple.com/za/app/time-x/id6748560628" class="job-hunt-alt-download-btn">
                                 <i class="fa fa-apple" aria-hidden="true"></i>
@@ -418,10 +420,6 @@
                                     <span class="job-hunt-legend-swatch job-hunt-legend-swatch--unavailable"></span>
                                     Unavailable
                                 </span>
-                                <span class="job-hunt-legend-item">
-                                    <span class="job-hunt-legend-swatch job-hunt-legend-swatch--pending"></span>
-                                    Confirming
-                                </span>
                             </div>
                         </div>
                         <div id="jobHuntSlotsLoading" class="job-hunt-loading" role="status" aria-live="polite">
@@ -453,23 +451,11 @@
                                 <textarea id="jobHuntNotes" name="notes" placeholder="Anything you'd like us to know (optional)" rows="3"></textarea>
                             </div>
                             <div class="job-hunt-form-actions">
+                                <button type="submit" class="submit-btn" id="jobHuntSubmitBooking">Book a session for R500</button>
                                 <button type="button" id="jobHuntBackToSlots" class="job-hunt-secondary-btn">Back</button>
-                                <button type="submit" class="submit-btn" id="jobHuntSubmitBooking">Book kickoff for R800</button>
                             </div>
                         </form>
                         <div id="jobHuntFormError" class="job-hunt-status-msg job-hunt-error" hidden></div>
-                    </div>
-
-                    <div class="job-hunt-step" id="jobHuntStepPayment" hidden>
-                        <div class="job-hunt-payment-card">
-                            <div id="jobHuntPaymentActions" class="job-hunt-payment-actions">
-                                <p class="job-hunt-payment-price-line">Secure payment · <strong id="jobHuntPayAmount">R800</strong></p>
-                                <p class="job-hunt-payment-note">Complete your card payment in the secure window. If you closed it early, use the button below to reopen checkout.</p>
-                                <a id="jobHuntPayLink" href="#" class="job-hunt-pay-btn">Continue to secure payment</a>
-                                <button type="button" id="jobHuntCancelPaymentRetry" class="job-hunt-cancel-payment-btn">Cancel booking</button>
-                            </div>
-                            <div id="jobHuntPaymentError" class="job-hunt-status-msg job-hunt-error" hidden></div>
-                        </div>
                     </div>
 
                     <div class="job-hunt-step" id="jobHuntStepConfirmed" hidden>
@@ -680,7 +666,7 @@
                     <h2>AI Job Hunt</h2>
                     <p><strong>Last updated:</strong> July 2026</p>
                     <h3>Kickoff session</h3>
-                    <p>AI Job Hunt kickoff sessions are <strong>R800</strong>, payable by secure card before your slot is confirmed. Unpaid holds expire after 30 minutes.</p>
+                    <p>AI Job Hunt kickoff sessions are <strong>R500</strong>, payable by secure card before your slot is confirmed. Unpaid holds expire after 30 minutes.</p>
                     <h3>Cancellations</h3>
                     <p>Contact <a href="mailto:support@timexchange.co.za">support@timexchange.co.za</a> at least 24 hours before your session to reschedule. Refunds are at our discretion.</p>
                     <h3>AI applications</h3>
@@ -744,7 +730,6 @@
             <div class="job-hunt-checkout-modal-header">
                 <p id="jobHuntCheckoutModalTitle" class="job-hunt-checkout-modal-title">Secure card payment</p>
                 <div class="job-hunt-checkout-modal-actions">
-                    <button type="button" id="jobHuntCancelCheckout" class="job-hunt-cancel-payment-btn job-hunt-cancel-payment-btn--compact">Cancel booking</button>
                     <button type="button" class="job-hunt-checkout-modal-close" data-checkout-close aria-label="Close payment">&times;</button>
                 </div>
             </div>
@@ -783,7 +768,7 @@
 </div>
 
     <script src="js/script.js"></script>
-    <script src="js/job-hunt.js?v=11"></script>
+    <script src="js/job-hunt.js?v=17"></script>
 <script>
   // Modal logic
   const modal = document.getElementById('signupModal');

@@ -1,13 +1,21 @@
+function getNavScrollOffset(extra = 16) {
+    const nav = document.querySelector('#mainNav, nav');
+    return (nav ? nav.getBoundingClientRect().height : 80) + extra;
+}
+
+function scrollToAnchor(el, behavior = 'smooth') {
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY - getNavScrollOffset();
+    window.scrollTo({ top: Math.max(0, top), behavior });
+}
+
 function navigateToSection(pageId, sectionId) {
     showPage(pageId, false);
     if (window.location.hash.slice(1) !== sectionId) {
         history.replaceState(null, '', `#${sectionId}`);
     }
     setTimeout(() => {
-        const el = document.getElementById(sectionId);
-        if (el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        scrollToAnchor(document.getElementById(sectionId));
     }, 300);
 }
 
@@ -339,13 +347,7 @@ window.addEventListener('scroll', function() {
 
 // Smooth scroll to sections
 function scrollToSection(sectionId) {
-    const element = document.getElementById(sectionId);
-    if (element) {
-        element.scrollIntoView({ 
-            behavior: 'smooth',
-            block: 'start'
-        });
-    }
+    scrollToAnchor(document.getElementById(sectionId));
 }
 
 // Add loading states for buttons
