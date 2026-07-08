@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment — Time Exchange</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 24px;
+        }
+        .card {
+            max-width: 420px;
+            width: 100%;
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 28px;
+            text-align: center;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+        }
+        h1 {
+            margin: 0 0 12px;
+            font-size: 1.35rem;
+        }
+        p {
+            margin: 0;
+            line-height: 1.5;
+            color: #94a3b8;
+        }
+        .spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid #334155;
+            border-top-color: #38bdf8;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        a {
+            color: #38bdf8;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="spinner" id="spinner"></div>
+        <h1 id="title">Confirming your payment…</h1>
+        <p id="message">Please wait while we verify your booking.</p>
+    </div>
+    <script>
+        (function () {
+            const API_BASE = 'https://tbserver-1059280513734.africa-south1.run.app';
+            const SITE_HOME = 'https://timexchange.co.za/#job-hunt';
+
+            const params = new URLSearchParams(window.location.search);
+            const payment = params.get('payment');
+            const bookingId = params.get('bookingId');
+
+            const titleEl = document.getElementById('title');
+            const messageEl = document.getElementById('message');
+            const spinnerEl = document.getElementById('spinner');
+
+            function notifyOpener(payload) {
+                if (!window.opener) return;
+                try {
+                    window.opener.postMessage({ type: 'jobHuntPayment', ...payload }, window.location.origin);
+                } catch (_) {
+                    window.opener.postMessage({ type: 'jobHuntPayment', ...payload }, '*');
+                }
+            }
+
+            function goToJobHunt(extraQuery) {
+                const query = extraQuery || '';
+                window.location.replace(SITE_HOME + query);
+            }
+
+            async function syncPayment() {
+                if (!bookingId) return null;
+                try {
+                    const res = await fetch(
+                        API_BASE + '/consultations/bookings/' + encodeURIComponent(bookingId) + '/sync-payment',
+                        { method: 'POST' }
+                    );
+                    const data = await res.json();
+                    if (res.ok && data.success) return data;
+                } catch (_) {
+                    /* retry via status poll */
+                }
+                return null;
+            }
+
+            async function fetchBooking() {
+                const res = await fetch(
+                    API_BASE + '/consultations/bookings/' + encodeURIComponent(bookingId)
+                );
+                const data = await res.json();
+                return res.ok && data.success ? data.booking : null;
+            }
+
+            async function waitForConfirmation(maxAttempts) {
+                for (let i = 0; i < maxAttempts; i += 1) {
+                    await syncPayment();
+                    const booking = await fetchBooking();
+                    if (booking && booking.status === 'confirmed') {
+                        return booking;
+                    }
+                    if (booking && booking.status === 'expired') {
+                        return booking;
+                    }
+                    await new Promise((resolve) => setTimeout(resolve, 2500));
+                }
+                return null;
+            }
+
+            async function run() {
+                if (!bookingId) {
+                    spinnerEl.hidden = true;
+                    titleEl.textContent = 'Invalid payment link';
+                    messageEl.textContent = 'Missing booking reference. Please return to AI Job Hunt and try again.';
+                    return;
+                }
+
+                if (payment === 'cancelled') {
+                    spinnerEl.hidden = true;
+                    titleEl.textContent = 'Payment cancelled';
+                    messageEl.innerHTML = 'Your slot is held briefly. <a href="' + SITE_HOME + '">Return to AI Job Hunt</a> to try again.';
+                    notifyOpener({ payment, bookingId });
+                    return;
+                }
+
+                if (payment === 'failed') {
+                    spinnerEl.hidden = true;
+                    titleEl.textContent = 'Payment failed';
+                    messageEl.innerHTML = 'The card payment did not go through. <a href="' + SITE_HOME + '">Return to AI Job Hunt</a> to try again.';
+                    notifyOpener({ payment, bookingId });
+                    return;
+                }
+
+                if (payment !== 'success') {
+                    spinnerEl.hidden = true;
+                    titleEl.textContent = 'Unknown payment state';
+                    messageEl.innerHTML = '<a href="' + SITE_HOME + '">Return to AI Job Hunt</a>';
+                    return;
+                }
+
+                notifyOpener({ payment, bookingId });
+                const booking = await waitForConfirmation(12);
+
+                if (booking && booking.status === 'confirmed') {
+                    spinnerEl.hidden = true;
+                    titleEl.textContent = 'Booking confirmed';
+                    messageEl.textContent = 'Thank you — your consultation is booked. Redirecting…';
+                    sessionStorage.removeItem('jobHuntPendingBooking');
+                    if (window.opener) {
+                        setTimeout(() => window.close(), 1200);
+                    } else {
+                        setTimeout(() => goToJobHunt('?payment=success&bookingId=' + encodeURIComponent(bookingId)), 1200);
+                    }
+                    return;
+                }
+
+                if (booking && booking.status === 'expired') {
+                    spinnerEl.hidden = true;
+                    titleEl.textContent = 'Booking expired';
+                    messageEl.innerHTML = 'The payment window expired. <a href="' + SITE_HOME + '">Book again</a>.';
+                    return;
+                }
+
+                spinnerEl.hidden = true;
+                titleEl.textContent = 'Still confirming…';
+                messageEl.innerHTML =
+                    'Your payment may still be processing with your bank. ' +
+                    'If you were charged, we will confirm shortly by email. ' +
+                    '<a href="' + SITE_HOME + '?payment=success&bookingId=' + encodeURIComponent(bookingId) + '">Return to AI Job Hunt</a> to check status.';
+            }
+
+            run();
+        })();
+    </script>
+</body>
+</html>

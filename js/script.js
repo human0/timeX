@@ -38,17 +38,25 @@ const SECTION_HASHES = {
     'privacy-policy': 'policies',
     'terms-of-service': 'policies',
     'auto-renewable-subscriptions': 'policies',
+    'job-hunt-policy': 'policies',
+    'career-help': 'job-hunt',
+    'book-consultation': 'job-hunt',
 };
 
 // Handle URL hash changes
+function getPageIdFromHash(hash) {
+    return (hash || '').split('?')[0];
+}
+
 function handleHashChange() {
     const hash = window.location.hash.slice(1);
-    const validPages = ['home', 'about', 'policies'];
+    const pageId = getPageIdFromHash(hash);
+    const validPages = ['home', 'about', 'job-hunt', 'policies'];
 
-    if (hash && SECTION_HASHES[hash]) {
-        navigateToSection(SECTION_HASHES[hash], hash);
-    } else if (hash && validPages.includes(hash)) {
-        showPage(hash, false);
+    if (pageId && SECTION_HASHES[pageId]) {
+        navigateToSection(SECTION_HASHES[pageId], pageId);
+    } else if (pageId && validPages.includes(pageId)) {
+        showPage(pageId, false);
     } else {
         showPage('home', false);
     }
@@ -57,12 +65,13 @@ function handleHashChange() {
 // Initialize page based on URL hash on page load
 function initializePageFromHash() {
     const hash = window.location.hash.slice(1);
-    const validPages = ['home', 'about', 'policies'];
+    const pageId = getPageIdFromHash(hash);
+    const validPages = ['home', 'about', 'job-hunt', 'policies'];
 
-    if (hash && SECTION_HASHES[hash]) {
-        navigateToSection(SECTION_HASHES[hash], hash);
-    } else if (hash && validPages.includes(hash)) {
-        showPage(hash);
+    if (pageId && SECTION_HASHES[pageId]) {
+        navigateToSection(SECTION_HASHES[pageId], pageId);
+    } else if (pageId && validPages.includes(pageId)) {
+        showPage(pageId, false);
     } else {
         showPage('home');
     }

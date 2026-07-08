@@ -94,7 +94,8 @@
                 <img src="photos/icon-horizontal.png" alt="Time Xchange Logo" class="logo-icon">
             </a>
             <ul class="nav-links">
-                <li><a href="#" onclick="showPage('home')">Home</a></li>
+                <li><a href="#" onclick="showPage('home')">Time X App</a></li>
+                <li><a href="#job-hunt" onclick="showPage('job-hunt')">AI Job Hunt</a></li>
                 <li><a href="#about" onclick="showPage('about')">About</a></li>
                 <li><a href="#contact" onclick="navigateToSection('about', 'contact'); return false;">Get in touch</a></li>
                 <li><a href="#policies" onclick="showPage('policies')">Policies</a></li>
@@ -111,6 +112,7 @@
             <ul>
                 <li><a href="#" onclick="showPage('home'); closeMobileNav();">Home</a></li>
                 <li><a href="#about" onclick="showPage('about'); closeMobileNav();">About</a></li>
+                <li><a href="#job-hunt" onclick="showPage('job-hunt'); closeMobileNav();">AI Job Hunt</a></li>
                 <li><a href="#contact" onclick="navigateToSection('about', 'contact'); closeMobileNav(); return false;">Get in touch</a></li>
                 <li><a href="#policies" onclick="showPage('policies'); closeMobileNav();">Policies</a></li>
             </ul>
@@ -316,6 +318,166 @@
         </section>
     </div>
 
+    <!-- AI Job Hunt Page -->
+    <div id="job-hunt" class="page">
+        <section class="job-hunt-hero" id="career-help">
+            <div class="container job-hunt-hero-inner">
+                <p class="job-hunt-eyebrow">Time Exchange</p>
+                <h1>AI Job Hunt</h1>
+                <p class="job-hunt-headline">Apply to up to <strong>500 jobs</strong> without rewriting your CV 500 times.</p>
+                <p class="job-hunt-lead">One 60-minute kickoff session. Then AI matches your profile to live roles, tailors each application, and sends on your behalf.</p>
+                <div class="job-hunt-hero-actions">
+                    <a href="#book-consultation" class="job-hunt-hero-btn">Book kickoff for R800</a>
+                </div>
+                <ul class="job-hunt-trust-row">
+                    <li><i class="fa fa-paper-plane" aria-hidden="true"></i> Up to 500 applications</li>
+                    <li><i class="fa fa-file-text-o" aria-hidden="true"></i> CV tailored per role</li>
+                    <li><i class="fa fa-lock" aria-hidden="true"></i> Secure checkout</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="job-hunt-benefits">
+            <div class="container">
+                <div class="job-hunt-benefit-grid">
+                    <article class="job-hunt-benefit-card">
+                        <h3>Scale your search</h3>
+                        <p>Reach hundreds of relevant openings while you focus on interviews, not admin.</p>
+                    </article>
+                    <article class="job-hunt-benefit-card">
+                        <h3>Every application fits</h3>
+                        <p>AI adapts your CV and cover note to each job description so you look like the right hire.</p>
+                    </article>
+                    <article class="job-hunt-benefit-card">
+                        <h3>You set the rules</h3>
+                        <p>You approve every application or let AI run on autopilot.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="job-hunt-booking" id="book-consultation">
+            <div class="container">
+                <div class="job-hunt-booking-layout">
+                    <aside class="job-hunt-offer-sidebar">
+                    <div class="job-hunt-offer-panel">
+                        <p class="job-hunt-offer-label">Kickoff package</p>
+                        <p class="job-hunt-offer-price"><span>R800</span> once-off</p>
+                        <ul class="job-hunt-offer-list">
+                            <li>60-minute live setup session</li>
+                            <li>AI Job Hunt configured for your goals</li>
+                            <li>Up to 500 tailored applications</li>
+                            <li>Email confirmation &amp; calendar invite</li>
+                        </ul>
+                        <p class="job-hunt-offer-guarantee"><i class="fa fa-shield" aria-hidden="true"></i> Secure card payment via Yoco</p>
+                    </div>
+
+                    <div class="job-hunt-alt-offer">
+                        <p class="job-hunt-alt-offer-label">Another option</p>
+                        <h3 class="job-hunt-alt-offer-title">Get it free on Time X</h3>
+                        <p class="job-hunt-alt-offer-text">If you cannot afford the kickoff fee, download the Time X app and book a free consultation there. Offer your own services on Time X and you can access AI Job Hunt at no cost.</p>
+                        <div class="job-hunt-alt-downloads">
+                            <a href="https://apps.apple.com/za/app/time-x/id6748560628" class="job-hunt-alt-download-btn">
+                                <i class="fa fa-apple" aria-hidden="true"></i>
+                                Download for iOS
+                            </a>
+                            <a href="https://play.google.com/store/apps/details?id=com.timeXchange.timebank" class="job-hunt-alt-download-btn">
+                                <i class="fa fa-android" aria-hidden="true"></i>
+                                Download for Android
+                            </a>
+                        </div>
+                    </div>
+                    </aside>
+
+                    <div class="job-hunt-booking-main">
+                        <div class="job-hunt-booking-header">
+                            <h2 class="section-title">Book your session</h2>
+                            <p class="job-hunt-booking-intro">Your next opportunity is in reach. Choose a time that suits you and secure your kickoff session now.</p>
+                        </div>
+
+                <div id="jobHuntBookingApp" class="job-hunt-booking-app">
+                    <div class="job-hunt-step" id="jobHuntStepCalendar">
+                        <div class="job-hunt-calendar-toolbar">
+                            <div class="job-hunt-calendar-nav">
+                                <button type="button" id="jobHuntPrevWeek" class="job-hunt-nav-btn job-hunt-nav-btn--prev" aria-label="Previous week">
+                                    <span aria-hidden="true">&larr;</span>
+                                    <span class="job-hunt-nav-btn-label">Previous</span>
+                                </button>
+                                <span id="jobHuntWeekLabel" class="job-hunt-week-label"></span>
+                                <button type="button" id="jobHuntNextWeek" class="job-hunt-nav-btn job-hunt-nav-btn--next" aria-label="Next week">
+                                    <span class="job-hunt-nav-btn-label">Next</span>
+                                    <span aria-hidden="true">&rarr;</span>
+                                </button>
+                            </div>
+                            <div class="job-hunt-calendar-legend" aria-hidden="true">
+                                <span class="job-hunt-legend-item">
+                                    <span class="job-hunt-legend-swatch job-hunt-legend-swatch--available"></span>
+                                    Available
+                                </span>
+                                <span class="job-hunt-legend-item">
+                                    <span class="job-hunt-legend-swatch job-hunt-legend-swatch--unavailable"></span>
+                                    Unavailable
+                                </span>
+                            </div>
+                        </div>
+                        <div id="jobHuntSlotsLoading" class="job-hunt-loading" role="status" aria-live="polite">
+                            <div class="job-hunt-spinner" aria-hidden="true"></div>
+                            <span>Loading available times…</span>
+                        </div>
+                        <div id="jobHuntSlotsError" class="job-hunt-status-msg job-hunt-error" hidden></div>
+                        <div id="jobHuntSlotsGrid" class="job-hunt-calendar-scroll" hidden></div>
+                    </div>
+
+                    <div class="job-hunt-step" id="jobHuntStepForm" hidden>
+                        <h3>Almost there</h3>
+                        <p class="job-hunt-form-kicker">You're one step away from your kickoff session.</p>
+                        <p id="jobHuntSelectedSlot" class="job-hunt-selected-slot"></p>
+                        <form id="jobHuntBookingForm">
+                            <div class="form-group">
+                                <input type="text" id="jobHuntName" name="name" placeholder="Full name" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" id="jobHuntEmail" name="email" placeholder="Email address" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="tel" id="jobHuntPhone" name="phone" placeholder="Phone (optional)">
+                            </div>
+                            <div class="form-group">
+                                <textarea id="jobHuntNotes" name="notes" placeholder="Anything you'd like us to know (optional)" rows="3"></textarea>
+                            </div>
+                            <div class="job-hunt-form-actions">
+                                <button type="button" id="jobHuntBackToSlots" class="job-hunt-secondary-btn">Back</button>
+                                <button type="submit" class="submit-btn" id="jobHuntSubmitBooking">Book kickoff for R800</button>
+                            </div>
+                        </form>
+                        <div id="jobHuntFormError" class="job-hunt-status-msg job-hunt-error" hidden></div>
+                    </div>
+
+                    <div class="job-hunt-step" id="jobHuntStepPayment" hidden>
+                        <h3>Complete your booking</h3>
+                        <div class="job-hunt-payment-box">
+                            <p>Pay <strong id="jobHuntPayAmount">R800</strong> to lock in your session.</p>
+                            <p class="job-hunt-payment-note">If the window did not open, allow pop-ups for this site or use the button below.</p>
+                            <a id="jobHuntPayLink" href="#" class="job-hunt-pay-btn" target="_blank" rel="noopener noreferrer">Pay securely with card</a>
+                        </div>
+                        <div id="jobHuntPaymentWaiting" class="job-hunt-status-msg" hidden>Confirming your payment…</div>
+                        <div id="jobHuntPaymentError" class="job-hunt-status-msg job-hunt-error" hidden></div>
+                    </div>
+
+                    <div class="job-hunt-step" id="jobHuntStepConfirmed" hidden>
+                        <div class="job-hunt-confirmed-box">
+                            <h3>You're booked</h3>
+                            <p id="jobHuntConfirmedMessage"></p>
+                            <p>Check your email for confirmation. We'll get AI Job Hunt ready for you in your session.</p>
+                        </div>
+                    </div>
+                </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
     <!-- About Page -->
     <div id="about" class="page">
         <section class="about">
@@ -505,6 +667,19 @@
                     </ul>
                     <p>Location access is optional and can be denied or revoked at any time through device settings.</p>
                 </div>
+
+                <div id="job-hunt-policy" class="policy-section">
+                    <h2>AI Job Hunt</h2>
+                    <p><strong>Last updated:</strong> July 2026</p>
+                    <h3>Kickoff session</h3>
+                    <p>AI Job Hunt kickoff sessions are <strong>R800</strong>, payable by secure card before your slot is confirmed. Unpaid holds expire after 30 minutes.</p>
+                    <h3>Cancellations</h3>
+                    <p>Contact <a href="mailto:support@timexchange.co.za">support@timexchange.co.za</a> at least 24 hours before your session to reschedule. Refunds are at our discretion.</p>
+                    <h3>AI applications</h3>
+                    <p>AI Job Hunt can apply to up to 500 roles on your behalf. You approve every application or let AI run on autopilot. You remain <strong>solely responsible</strong> for every application sent.</p>
+                    <h3>Data use</h3>
+                    <p>CVs and session notes are used only to deliver AI Job Hunt and are handled per our <a href="#privacy-policy" onclick="navigateToSection('policies', 'privacy-policy'); return false;">Privacy Policy</a>.</p>
+                </div>
             </div>
         </section>
     </div>
@@ -528,6 +703,7 @@
                     <ul>
                         <li><a href="#home" onclick="showPage('home')">Home</a></li>
                         <li><a href="#about" onclick="showPage('about')">About us</a></li>
+                        <li><a href="#job-hunt" onclick="showPage('job-hunt')">AI Job Hunt</a></li>
                         <li><a href="#contact" onclick="navigateToSection('about', 'contact'); return false;">Get in touch</a></li>
                         <li><a href="#policies" onclick="showPage('policies')">Our Policies</a></li>
                     </ul>
@@ -584,6 +760,7 @@
 </div>
 
     <script src="js/script.js"></script>
+    <script src="js/job-hunt.js"></script>
 <script>
   // Modal logic
   const modal = document.getElementById('signupModal');
