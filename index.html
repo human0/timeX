@@ -43,8 +43,6 @@
     <link rel="stylesheet" href="css/styles.css?v=15">
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'>
     
-    <!-- PayPal SDK -->
-    <script src="https://www.paypal.com/sdk/js?client-id=AU0miETujwkRSY57Nhq7LetPRQUupcnSnMjRUrSSxpKzf-d-8YJHGIi8MH7GlD-4EmdZjFHmuRjyy5Rg&currency=USD&vault=true"></script>
     
     <!-- Structured Data -->
     <script type="application/ld+json">
@@ -263,10 +261,19 @@
                         <p class="terms-inline">
                             By proceeding, you agree to our <a href="#policies" onclick="showPage('policies')">Terms and Conditions <i class="fa fa-external-link" aria-hidden="true"></i></a>.
                         </p>
-                        <div id="paypal-gold" class="paypal-container"></div>
+                        <div class="plan-store-buttons">
+                            <a href="https://apps.apple.com/za/app/time-x/id6748560628" class="plan-store-btn" target="_blank" rel="noopener noreferrer">
+                                <i class="fa fa-apple" aria-hidden="true"></i>
+                                iOS
+                            </a>
+                            <a href="https://play.google.com/store/apps/details?id=com.timeXchange.timebank" class="plan-store-btn" target="_blank" rel="noopener noreferrer">
+                                <i class="fa fa-android" aria-hidden="true"></i>
+                                Android
+                            </a>
+                        </div>
                     </div>
                     <div class="plan-card platinum">
-                        <h3>Black</h3>
+                        <h3>Platinum</h3>
                         <div class="plan-price">
                             <span class="currency-symbol">$</span>
                             <span class="price-amount">75</span>
@@ -281,7 +288,16 @@
                         <p class="terms-inline">
                             By proceeding, you agree to our <a href="#policies" onclick="showPage('policies')">Terms and Conditions <i class="fa fa-external-link" aria-hidden="true"></i></a>.
                         </p>
-                        <div id="paypal-platinum" class="paypal-container"></div>
+                        <div class="plan-store-buttons">
+                            <a href="https://apps.apple.com/za/app/time-x/id6748560628" class="plan-store-btn" target="_blank" rel="noopener noreferrer">
+                                <i class="fa fa-apple" aria-hidden="true"></i>
+                                iOS
+                            </a>
+                            <a href="https://play.google.com/store/apps/details?id=com.timeXchange.timebank" class="plan-store-btn" target="_blank" rel="noopener noreferrer">
+                                <i class="fa fa-android" aria-hidden="true"></i>
+                                Android
+                            </a>
+                        </div>
                     </div>
                 </div>
                 
@@ -291,20 +307,20 @@
                         
                         <div class="security-text">
                             <h3><span><i class='fa fa-lock' style="font-size: 42px;"></i></span>
-                            Secure Payment Processing</h3>
-                            <p>All payments are processed securely through PayPal, the world's most trusted payment platform. Your financial information is protected with bank-level encryption and never stored on our servers.</p>
+                            Secure payments in the app</h3>
+                            <p>Memberships and tips are handled through Apple App Store and Google Play in-app purchases. Your payment details stay with the store — we never store card or bank information on our servers.</p>
                             <div class="security-features">
                                 <div class="security-feature">
                                     <span><i class='fa fa-check' style="font-size: 24px; vertical-align: middle;"></i></span>
-                                    <span>Bank-level encryption</span>
+                                    <span>App Store &amp; Play billing</span>
                                 </div>
                                 <div class="security-feature">
                                     <span><i class='fa fa-check' style="font-size: 24px; vertical-align: middle;"></i></span>
-                                    <span>PCI DSS compliant</span>
+                                    <span>Store-managed subscriptions</span>
                                 </div>
                                 <div class="security-feature">
                                     <span><i class='fa fa-check' style="font-size: 24px; vertical-align: middle;"></i></span>
-                                    <span>PayPal buyer protection</span>
+                                    <span>No card data on our servers</span>
                                 </div>
                                 <div class="security-feature">
                                     <span><i class='fa fa-check' style="font-size: 24px; vertical-align: middle;"></i></span>
@@ -362,9 +378,9 @@
                     <aside class="job-hunt-offer-sidebar">
                     <div class="job-hunt-offer-panel">
                         <p class="job-hunt-offer-label">Kickoff package</p>
-                        <p class="job-hunt-offer-price"><span data-job-hunt-price>R500</span> once-off</p>
+                        <p class="job-hunt-offer-price"><span data-job-hunt-price>R500</span> once off</p>
                         <ul class="job-hunt-offer-list">
-                            <li>60-minute live session</li>
+                            <li>60 minute live session</li>
                             <li>Guided configuration</li>
                             <li>Send up to 500 applications</li>
                             <li>Skip the applicant queue</li>
@@ -375,17 +391,20 @@
                     </div>
 
                     <div class="job-hunt-alt-offer">
-                        <p class="job-hunt-alt-offer-label">Another option</p>
-                        <h3 class="job-hunt-alt-offer-title">Get it free on Time X</h3>
-                        <p class="job-hunt-alt-offer-text">We understand the job hunt is a financial challenging period. We invite you to download Time X and book this session there for free. Unlock free consultations like this on Time X, by Offering your own services to the community.</p>
+                        <div class="job-hunt-alt-offer-top">
+                            <p class="job-hunt-alt-offer-label">Prefer not to pay?</p>
+                            <p class="job-hunt-alt-offer-price">Free</p>
+                        </div>
+                        <h3 class="job-hunt-alt-offer-title">Book the session on Time X for free</h3>
+                        <p class="job-hunt-alt-offer-text">Download Time X and unlock free consultations like this by offering your own services to others in the community.</p>
                         <div class="job-hunt-alt-downloads">
                             <a href="https://apps.apple.com/za/app/time-x/id6748560628" class="job-hunt-alt-download-btn">
                                 <i class="fa fa-apple" aria-hidden="true"></i>
-                                Download for iOS
+                                Get free on iOS
                             </a>
                             <a href="https://play.google.com/store/apps/details?id=com.timeXchange.timebank" class="job-hunt-alt-download-btn">
                                 <i class="fa fa-android" aria-hidden="true"></i>
-                                Download for Android
+                                Get free on Android
                             </a>
                         </div>
                     </div>
@@ -617,7 +636,7 @@
 
                     <h3>Platinum Monthly</h3>
                     <ul>
-                        <li><strong>Title:</strong> Platinum Monthly (App Store product: sub_premium_monthly)</li>
+                        <li><strong>Title:</strong> Platinum Monthly (App Store product: sub_platinum_monthly)</li>
                         <li><strong>Length:</strong> 1 month, auto-renewing</li>
                         <li><strong>Price:</strong> Shown in the app at purchase in your local currency</li>
                         <li><strong>Includes:</strong> Monthly time allowance (up to 8 hours per day) and VIP priority access</li>

@@ -98,135 +98,6 @@ function initializePageFromHash() {
     }
 }
 
-// PayPal Integration
-let paypalLoaded = false;
-
-const ADMIN_NOTIFY_URL = 'https://tbserver-1059280513734.africa-south1.run.app/payments/paypal/subscription-event';
-
-function getKnownUserEmail() {
-    try {
-        return localStorage.getItem('timex_signup_email') || '';
-    } catch {
-        return '';
-    }
-}
-
-async function notifyAdminSubscriptionEvent(payload) {
-    try {
-        await fetch(ADMIN_NOTIFY_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                ...payload,
-                page: window.location.href,
-                userAgent: navigator.userAgent,
-                occurredAt: new Date().toISOString(),
-                knownEmail: getKnownUserEmail()
-            })
-        });
-    } catch (err) {
-        console.warn('Failed to notify admin about subscription event:', err);
-    }
-}
-
-function initializePayPal() {
-    if (typeof paypal !== 'undefined' && !paypalLoaded) {
-        paypalLoaded = true;
-        
-        // Gold Plan - $9/month
-        paypal.Buttons({
-            style: {
-                layout: 'vertical',
-                color: 'gold',
-                shape: 'rect',
-                label: 'subscribe'
-            },
-            createSubscription: function(data, actions) {
-                notifyAdminSubscriptionEvent({
-                    event: 'attempt',
-                    plan: 'gold',
-                    paypalPlanId: 'P-94424733EF0039708NBME2XI'
-                });
-                return actions.subscription.create({
-                    'plan_id': 'P-94424733EF0039708NBME2XI'
-                });
-            },
-            onApprove: function(data, actions) {
-                console.log('Gold subscription approved:', data);
-                notifyAdminSubscriptionEvent({
-                    event: 'approved',
-                    plan: 'gold',
-                    paypalPlanId: 'P-94424733EF0039708NBME2XI',
-                    paypalData: data
-                });
-                alert('Thank you for subscribing to Gold! Your subscription is now active.');
-                // Here you would typically send the subscription ID to your server
-            },
-            onError: function(err) {
-                console.error('PayPal error:', err);
-                notifyAdminSubscriptionEvent({
-                    event: 'error',
-                    plan: 'gold',
-                    paypalPlanId: 'P-94424733EF0039708NBME2XI',
-                    error: String(err?.message || err)
-                });
-                alert('There was an error processing your subscription. Please try again.');
-            }
-        }).render('#paypal-gold');
-
-        // Black Plan - $75/month
-        paypal.Buttons({
-            style: {
-                layout: 'vertical',
-                color: 'black',
-                shape: 'rect',
-                label: 'subscribe'
-            },
-            createSubscription: function(data, actions) {
-                notifyAdminSubscriptionEvent({
-                    event: 'attempt',
-                    plan: 'black',
-                    paypalPlanId: 'P-1PN742989W4772118NBACUAQ'
-                });
-                return actions.subscription.create({
-                    'plan_id': 'P-1PN742989W4772118NBACUAQ'
-                });
-            },
-            onApprove: function(data, actions) {
-                console.log('Black subscription approved:', data);
-                notifyAdminSubscriptionEvent({
-                    event: 'approved',
-                    plan: 'black',
-                    paypalPlanId: 'P-1PN742989W4772118NBACUAQ',
-                    paypalData: data
-                });
-                alert('Thank you for subscribing to Black! Your subscription is now active.');
-                // Here you would typically send the subscription ID to your server
-            },
-            onError: function(err) {
-                console.error('PayPal error:', err);
-                notifyAdminSubscriptionEvent({
-                    event: 'error',
-                    plan: 'black',
-                    paypalPlanId: 'P-1PN742989W4772118NBACUAQ',
-                    error: String(err?.message || err)
-                });
-                alert('There was an error processing your subscription. Please try again.');
-            }
-        }).render('#paypal-platinum');
-    }
-}
-
-// Check if PayPal is loaded and initialize
-function checkPayPalAndInitialize() {
-    if (typeof paypal !== 'undefined') {
-        initializePayPal();
-    } else {
-        // Retry after a short delay
-        setTimeout(checkPayPalAndInitialize, 100);
-    }
-}
-
 // Contact form handling
 function handleContactForm(event) {
     event.preventDefault();
@@ -268,9 +139,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add hashchange event listener
     window.addEventListener('hashchange', handleHashChange);
     
-    // Initialize PayPal
-    checkPayPalAndInitialize();
-
     // Add contact form event listener
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
@@ -401,9 +269,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Check API response for success (your API returns data.success boolean)
                 if (data.success) {
                     console.log('Signup successful!');
-                    try {
-                        localStorage.setItem('timex_signup_email', email);
-                    } catch {}
                     document.getElementById('signupSuccess').style.display = 'block';
                     signupForm.reset();
                     errorDiv.textContent = "";
