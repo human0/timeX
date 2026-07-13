@@ -9,12 +9,33 @@
     const BOOKING_EMAIL_KEY = 'jobHuntBookingEmail';
     const AWAITING_CONFIRMATION_KEY = 'jobHuntAwaitingConfirmation';
 
+    const TIMEX_REQUEST_ID = 'WjBrnZjr4gxC0G0ZW4X6';
+    const TIMEX_REQUEST_URL = 'https://timexchange.co.za/request/' + TIMEX_REQUEST_ID;
+    const TIMEX_IOS_STORE = 'https://apps.apple.com/za/app/time-x/id6748560628';
+    const TIMEX_ANDROID_STORE =
+        'https://play.google.com/store/apps/details?id=com.timeexchange.timebank';
+    const TIMEX_DEEP_LINK = 'timebank://request/' + encodeURIComponent(TIMEX_REQUEST_ID);
+    const TIMEX_ANDROID_INTENT =
+        'intent://request/' +
+        encodeURIComponent(TIMEX_REQUEST_ID) +
+        '#Intent;scheme=timebank;package=com.timeexchange.timebank;S.browser_fallback_url=' +
+        encodeURIComponent(TIMEX_ANDROID_STORE) +
+        ';end';
+
     const state = {
-        weekStart: startOfWeek(new Date()),
+        viewMonth: startOfMonth(new Date()),
+        selectedDate: null,
         selectedSlot: null,
+        selectedOffer: 'paid',
+        highlightedSlotStart: null,
         bookingId: null,
         pollTimer: null,
-        priceZar: 500,
+        priceZar: 0,
+        regularPriceZar: 500,
+        freeFirstPromo: true,
+        durationMinutes: 60,
+        freeTrialDurationMinutes: 30,
+        paidDurationMinutes: 60,
         availabilitySlots: null,
         checkoutModalOpen: false,
         pendingSlot: null,
@@ -23,23 +44,81 @@
 
     const els = {};
 
-    function startOfWeek(date) {
-        const d = new Date(date);
-        const day = d.getDay();
-        const diff = day === 0 ? -6 : 1 - day;
-        d.setDate(d.getDate() + diff);
-        d.setHours(0, 0, 0, 0);
-        return d;
+    function startOfMonth(date) {
+        return new Date(date.getFullYear(), date.getMonth(), 1);
     }
 
-    function addDays(date, days) {
+    function addMonths(date, months) {
+        return new Date(date.getFullYear(), date.getMonth() + months, 1);
+    }
+
+    function startOfDay(date) {
         const d = new Date(date);
-        d.setDate(d.getDate() + days);
+        d.setHours(0, 0, 0, 0);
         return d;
     }
 
     function toIsoUtc(date) {
         return date.toISOString();
+    }
+
+    function offerDurationMinutes() {
+        if (state.selectedOffer === 'free_trial') {
+            return state.freeTrialDurationMinutes || 30;
+        }
+        return state.paidDurationMinutes || state.durationMinutes || 60;
+    }
+
+    function addMinutesIso(isoStart, minutes) {
+        const start = new Date(isoStart);
+        return new Date(start.getTime() + minutes * 60 * 1000).toISOString();
+    }
+
+    /** Ensure free-trial slots are always 30 minutes (split longer API slots if needed). */
+    function normalizeSlotsForOffer(slots) {
+        const durationMin = offerDurationMinutes();
+        if (state.selectedOffer !== 'free_trial') {
+            return (slots || []).map((slot) => ({ start: slot.start, end: slot.end }));
+        }
+
+        const normalized = [];
+        (slots || []).forEach((slot) => {
+            const start = new Date(slot.start);
+            const end = new Date(slot.end);
+            const lengthMin = Math.round((end - start) / 60000);
+            if (lengthMin <= durationMin + 1) {
+                normalized.push({
+                    start: slot.start,
+                    end: addMinutesIso(slot.start, durationMin),
+                });
+                return;
+            }
+            let cursor = start.getTime();
+            const hardEnd = end.getTime();
+            while (cursor + durationMin * 60000 <= hardEnd + 1000) {
+                const chunkStart = new Date(cursor).toISOString();
+                normalized.push({
+                    start: chunkStart,
+                    end: addMinutesIso(chunkStart, durationMin),
+                });
+                cursor += durationMin * 60000;
+            }
+        });
+        return normalized;
+    }
+
+    function bookingSlotPayload(slot) {
+        const durationMin = offerDurationMinutes();
+        if (state.selectedOffer === 'free_trial') {
+            return {
+                slotStart: slot.start,
+                slotEnd: addMinutesIso(slot.start, durationMin),
+            };
+        }
+        return {
+            slotStart: slot.start,
+            slotEnd: slot.end,
+        };
     }
 
     function getHashParams() {
@@ -62,21 +141,17 @@
         return `${datePart}, ${timePart}`;
     }
 
-    function formatWeekLabel(weekStart) {
-        const weekEnd = addDays(weekStart, 6);
-        const startMonth = weekStart.toLocaleDateString(undefined, { month: 'short' });
-        const endMonth = weekEnd.toLocaleDateString(undefined, { month: 'short' });
-        const year = weekEnd.getFullYear();
-        if (startMonth === endMonth) {
-            return `${weekStart.getDate()} – ${weekEnd.getDate()} ${startMonth} ${year}`;
-        }
-        return `${weekStart.getDate()} ${startMonth} – ${weekEnd.getDate()} ${endMonth} ${year}`;
+    function formatMonthLabel(monthStart) {
+        return monthStart.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
     }
 
-    const CALENDAR_TIME_ROWS = [
-        '07:00', '08:00', '09:00', '10:00', '11:00', '12:00',
-        '13:00', '14:00', '15:00', '16:00', '17:00', '18:00',
-    ];
+    function formatSelectedDayLabel(day) {
+        return day.toLocaleDateString(undefined, {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric',
+        });
+    }
 
     function isSameCalendarDay(a, b) {
         return (
@@ -86,67 +161,29 @@
         );
     }
 
-    function slotLookupKey(date, timeLabel) {
-        const [hours, minutes] = timeLabel.split(':').map(Number);
-        return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}-${hours}:${String(minutes).padStart(2, '0')}`;
+    function dayKey(date) {
+        return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
     }
 
-    function indexSlotsByCell(slots) {
-        const map = new Map();
-        slots.forEach((slot) => {
-            const start = new Date(slot.start);
-            const key = slotLookupKey(start, `${start.getHours()}:${String(start.getMinutes()).padStart(2, '0')}`);
-            map.set(key, slot);
+    function formatTimeFromDate(date) {
+        return date
+            .toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', hour12: true })
+            .replace(/\s/g, '')
+            .toLowerCase();
+    }
+
+    function getAvailableDayKeys(slots) {
+        const keys = new Set();
+        (slots || []).forEach((slot) => {
+            keys.add(dayKey(new Date(slot.start)));
         });
-        return map;
+        return keys;
     }
 
-    function getCellDateTime(day, timeLabel) {
-        const [hours, minutes] = timeLabel.split(':').map(Number);
-        const dt = new Date(day);
-        dt.setHours(hours, minutes, 0, 0);
-        return dt;
-    }
-
-    function isWorkDay(day) {
-        const dow = day.getDay();
-        return dow >= 1 && dow <= 6;
-    }
-
-    function isPastSlot(day, timeLabel) {
-        return getCellDateTime(day, timeLabel) <= new Date();
-    }
-
-    function isBookableWindow(day, timeLabel) {
-        return isWorkDay(day) && CALENDAR_TIME_ROWS.includes(timeLabel);
-    }
-
-    function formatTimeDisplay(timeLabel) {
-        const [hours, minutes] = timeLabel.split(':').map(Number);
-        const dt = new Date();
-        dt.setHours(hours, minutes, 0, 0);
-        return dt.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
-    }
-
-    function isCompactCalendar() {
-        return window.matchMedia('(max-width: 900px)').matches;
-    }
-
-    function getCalendarDays() {
-        const weekDays = Array.from({ length: 7 }, (_, i) => addDays(state.weekStart, i));
-        return isCompactCalendar() ? weekDays.filter(isWorkDay) : weekDays;
-    }
-
-    function getPendingSlotKey(slot) {
-        if (!slot || !slot.start) return null;
-        const start = new Date(slot.start);
-        return slotLookupKey(start, `${start.getHours()}:${String(start.getMinutes()).padStart(2, '0')}`);
-    }
-
-    function isPendingSlotCell(day, timeLabel) {
-        if (!state.pendingSlot) return false;
-        const pendingKey = getPendingSlotKey(state.pendingSlot);
-        return pendingKey && pendingKey === slotLookupKey(day, timeLabel);
+    function getSlotsForDay(slots, day) {
+        return (slots || [])
+            .filter((slot) => isSameCalendarDay(new Date(slot.start), day))
+            .sort((a, b) => new Date(a.start) - new Date(b.start));
     }
 
     function storePendingSlot(slot) {
@@ -223,131 +260,332 @@
         setAwaitingConfirmation(false);
     }
 
-    function getPendingSlotMeta() {
-        return {
-            cellClass: 'job-hunt-cal-cell--pending-active',
-            ariaLabel: 'Booking in progress',
-        };
+    function renderMonthGrid(slots) {
+        const availableDays = getAvailableDayKeys(slots);
+        const today = startOfDay(new Date());
+        const monthStart = state.viewMonth;
+        const firstDow = monthStart.getDay(); // 0 = Sunday
+        const daysInMonth = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0).getDate();
+
+        const grid = document.createElement('div');
+        grid.className = 'job-hunt-month-grid';
+        grid.setAttribute('role', 'grid');
+        grid.setAttribute('aria-label', 'Select a date');
+
+        const weekdayRow = document.createElement('div');
+        weekdayRow.className = 'job-hunt-month-weekdays';
+        weekdayRow.setAttribute('role', 'row');
+        ['S', 'M', 'T', 'W', 'T', 'F', 'S'].forEach((label) => {
+            const cell = document.createElement('div');
+            cell.className = 'job-hunt-month-weekday';
+            cell.setAttribute('role', 'columnheader');
+            cell.textContent = label;
+            weekdayRow.appendChild(cell);
+        });
+        grid.appendChild(weekdayRow);
+
+        const days = document.createElement('div');
+        days.className = 'job-hunt-month-days';
+        days.setAttribute('role', 'rowgroup');
+
+        for (let i = 0; i < firstDow; i += 1) {
+            const empty = document.createElement('div');
+            empty.className = 'job-hunt-month-day job-hunt-month-day--empty';
+            empty.setAttribute('aria-hidden', 'true');
+            days.appendChild(empty);
+        }
+
+        for (let dayNum = 1; dayNum <= daysInMonth; dayNum += 1) {
+            const day = new Date(monthStart.getFullYear(), monthStart.getMonth(), dayNum);
+            const key = dayKey(day);
+            const isPast = day < today;
+            const hasSlots = availableDays.has(key);
+            const isSelected = state.selectedDate && isSameCalendarDay(day, state.selectedDate);
+            const isToday = isSameCalendarDay(day, today);
+            const isPendingDay =
+                state.pendingSlot && isSameCalendarDay(day, new Date(state.pendingSlot.start));
+
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'job-hunt-month-day';
+            btn.textContent = String(dayNum);
+            btn.setAttribute('role', 'gridcell');
+
+            if (isToday) btn.classList.add('job-hunt-month-day--today');
+            if (isSelected) {
+                btn.classList.add('job-hunt-month-day--selected');
+                btn.setAttribute('aria-pressed', 'true');
+            } else {
+                btn.setAttribute('aria-pressed', 'false');
+            }
+            if (isPendingDay) {
+                btn.classList.add('job-hunt-month-day--available', 'job-hunt-month-day--pending');
+                btn.disabled = false;
+                btn.setAttribute('aria-label', `Booking in progress ${formatSelectedDayLabel(day)}`);
+                btn.addEventListener('click', () => selectDate(day));
+            } else if (isPast || !hasSlots || state.pendingSlot) {
+                btn.classList.add('job-hunt-month-day--disabled');
+                btn.disabled = true;
+            } else {
+                btn.classList.add('job-hunt-month-day--available');
+                btn.setAttribute('aria-label', `Available ${formatSelectedDayLabel(day)}`);
+                btn.addEventListener('click', () => selectDate(day));
+            }
+
+            days.appendChild(btn);
+        }
+
+        grid.appendChild(days);
+        return grid;
+    }
+
+    function isCompactCalendar() {
+        return window.matchMedia('(max-width: 720px)').matches;
+    }
+
+    function renderTimesPanel(slots) {
+        const panel = document.createElement('div');
+        panel.className = 'job-hunt-times-panel';
+
+        if (!state.selectedDate) {
+            panel.innerHTML = '<p class="job-hunt-times-empty">Select a day</p>';
+            return panel;
+        }
+
+        if (isCompactCalendar()) {
+            const backBtn = document.createElement('button');
+            backBtn.type = 'button';
+            backBtn.className = 'job-hunt-back-link job-hunt-back-link--times';
+            backBtn.innerHTML = '<span aria-hidden="true">&lsaquo;</span> Back';
+            backBtn.addEventListener('click', () => {
+                state.selectedDate = null;
+                state.selectedSlot = null;
+                state.highlightedSlotStart = null;
+                rerenderCalendar();
+            });
+            panel.appendChild(backBtn);
+        }
+
+        const heading = document.createElement('h3');
+        heading.className = 'job-hunt-times-heading';
+        const durationLabel =
+            state.selectedOffer === 'free_trial'
+                ? ` · ${offerDurationMinutes()} min`
+                : '';
+        heading.textContent = formatSelectedDayLabel(state.selectedDate) + durationLabel;
+        panel.appendChild(heading);
+
+        const list = document.createElement('div');
+        list.className = 'job-hunt-times-list';
+        list.setAttribute('role', 'list');
+
+        const daySlots = getSlotsForDay(slots, state.selectedDate);
+
+        if (state.pendingSlot && isSameCalendarDay(new Date(state.pendingSlot.start), state.selectedDate)) {
+            const pendingRow = document.createElement('div');
+            pendingRow.className = 'job-hunt-time-row job-hunt-time-row--pending';
+            pendingRow.setAttribute('role', 'listitem');
+            pendingRow.innerHTML =
+                `<button type="button" class="job-hunt-time-btn job-hunt-time-btn--pending" disabled>` +
+                `${formatTimeFromDate(new Date(state.pendingSlot.start))}` +
+                `</button>` +
+                `<span class="job-hunt-slot-pending-spinner" aria-hidden="true"></span>`;
+            pendingRow.setAttribute('aria-label', 'Booking in progress');
+            list.appendChild(pendingRow);
+            panel.appendChild(list);
+            return panel;
+        }
+
+        if (!daySlots.length) {
+            const empty = document.createElement('p');
+            empty.className = 'job-hunt-times-empty';
+            empty.textContent = 'No times available';
+            panel.appendChild(empty);
+            return panel;
+        }
+
+        daySlots.forEach((slot) => {
+            const isActive = state.highlightedSlotStart === slot.start;
+            const row = document.createElement('div');
+            row.className = 'job-hunt-time-row' + (isActive ? ' job-hunt-time-row--active' : '');
+            row.setAttribute('role', 'listitem');
+
+            const timeBtn = document.createElement('button');
+            timeBtn.type = 'button';
+            timeBtn.className =
+                'job-hunt-time-btn' + (isActive ? ' job-hunt-time-btn--selected' : '');
+            timeBtn.textContent = formatTimeFromDate(new Date(slot.start));
+            timeBtn.setAttribute(
+                'aria-label',
+                `Select ${formatTimeFromDate(new Date(slot.start))}`
+            );
+            timeBtn.addEventListener('click', () => {
+                state.highlightedSlotStart = slot.start;
+                rerenderCalendar();
+            });
+            row.appendChild(timeBtn);
+
+            if (isActive) {
+                const nextBtn = document.createElement('button');
+                nextBtn.type = 'button';
+                nextBtn.className = 'job-hunt-time-next';
+                nextBtn.textContent = 'Next';
+                nextBtn.setAttribute(
+                    'aria-label',
+                    `Continue with ${formatSlotLabel(slot.start, slot.end)}`
+                );
+                nextBtn.addEventListener('click', () => selectSlot(slot));
+                row.appendChild(nextBtn);
+            }
+
+            list.appendChild(row);
+        });
+
+        panel.appendChild(list);
+        return panel;
+    }
+
+    function offerTitle() {
+        if (state.selectedOffer === 'free_trial') return 'Free trial kickoff';
+        return 'Paid consultation';
+    }
+
+    function offerPriceLabel() {
+        if (state.selectedOffer === 'free_trial') return 'Free';
+        return `R${state.regularPriceZar || 500}`;
+    }
+
+    function renderDetailsPanel() {
+        const panel = document.createElement('aside');
+        panel.className = 'job-hunt-calendly-details';
+        panel.setAttribute('aria-label', 'Meeting details');
+
+        const host = document.createElement('p');
+        host.className = 'job-hunt-calendly-host';
+        host.textContent = 'Time Exchange';
+        panel.appendChild(host);
+
+        const title = document.createElement('h2');
+        title.className = 'job-hunt-calendly-title';
+        title.textContent = offerTitle();
+        panel.appendChild(title);
+
+        const meta = document.createElement('ul');
+        meta.className = 'job-hunt-calendly-meta';
+
+        const durationItem = document.createElement('li');
+        durationItem.innerHTML =
+            '<i class="fa fa-clock-o" aria-hidden="true"></i>' +
+            `<span>${offerDurationMinutes()} min</span>`;
+        meta.appendChild(durationItem);
+
+        const priceItem = document.createElement('li');
+        priceItem.innerHTML =
+            '<i class="fa fa-tag" aria-hidden="true"></i>' +
+            `<span>${offerPriceLabel()}</span>`;
+        meta.appendChild(priceItem);
+
+        const confItem = document.createElement('li');
+        confItem.innerHTML =
+            '<i class="fa fa-video-camera" aria-hidden="true"></i>' +
+            '<span>Web conferencing details provided upon confirmation</span>';
+        meta.appendChild(confItem);
+
+        if (state.selectedDate) {
+            const whenItem = document.createElement('li');
+            whenItem.className = 'job-hunt-calendly-meta-when';
+            const slot =
+                (state.highlightedSlotStart &&
+                    (state.availabilitySlots || []).find((s) => s.start === state.highlightedSlotStart)) ||
+                state.selectedSlot ||
+                state.pendingSlot;
+            const whenText = slot
+                ? formatSlotLabel(slot.start, slot.end || addMinutesIso(slot.start, offerDurationMinutes()))
+                : formatSelectedDayLabel(state.selectedDate);
+            whenItem.innerHTML =
+                '<i class="fa fa-calendar" aria-hidden="true"></i>' +
+                `<span>${whenText}</span>`;
+            meta.appendChild(whenItem);
+        }
+
+        panel.appendChild(meta);
+
+        return panel;
     }
 
     function renderCalendarGrid(slots) {
-        const weekDays = getCalendarDays();
-        const slotMap = indexSlotsByCell(slots);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        const root = document.createElement('div');
+        root.className =
+            'job-hunt-calendly' + (state.selectedDate ? ' job-hunt-calendly--has-date' : '');
 
-        const calendar = document.createElement('div');
-        calendar.className = 'job-hunt-calendar' + (isCompactCalendar() ? ' job-hunt-calendar--weekdays' : '');
-        calendar.setAttribute('role', 'grid');
-        calendar.setAttribute('aria-label', 'Consultation availability calendar');
+        root.appendChild(renderDetailsPanel());
 
-        const header = document.createElement('div');
-        header.className = 'job-hunt-calendar-header';
-        header.setAttribute('role', 'row');
+        const picker = document.createElement('div');
+        picker.className = 'job-hunt-calendly-picker';
 
-        const corner = document.createElement('div');
-        corner.className = 'job-hunt-cal-corner';
-        corner.setAttribute('role', 'columnheader');
-        corner.textContent = 'Time';
-        header.appendChild(corner);
+        const monthNav = document.createElement('div');
+        monthNav.className = 'job-hunt-month-nav';
 
-        weekDays.forEach((day, index) => {
-            const dayHeader = document.createElement('div');
-            dayHeader.className = 'job-hunt-cal-day-header';
-            dayHeader.setAttribute('role', 'columnheader');
-            if (isSameCalendarDay(day, today)) {
-                dayHeader.classList.add('job-hunt-cal-day-header--today');
-            }
-            if (!isWorkDay(day)) {
-                dayHeader.classList.add('job-hunt-cal-day-header--weekend');
-            }
+        const prevBtn = document.createElement('button');
+        prevBtn.type = 'button';
+        prevBtn.className = 'job-hunt-month-nav-btn';
+        prevBtn.id = 'jobHuntPrevWeek';
+        prevBtn.setAttribute('aria-label', 'Previous month');
+        prevBtn.innerHTML = '<span aria-hidden="true">&lsaquo;</span>';
 
-            const weekday = document.createElement('span');
-            weekday.className = 'job-hunt-cal-weekday';
-            weekday.textContent = day.toLocaleDateString(undefined, { weekday: 'short' });
+        const monthLabel = document.createElement('span');
+        monthLabel.className = 'job-hunt-month-label';
+        monthLabel.id = 'jobHuntMonthLabel';
+        monthLabel.textContent = formatMonthLabel(state.viewMonth);
 
-            const dateNum = document.createElement('span');
-            dateNum.className = 'job-hunt-cal-date';
-            dateNum.textContent = String(day.getDate());
+        const nextBtn = document.createElement('button');
+        nextBtn.type = 'button';
+        nextBtn.className = 'job-hunt-month-nav-btn';
+        nextBtn.id = 'jobHuntNextWeek';
+        nextBtn.setAttribute('aria-label', 'Next month');
+        nextBtn.innerHTML = '<span aria-hidden="true">&rsaquo;</span>';
 
-            dayHeader.appendChild(weekday);
-            dayHeader.appendChild(dateNum);
-            header.appendChild(dayHeader);
+        const currentMonth = startOfMonth(new Date());
+        const atCurrentMonth =
+            state.viewMonth.getFullYear() === currentMonth.getFullYear() &&
+            state.viewMonth.getMonth() === currentMonth.getMonth();
+        prevBtn.disabled = !!state.pendingSlot || atCurrentMonth;
+        nextBtn.disabled = !!state.pendingSlot;
+
+        prevBtn.addEventListener('click', () => {
+            state.viewMonth = addMonths(state.viewMonth, -1);
+            state.selectedDate = null;
+            state.highlightedSlotStart = null;
+            fetchAvailability();
+        });
+        nextBtn.addEventListener('click', () => {
+            state.viewMonth = addMonths(state.viewMonth, 1);
+            state.selectedDate = null;
+            state.highlightedSlotStart = null;
+            fetchAvailability();
         });
 
-        calendar.appendChild(header);
+        monthNav.appendChild(prevBtn);
+        monthNav.appendChild(monthLabel);
+        monthNav.appendChild(nextBtn);
+        picker.appendChild(monthNav);
 
-        const body = document.createElement('div');
-        body.className = 'job-hunt-calendar-body';
+        els.monthLabel = monthLabel;
+        els.prevMonth = prevBtn;
+        els.nextMonth = nextBtn;
 
-        CALENDAR_TIME_ROWS.forEach((timeLabel) => {
-            const row = document.createElement('div');
-            row.className = 'job-hunt-cal-row';
-            row.setAttribute('role', 'row');
+        picker.appendChild(renderMonthGrid(slots));
+        root.appendChild(picker);
+        root.appendChild(renderTimesPanel(slots));
+        return root;
+    }
 
-            const timeCell = document.createElement('div');
-            timeCell.className = 'job-hunt-cal-time';
-            timeCell.setAttribute('role', 'rowheader');
-            timeCell.textContent = formatTimeDisplay(timeLabel);
-            row.appendChild(timeCell);
-
-            weekDays.forEach((day) => {
-                const cell = document.createElement('div');
-                cell.className = 'job-hunt-cal-cell';
-                cell.setAttribute('role', 'gridcell');
-                if (!isWorkDay(day)) {
-                    cell.classList.add('job-hunt-cal-cell--weekend');
-                }
-
-                if (isPendingSlotCell(day, timeLabel)) {
-                    const pendingMeta = getPendingSlotMeta();
-                    cell.classList.add('job-hunt-cal-cell--pending', pendingMeta.cellClass);
-                    cell.setAttribute('aria-label', pendingMeta.ariaLabel);
-                    cell.innerHTML =
-                        '<div class="job-hunt-slot-pending">' +
-                        '<span class="job-hunt-slot-pending-spinner" aria-hidden="true"></span>' +
-                        '</div>';
-                } else {
-                const slot = slotMap.get(slotLookupKey(day, timeLabel));
-                if (slot) {
-                    const btn = document.createElement('button');
-                    btn.type = 'button';
-                    btn.className = 'job-hunt-slot-btn';
-                    btn.innerHTML = `<span class="job-hunt-slot-time">${formatTimeDisplay(timeLabel)}</span><span class="job-hunt-slot-label">Book</span>`;
-                    btn.setAttribute('aria-label', `Book ${formatSlotLabel(slot.start, slot.end)}`);
-                    btn.addEventListener('click', () => selectSlot(slot));
-                    cell.appendChild(btn);
-                    cell.classList.add('job-hunt-cal-cell--available');
-                } else {
-                    if (!isBookableWindow(day, timeLabel)) {
-                        cell.classList.add('job-hunt-cal-cell--unavailable', 'job-hunt-cal-cell--striped');
-                        cell.setAttribute('aria-label', 'Not available');
-                    } else if (isPastSlot(day, timeLabel)) {
-                        cell.classList.add(
-                            'job-hunt-cal-cell--unavailable',
-                            'job-hunt-cal-cell--striped',
-                            'job-hunt-cal-cell--past'
-                        );
-                        cell.setAttribute('aria-label', 'Past');
-                    } else {
-                        cell.classList.add('job-hunt-cal-cell--booked');
-                        cell.setAttribute('aria-label', 'Fully booked');
-                        cell.innerHTML =
-                            '<div class="job-hunt-slot-booked">' +
-                            '<span class="job-hunt-slot-booked-label">Booked</span>' +
-                            '</div>';
-                    }
-                }
-                }
-
-                row.appendChild(cell);
-            });
-
-            body.appendChild(row);
-        });
-
-        calendar.appendChild(body);
-        return calendar;
+    function selectDate(day) {
+        state.selectedDate = startOfDay(day);
+        state.selectedSlot = null;
+        state.highlightedSlotStart = null;
+        showStep(els.stepCalendar);
+        rerenderCalendar();
     }
 
     function cacheElements() {
@@ -357,12 +595,13 @@
         els.stepCalendar = document.getElementById('jobHuntStepCalendar');
         els.stepForm = document.getElementById('jobHuntStepForm');
         els.stepConfirmed = document.getElementById('jobHuntStepConfirmed');
-        els.weekLabel = document.getElementById('jobHuntWeekLabel');
+        els.bookingSection = document.getElementById('book-consultation');
+        els.monthLabel = null;
         els.slotsLoading = document.getElementById('jobHuntSlotsLoading');
         els.slotsError = document.getElementById('jobHuntSlotsError');
         els.slotsGrid = document.getElementById('jobHuntSlotsGrid');
-        els.prevWeek = document.getElementById('jobHuntPrevWeek');
-        els.nextWeek = document.getElementById('jobHuntNextWeek');
+        els.prevMonth = null;
+        els.nextMonth = null;
         els.selectedSlot = document.getElementById('jobHuntSelectedSlot');
         els.form = document.getElementById('jobHuntBookingForm');
         els.formError = document.getElementById('jobHuntFormError');
@@ -393,10 +632,14 @@
         }
     }
 
-    function updateWeekNavState() {
+    function updateMonthNavState() {
         const lockNav = !!state.pendingSlot;
-        if (els.prevWeek) els.prevWeek.disabled = lockNav;
-        if (els.nextWeek) els.nextWeek.disabled = lockNav;
+        const currentMonth = startOfMonth(new Date());
+        const atCurrentMonth =
+            state.viewMonth.getFullYear() === currentMonth.getFullYear() &&
+            state.viewMonth.getMonth() === currentMonth.getMonth();
+        if (els.prevMonth) els.prevMonth.disabled = lockNav || atCurrentMonth;
+        if (els.nextMonth) els.nextMonth.disabled = lockNav;
     }
 
     function hasPendingBooking() {
@@ -516,18 +759,24 @@
             restorePendingSlot();
         }
         if (state.pendingSlot) {
-            state.weekStart = startOfWeek(new Date(state.pendingSlot.start));
-            if (els.weekLabel) {
-                els.weekLabel.textContent = formatWeekLabel(state.weekStart);
+            const pendingStart = new Date(state.pendingSlot.start);
+            state.viewMonth = startOfMonth(pendingStart);
+            state.selectedDate = startOfDay(pendingStart);
+            if (els.monthLabel) {
+                els.monthLabel.textContent = formatMonthLabel(state.viewMonth);
             }
         }
+        if (!state.selectedOffer) state.selectedOffer = 'paid';
+        if (els.bookingSection) els.bookingSection.hidden = false;
+        if (els.app) els.app.hidden = false;
+        setSelectedOfferUi(state.selectedOffer);
         showStep(els.stepCalendar);
         if (state.availabilitySlots) {
             rerenderCalendar();
         } else {
             fetchAvailability();
         }
-        updateWeekNavState();
+        updateMonthNavState();
         updatePendingActionsVisibility();
     }
 
@@ -535,7 +784,7 @@
         clearPendingSlot();
         clearAwaitingConfirmation();
         rerenderCalendar();
-        updateWeekNavState();
+        updateMonthNavState();
         updatePendingActionsVisibility();
     }
 
@@ -544,16 +793,25 @@
         els.slotsError.hidden = true;
         els.slotsGrid.hidden = true;
         els.slotsGrid.innerHTML = '';
-        els.weekLabel.textContent = formatWeekLabel(state.weekStart);
-        if (els.prevWeek) els.prevWeek.disabled = true;
-        if (els.nextWeek) els.nextWeek.disabled = true;
+        if (els.monthLabel) {
+            els.monthLabel.textContent = formatMonthLabel(state.viewMonth);
+        }
+        if (els.prevMonth) els.prevMonth.disabled = true;
+        if (els.nextMonth) els.nextMonth.disabled = true;
 
-        const from = toIsoUtc(state.weekStart);
-        const to = toIsoUtc(addDays(state.weekStart, 7));
+        const now = new Date();
+        const monthStart = state.viewMonth;
+        const rangeStart = monthStart < now ? now : monthStart;
+        const rangeEnd = addMonths(monthStart, 1);
+
+        const offer =
+            state.selectedOffer === 'free_trial' || state.selectedOffer === 'paid'
+                ? state.selectedOffer
+                : 'paid';
 
         try {
             const res = await fetch(
-                `${API_BASE}/consultations/availability?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`
+                `${API_BASE}/consultations/availability?from=${encodeURIComponent(toIsoUtc(rangeStart))}&to=${encodeURIComponent(toIsoUtc(rangeEnd))}&offer=${encodeURIComponent(offer)}`
             );
             const data = await res.json();
             if (!res.ok || !data.success) {
@@ -563,17 +821,42 @@
             if (typeof data.priceZar === 'number') {
                 state.priceZar = data.priceZar;
             }
+            if (typeof data.regularPriceZar === 'number') {
+                state.regularPriceZar = data.regularPriceZar;
+            }
+            if (typeof data.freeFirstPromo === 'boolean') {
+                state.freeFirstPromo = data.freeFirstPromo;
+            }
+            if (typeof data.durationMinutes === 'number') {
+                state.durationMinutes = data.durationMinutes;
+            }
+            if (typeof data.freeTrialDurationMinutes === 'number') {
+                state.freeTrialDurationMinutes = data.freeTrialDurationMinutes;
+            }
+            if (typeof data.paidDurationMinutes === 'number') {
+                state.paidDurationMinutes = data.paidDurationMinutes;
+            }
+            // Always force trial duration locally so UI/booking stay at 30 minutes.
+            if (offer === 'free_trial') {
+                state.durationMinutes = state.freeTrialDurationMinutes || 30;
+            }
             updatePriceLabels();
 
             els.slotsLoading.hidden = true;
-            const slots = data.slots || [];
+            const slots = normalizeSlotsForOffer(data.slots || []);
             state.availabilitySlots = slots;
+
+            if (state.pendingSlot) {
+                state.selectedDate = startOfDay(new Date(state.pendingSlot.start));
+            } else {
+                state.selectedDate = null;
+            }
 
             els.slotsGrid.appendChild(renderCalendarGrid(slots));
             els.slotsGrid.hidden = false;
 
             if (!slots.length) {
-                els.slotsError.textContent = 'No open slots this week. Try another week.';
+                els.slotsError.textContent = 'No open slots this month. Try another month.';
                 els.slotsError.hidden = false;
             }
         } catch (err) {
@@ -581,14 +864,14 @@
             els.slotsError.textContent = err.message || 'Failed to load times.';
             els.slotsError.hidden = false;
         } finally {
-            if (els.prevWeek) els.prevWeek.disabled = !!state.pendingSlot;
-            if (els.nextWeek) els.nextWeek.disabled = !!state.pendingSlot;
+            updateMonthNavState();
         }
     }
 
     function selectSlot(slot) {
-        state.selectedSlot = slot;
-        els.selectedSlot.textContent = formatSlotLabel(slot.start, slot.end);
+        const payload = bookingSlotPayload(slot);
+        state.selectedSlot = { start: payload.slotStart, end: payload.slotEnd };
+        els.selectedSlot.textContent = formatSlotLabel(payload.slotStart, payload.slotEnd);
         showStep(els.stepForm);
     }
 
@@ -730,17 +1013,94 @@
     }
 
     function formatBookLabel() {
+        if (state.selectedOffer === 'paid') {
+            return `Book kickoff for R${state.regularPriceZar}`;
+        }
+        if (state.selectedOffer === 'free_trial' || state.freeFirstPromo || state.priceZar <= 0) {
+            return 'Book free consultation';
+        }
         return `Book kickoff for R${state.priceZar}`;
     }
 
     function updatePriceLabels() {
         document.querySelectorAll('[data-job-hunt-price]').forEach((el) => {
-            el.textContent = `R${state.priceZar}`;
+            el.textContent = state.priceZar <= 0 ? 'Free' : `R${state.priceZar}`;
+        });
+        document.querySelectorAll('[data-job-hunt-regular-price]').forEach((el) => {
+            el.textContent = `R${state.regularPriceZar}`;
         });
         const submitBtn = document.getElementById('jobHuntSubmitBooking');
         if (submitBtn && !submitBtn.disabled) {
             submitBtn.textContent = formatBookLabel();
         }
+    }
+
+    function setSelectedOfferUi(offer) {
+        document.querySelectorAll('[data-job-hunt-offer]').forEach((card) => {
+            card.classList.toggle(
+                'job-hunt-offer-card--selected',
+                card.getAttribute('data-job-hunt-offer') === offer
+            );
+        });
+    }
+
+    function openTimeXBooking() {
+        const ua = navigator.userAgent || '';
+        const ios = /iPhone|iPad|iPod/i.test(ua);
+        const android = /Android/i.test(ua);
+
+        if (android) {
+            window.location.href = TIMEX_ANDROID_INTENT;
+            return;
+        }
+
+        if (ios) {
+            let leftPage = false;
+            const onHide = () => {
+                leftPage = true;
+            };
+            document.addEventListener('visibilitychange', onHide);
+            window.addEventListener('pagehide', onHide);
+            window.addEventListener('blur', onHide);
+
+            const start = Date.now();
+            window.location.href = TIMEX_DEEP_LINK;
+            setTimeout(() => {
+                document.removeEventListener('visibilitychange', onHide);
+                window.removeEventListener('pagehide', onHide);
+                window.removeEventListener('blur', onHide);
+                if (leftPage || document.hidden) return;
+                if (Date.now() - start < 2200) {
+                    window.location.href = TIMEX_IOS_STORE;
+                }
+            }, 1600);
+            return;
+        }
+
+        // Desktop / unknown: share-link page can still deep-link if the app is installed
+        window.location.href = TIMEX_REQUEST_URL;
+    }
+
+    function selectOffer(offer) {
+        if (offer === 'timex') {
+            openTimeXBooking();
+            return;
+        }
+
+        state.selectedOffer = offer;
+        state.selectedDate = null;
+        state.selectedSlot = null;
+        state.highlightedSlotStart = null;
+        setSelectedOfferUi(offer);
+
+        if (els.bookingSection) els.bookingSection.hidden = false;
+
+        if (els.app) els.app.hidden = false;
+        state.availabilitySlots = null;
+        updatePriceLabels();
+        showStep(els.stepCalendar);
+        fetchAvailability();
+        els.bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     function resetSubmitButton() {
@@ -858,20 +1218,29 @@
 
         const submitBtn = document.getElementById('jobHuntSubmitBooking');
         submitBtn.disabled = true;
-        submitBtn.textContent = 'Continuing to secure payment…';
+        const isPaidOffer = state.selectedOffer === 'paid';
+        submitBtn.textContent = isPaidOffer
+            ? 'Continuing to secure payment…'
+            : 'Confirming your free session…';
         let redirectingToCheckout = false;
+        let confirmedFree = false;
 
         try {
+            const slotPayload = bookingSlotPayload(state.selectedSlot);
+            state.selectedSlot = { start: slotPayload.slotStart, end: slotPayload.slotEnd };
+
             const res = await fetch(`${API_BASE}/consultations/book`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    slotStart: state.selectedSlot.start,
-                    slotEnd: state.selectedSlot.end,
+                    slotStart: slotPayload.slotStart,
+                    slotEnd: slotPayload.slotEnd,
                     name,
                     email,
                     phone: phone || undefined,
                     notes: notes || undefined,
+                    offer: state.selectedOffer === 'paid' ? 'paid' : 'free_trial',
+                    durationMinutes: offerDurationMinutes(),
                 }),
             });
             const data = await res.json();
@@ -882,7 +1251,17 @@
             state.bookingId = data.bookingId;
             storeBookingEmail(email);
 
-            if (!data.checkoutRedirectUrl) {
+            if (data.status === 'confirmed' || data.promo === 'free_first' || !data.checkoutRedirectUrl) {
+                if (data.status === 'confirmed' || data.promo === 'free_first') {
+                    clearPendingBookingState();
+                    const booking = data.booking || {};
+                    const slotStart = booking.slotStart || state.selectedSlot.start;
+                    const slotEnd = booking.slotEnd || state.selectedSlot.end;
+                    els.confirmedMessage.textContent = formatSlotLabel(slotStart, slotEnd);
+                    showStep(els.stepConfirmed);
+                    confirmedFree = true;
+                    return;
+                }
                 throw new Error(
                     'Payment could not be started. The server may be missing YOCO_SECRET_KEY — please contact support.'
                 );
@@ -893,31 +1272,26 @@
             els.formError.textContent = err.message || 'Could not create booking.';
             els.formError.hidden = false;
         } finally {
-            if (!redirectingToCheckout) {
+            if (!redirectingToCheckout && !confirmedFree) {
                 submitBtn.disabled = false;
                 submitBtn.textContent = formatBookLabel();
             }
         }
     }
 
-    function rerenderCalendarIfNeeded() {
-        if (!els.slotsGrid || !state.availabilitySlots) return;
-        if (els.stepCalendar && !els.stepCalendar.hidden) {
-            rerenderCalendar();
-        }
-    }
-
     function bindEvents() {
-        els.prevWeek.addEventListener('click', () => {
-            state.weekStart = addDays(state.weekStart, -7);
-            fetchAvailability();
-        });
-        els.nextWeek.addEventListener('click', () => {
-            state.weekStart = addDays(state.weekStart, 7);
-            fetchAvailability();
+        document.querySelectorAll('[data-job-hunt-offer]').forEach((card) => {
+            card.addEventListener('click', (event) => {
+                const offer = card.getAttribute('data-job-hunt-offer');
+                if (offer === 'timex') {
+                    event.preventDefault();
+                }
+                selectOffer(offer);
+            });
         });
         els.backToSlots.addEventListener('click', () => {
             showStep(els.stepCalendar);
+            rerenderCalendar();
         });
         els.form.addEventListener('submit', submitBooking);
         if (els.checkoutModal) {
@@ -937,15 +1311,17 @@
             }
         });
 
-        let compactCalendar = isCompactCalendar();
+        let compact = isCompactCalendar();
         let resizeTimer;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(() => {
-                const nextCompact = isCompactCalendar();
-                if (nextCompact !== compactCalendar) {
-                    compactCalendar = nextCompact;
-                    rerenderCalendarIfNeeded();
+                const next = isCompactCalendar();
+                if (next !== compact) {
+                    compact = next;
+                    if (els.stepCalendar && !els.stepCalendar.hidden && state.availabilitySlots) {
+                        rerenderCalendar();
+                    }
                 }
             }, 150);
         });
@@ -954,8 +1330,13 @@
     function initJobHuntBooking() {
         if (!cacheElements()) return;
         bindEvents();
+        state.selectedOffer = 'paid';
+        setSelectedOfferUi('paid');
+        if (els.bookingSection) els.bookingSection.hidden = false;
+        if (els.app) els.app.hidden = false;
+        updatePriceLabels();
         handlePaymentReturn();
-        if (!getReturnParams().get('payment')) {
+        if (!getReturnParams().get('payment') && !sessionStorage.getItem(PENDING_BOOKING_KEY)) {
             fetchAvailability();
         }
     }
@@ -989,7 +1370,16 @@
                 bindEvents();
             }
             handlePaymentReturn();
-            if (els.app && els.slotsGrid && !els.slotsGrid.innerHTML && !getReturnParams().get('payment')) {
+            if (
+                els.app &&
+                state.selectedOffer &&
+                state.selectedOffer !== 'timex' &&
+                els.slotsGrid &&
+                !els.slotsGrid.innerHTML &&
+                !getReturnParams().get('payment')
+            ) {
+                if (els.bookingSection) els.bookingSection.hidden = false;
+                if (els.app) els.app.hidden = false;
                 fetchAvailability();
             }
         } else {
