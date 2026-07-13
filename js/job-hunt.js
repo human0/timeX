@@ -22,6 +22,31 @@
         encodeURIComponent(TIMEX_ANDROID_STORE) +
         ';end';
 
+    const TZ_COOKIE = 'tx_tz';
+    const CURRENCY_COOKIE = 'tx_currency';
+    const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
+    const HOST_TIMEZONE = 'Africa/Johannesburg';
+    const COMMON_TIMEZONES = [
+        'Africa/Johannesburg',
+        'Africa/Lagos',
+        'Africa/Nairobi',
+        'Europe/London',
+        'Europe/Paris',
+        'Europe/Berlin',
+        'America/New_York',
+        'America/Chicago',
+        'America/Denver',
+        'America/Los_Angeles',
+        'America/Sao_Paulo',
+        'Asia/Dubai',
+        'Asia/Kolkata',
+        'Asia/Singapore',
+        'Asia/Tokyo',
+        'Australia/Sydney',
+        'Pacific/Auckland',
+    ];
+    const CURRENCY_SYMBOLS = { ZAR: 'R', USD: '$', EUR: '€', GBP: '£' };
+
     const state = {
         viewMonth: startOfMonth(new Date()),
         selectedDate: null,
@@ -40,9 +65,69 @@
         checkoutModalOpen: false,
         pendingSlot: null,
         awaitingPaymentConfirmation: false,
+        customerTimezone: null,
+        hostTimezone: HOST_TIMEZONE,
+        preferredCurrency: 'ZAR',
+        prices: [],
+        stripeConfigured: false,
     };
 
     const els = {};
+
+    function readCookie(name) {
+        const match = document.cookie.match(
+            new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1') + '=([^;]*)')
+        );
+        return match ? decodeURIComponent(match[1]) : null;
+    }
+
+    function writeCookie(name, value) {
+        document.cookie =
+            `${name}=${encodeURIComponent(value)}; path=/; max-age=${COOKIE_MAX_AGE}; SameSite=Lax`;
+    }
+
+    function detectBrowserTimezone() {
+        try {
+            return Intl.DateTimeFormat().resolvedOptions().timeZone || HOST_TIMEZONE;
+        } catch (_) {
+            return HOST_TIMEZONE;
+        }
+    }
+
+    function initLocalePrefs() {
+        const savedTz = readCookie(TZ_COOKIE);
+        state.customerTimezone = savedTz || detectBrowserTimezone();
+        if (!savedTz) writeCookie(TZ_COOKIE, state.customerTimezone);
+        state.preferredCurrency = 'ZAR';
+    }
+
+    function localeDateOptions(extra) {
+        const opts = Object.assign({}, extra || {});
+        if (state.customerTimezone) opts.timeZone = state.customerTimezone;
+        return opts;
+    }
+
+    function timezoneLabel(tz) {
+        return (tz || '').replace(/_/g, ' ');
+    }
+
+    function currencyAmount(code) {
+        const upper = (code || 'ZAR').toUpperCase();
+        if (upper === 'ZAR') return state.regularPriceZar || state.priceZar || 500;
+        const found = (state.prices || []).find((p) => p.currency === upper);
+        if (found && typeof found.amount === 'number') return found.amount;
+        if (upper === 'USD') return 29;
+        if (upper === 'EUR') return 27;
+        if (upper === 'GBP') return 25;
+        return state.regularPriceZar || 500;
+    }
+
+    function formatMoney(code, amount) {
+        const upper = (code || 'ZAR').toUpperCase();
+        const symbol = CURRENCY_SYMBOLS[upper] || `${upper} `;
+        if (upper === 'ZAR') return `R${amount}`;
+        return `${symbol}${amount}`;
+    }
 
     function startOfMonth(date) {
         return new Date(date.getFullYear(), date.getMonth(), 1);
@@ -131,26 +216,41 @@
     function formatSlotLabel(isoStart, isoEnd) {
         const start = new Date(isoStart);
         const end = new Date(isoEnd);
-        const datePart = start.toLocaleDateString(undefined, {
-            weekday: 'long',
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-        });
-        const timePart = `${start.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })} – ${end.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}`;
+        const datePart = start.toLocaleDateString(
+            undefined,
+            localeDateOptions({
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+            })
+        );
+        const timePart = `${start.toLocaleTimeString(
+            undefined,
+            localeDateOptions({ hour: '2-digit', minute: '2-digit' })
+        )} – ${end.toLocaleTimeString(
+            undefined,
+            localeDateOptions({ hour: '2-digit', minute: '2-digit' })
+        )}`;
         return `${datePart}, ${timePart}`;
     }
 
     function formatMonthLabel(monthStart) {
-        return monthStart.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+        return monthStart.toLocaleDateString(
+            undefined,
+            localeDateOptions({ month: 'long', year: 'numeric' })
+        );
     }
 
     function formatSelectedDayLabel(day) {
-        return day.toLocaleDateString(undefined, {
-            weekday: 'short',
-            month: 'short',
-            day: 'numeric',
-        });
+        return day.toLocaleDateString(
+            undefined,
+            localeDateOptions({
+                weekday: 'short',
+                month: 'short',
+                day: 'numeric',
+            })
+        );
     }
 
     function isSameCalendarDay(a, b) {
@@ -167,7 +267,10 @@
 
     function formatTimeFromDate(date) {
         return date
-            .toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', hour12: true })
+            .toLocaleTimeString(
+                undefined,
+                localeDateOptions({ hour: 'numeric', minute: '2-digit', hour12: true })
+            )
             .replace(/\s/g, '')
             .toLowerCase();
     }
@@ -379,7 +482,17 @@
         list.className = 'job-hunt-times-list';
         list.setAttribute('role', 'list');
 
-        const daySlots = getSlotsForDay(slots, state.selectedDate);
+        const daySlots = getSlotsForDay(slots, state.selectedDate).filter((slot) => {
+            const start = new Date(slot.start);
+            if (start.getTime() <= Date.now()) return false;
+            if (state.pendingSlot) {
+                const pendingStart = new Date(state.pendingSlot.start).getTime();
+                const pendingEnd = new Date(state.pendingSlot.end || state.pendingSlot.start).getTime();
+                const end = new Date(slot.end).getTime();
+                if (start.getTime() < pendingEnd && end > pendingStart) return false;
+            }
+            return true;
+        });
 
         if (state.pendingSlot && isSameCalendarDay(new Date(state.pendingSlot.start), state.selectedDate)) {
             const pendingRow = document.createElement('div');
@@ -405,38 +518,23 @@
         }
 
         daySlots.forEach((slot) => {
-            const isActive = state.highlightedSlotStart === slot.start;
             const row = document.createElement('div');
-            row.className = 'job-hunt-time-row' + (isActive ? ' job-hunt-time-row--active' : '');
+            row.className = 'job-hunt-time-row';
             row.setAttribute('role', 'listitem');
 
             const timeBtn = document.createElement('button');
             timeBtn.type = 'button';
-            timeBtn.className =
-                'job-hunt-time-btn' + (isActive ? ' job-hunt-time-btn--selected' : '');
+            timeBtn.className = 'job-hunt-time-btn';
             timeBtn.textContent = formatTimeFromDate(new Date(slot.start));
             timeBtn.setAttribute(
                 'aria-label',
-                `Select ${formatTimeFromDate(new Date(slot.start))}`
+                `Book ${formatTimeFromDate(new Date(slot.start))}`
             );
             timeBtn.addEventListener('click', () => {
-                state.highlightedSlotStart = slot.start;
-                rerenderCalendar();
+                if (state.pendingSlot) return;
+                selectSlot(slot);
             });
             row.appendChild(timeBtn);
-
-            if (isActive) {
-                const nextBtn = document.createElement('button');
-                nextBtn.type = 'button';
-                nextBtn.className = 'job-hunt-time-next';
-                nextBtn.textContent = 'Next';
-                nextBtn.setAttribute(
-                    'aria-label',
-                    `Continue with ${formatSlotLabel(slot.start, slot.end)}`
-                );
-                nextBtn.addEventListener('click', () => selectSlot(slot));
-                row.appendChild(nextBtn);
-            }
 
             list.appendChild(row);
         });
@@ -453,6 +551,44 @@
     function offerPriceLabel() {
         if (state.selectedOffer === 'free_trial') return 'Free';
         return `R${state.regularPriceZar || 500}`;
+    }
+
+    function renderLocaleControls(panel) {
+        const wrap = document.createElement('div');
+        wrap.className = 'job-hunt-locale-controls';
+
+        const tzLabel = document.createElement('label');
+        tzLabel.className = 'job-hunt-locale-field';
+        tzLabel.innerHTML = '<span>Timezone</span>';
+        const tzSelect = document.createElement('select');
+        tzSelect.className = 'job-hunt-locale-select';
+        tzSelect.setAttribute('aria-label', 'Timezone for times');
+        const zones = COMMON_TIMEZONES.slice();
+        if (state.customerTimezone && zones.indexOf(state.customerTimezone) === -1) {
+            zones.unshift(state.customerTimezone);
+        }
+        zones.forEach((tz) => {
+            const opt = document.createElement('option');
+            opt.value = tz;
+            opt.textContent = timezoneLabel(tz);
+            if (tz === state.customerTimezone) opt.selected = true;
+            tzSelect.appendChild(opt);
+        });
+        tzSelect.addEventListener('change', () => {
+            state.customerTimezone = tzSelect.value;
+            writeCookie(TZ_COOKIE, state.customerTimezone);
+            rerenderCalendar();
+        });
+        tzLabel.appendChild(tzSelect);
+        wrap.appendChild(tzLabel);
+
+        const hint = document.createElement('p');
+        hint.className = 'job-hunt-calendly-timezone';
+        hint.textContent =
+            `Times shown in ${timezoneLabel(state.customerTimezone)} · Host is on SAST`;
+        wrap.appendChild(hint);
+
+        panel.appendChild(wrap);
     }
 
     function renderDetailsPanel() {
@@ -509,6 +645,7 @@
         }
 
         panel.appendChild(meta);
+        renderLocaleControls(panel);
 
         return panel;
     }
@@ -836,6 +973,15 @@
             if (typeof data.paidDurationMinutes === 'number') {
                 state.paidDurationMinutes = data.paidDurationMinutes;
             }
+            if (Array.isArray(data.prices)) {
+                state.prices = data.prices;
+            }
+            if (typeof data.stripeConfigured === 'boolean') {
+                state.stripeConfigured = data.stripeConfigured;
+            }
+            if (data.hostTimezone) {
+                state.hostTimezone = data.hostTimezone;
+            }
             // Always force trial duration locally so UI/booking stay at 30 minutes.
             if (offer === 'free_trial') {
                 state.durationMinutes = state.freeTrialDurationMinutes || 30;
@@ -1013,10 +1159,13 @@
     }
 
     function formatBookLabel() {
-        if (state.selectedOffer === 'paid') {
-            return `Book kickoff for R${state.regularPriceZar}`;
+        if (state.selectedOffer === 'free_trial') {
+            return 'Book free consultation';
         }
-        if (state.selectedOffer === 'free_trial' || state.freeFirstPromo || state.priceZar <= 0) {
+        if (state.selectedOffer === 'paid') {
+            return `Book kickoff for R${state.regularPriceZar || 500}`;
+        }
+        if (state.freeFirstPromo || state.priceZar <= 0) {
             return 'Book free consultation';
         }
         return `Book kickoff for R${state.priceZar}`;
@@ -1029,6 +1178,12 @@
         document.querySelectorAll('[data-job-hunt-regular-price]').forEach((el) => {
             el.textContent = `R${state.regularPriceZar}`;
         });
+        const priceEl = document.querySelector(
+            '[data-job-hunt-offer="paid"] .job-hunt-offer-card-price'
+        );
+        if (priceEl) {
+            priceEl.textContent = `R${state.regularPriceZar || 500}`;
+        }
         const submitBtn = document.getElementById('jobHuntSubmitBooking');
         if (submitBtn && !submitBtn.disabled) {
             submitBtn.textContent = formatBookLabel();
@@ -1241,6 +1396,8 @@
                     notes: notes || undefined,
                     offer: state.selectedOffer === 'paid' ? 'paid' : 'free_trial',
                     durationMinutes: offerDurationMinutes(),
+                    customerTimezone: state.customerTimezone || undefined,
+                    preferredCurrency: 'ZAR',
                 }),
             });
             const data = await res.json();
@@ -1269,8 +1426,16 @@
 
             redirectingToCheckout = beginYocoCheckout(data.checkoutRedirectUrl, data.bookingId);
         } catch (err) {
-            els.formError.textContent = err.message || 'Could not create booking.';
+            const message = err.message || 'Could not create booking.';
+            els.formError.textContent = message;
             els.formError.hidden = false;
+            if (/no longer available|already booked|temporarily reserved/i.test(message)) {
+                state.selectedSlot = null;
+                state.highlightedSlotStart = null;
+                fetchAvailability().then(() => {
+                    showStep(els.stepCalendar);
+                });
+            }
         } finally {
             if (!redirectingToCheckout && !confirmedFree) {
                 submitBtn.disabled = false;
@@ -1291,7 +1456,7 @@
         });
         els.backToSlots.addEventListener('click', () => {
             showStep(els.stepCalendar);
-            rerenderCalendar();
+            fetchAvailability();
         });
         els.form.addEventListener('submit', submitBooking);
         if (els.checkoutModal) {
@@ -1329,6 +1494,7 @@
 
     function initJobHuntBooking() {
         if (!cacheElements()) return;
+        initLocalePrefs();
         bindEvents();
         state.selectedOffer = 'paid';
         setSelectedOfferUi('paid');

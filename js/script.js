@@ -483,4 +483,68 @@ document.addEventListener('DOMContentLoaded', function() {
             heroVideo.classList.add('loaded');
         }
     }
+
+    initAppPhoneSlideshow();
 });
+
+function initAppPhoneSlideshow() {
+    const root = document.getElementById('appSlideshow');
+    if (!root) return;
+
+    const slides = Array.from(root.querySelectorAll('.phone-slide'));
+    const dots = Array.from(root.querySelectorAll('.phone-slide-dot'));
+    if (slides.length < 2) return;
+
+    let index = slides.findIndex((slide) => slide.classList.contains('is-active'));
+    if (index < 0) index = 0;
+    let timer = null;
+    const INTERVAL_MS = 3800;
+
+    function showSlide(nextIndex) {
+        index = ((nextIndex % slides.length) + slides.length) % slides.length;
+        slides.forEach((slide, i) => {
+            slide.classList.toggle('is-active', i === index);
+        });
+        dots.forEach((dot, i) => {
+            const active = i === index;
+            dot.classList.toggle('is-active', active);
+            dot.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+    }
+
+    function nextSlide() {
+        showSlide(index + 1);
+    }
+
+    function start() {
+        stop();
+        timer = window.setInterval(nextSlide, INTERVAL_MS);
+    }
+
+    function stop() {
+        if (timer) {
+            window.clearInterval(timer);
+            timer = null;
+        }
+    }
+
+    dots.forEach((dot, i) => {
+        dot.addEventListener('click', () => {
+            showSlide(i);
+            start();
+        });
+    });
+
+    root.addEventListener('mouseenter', stop);
+    root.addEventListener('mouseleave', start);
+    root.addEventListener('focusin', stop);
+    root.addEventListener('focusout', start);
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) stop();
+        else start();
+    });
+
+    showSlide(index);
+    start();
+}
