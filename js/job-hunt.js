@@ -23,7 +23,6 @@
         ';end';
 
     const TZ_COOKIE = 'tx_tz';
-    const CURRENCY_COOKIE = 'tx_currency';
     const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
     const HOST_TIMEZONE = 'Africa/Johannesburg';
     const COMMON_TIMEZONES = [
@@ -45,7 +44,6 @@
         'Australia/Sydney',
         'Pacific/Auckland',
     ];
-    const CURRENCY_SYMBOLS = { ZAR: 'R', USD: '$', EUR: '€', GBP: '£' };
 
     const state = {
         viewMonth: startOfMonth(new Date()),
@@ -67,9 +65,6 @@
         awaitingPaymentConfirmation: false,
         customerTimezone: null,
         hostTimezone: HOST_TIMEZONE,
-        preferredCurrency: 'ZAR',
-        prices: [],
-        stripeConfigured: false,
     };
 
     const els = {};
@@ -98,7 +93,6 @@
         const savedTz = readCookie(TZ_COOKIE);
         state.customerTimezone = savedTz || detectBrowserTimezone();
         if (!savedTz) writeCookie(TZ_COOKIE, state.customerTimezone);
-        state.preferredCurrency = 'ZAR';
     }
 
     function localeDateOptions(extra) {
@@ -109,24 +103,6 @@
 
     function timezoneLabel(tz) {
         return (tz || '').replace(/_/g, ' ');
-    }
-
-    function currencyAmount(code) {
-        const upper = (code || 'ZAR').toUpperCase();
-        if (upper === 'ZAR') return state.regularPriceZar || state.priceZar || 500;
-        const found = (state.prices || []).find((p) => p.currency === upper);
-        if (found && typeof found.amount === 'number') return found.amount;
-        if (upper === 'USD') return 29;
-        if (upper === 'EUR') return 27;
-        if (upper === 'GBP') return 25;
-        return state.regularPriceZar || 500;
-    }
-
-    function formatMoney(code, amount) {
-        const upper = (code || 'ZAR').toUpperCase();
-        const symbol = CURRENCY_SYMBOLS[upper] || `${upper} `;
-        if (upper === 'ZAR') return `R${amount}`;
-        return `${symbol}${amount}`;
     }
 
     function startOfMonth(date) {
@@ -973,12 +949,6 @@
             if (typeof data.paidDurationMinutes === 'number') {
                 state.paidDurationMinutes = data.paidDurationMinutes;
             }
-            if (Array.isArray(data.prices)) {
-                state.prices = data.prices;
-            }
-            if (typeof data.stripeConfigured === 'boolean') {
-                state.stripeConfigured = data.stripeConfigured;
-            }
             if (data.hostTimezone) {
                 state.hostTimezone = data.hostTimezone;
             }
@@ -1397,7 +1367,6 @@
                     offer: state.selectedOffer === 'paid' ? 'paid' : 'free_trial',
                     durationMinutes: offerDurationMinutes(),
                     customerTimezone: state.customerTimezone || undefined,
-                    preferredCurrency: 'ZAR',
                 }),
             });
             const data = await res.json();
