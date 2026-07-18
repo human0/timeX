@@ -520,8 +520,8 @@
     }
 
     function offerTitle() {
-        if (state.selectedOffer === 'free_trial') return 'Free trial kickoff';
-        return 'Paid consultation';
+        if (state.selectedOffer === 'free_trial') return 'Free trial';
+        return 'Full hunt';
     }
 
     function offerPriceLabel() {
@@ -1130,15 +1130,15 @@
 
     function formatBookLabel() {
         if (state.selectedOffer === 'free_trial') {
-            return 'Book free consultation';
+            return 'Run a free session';
         }
         if (state.selectedOffer === 'paid') {
-            return `Book kickoff for R${state.regularPriceZar || 500}`;
+            return `Run a full hunt for R${state.regularPriceZar || 500}`;
         }
         if (state.freeFirstPromo || state.priceZar <= 0) {
-            return 'Book free consultation';
+            return 'Run a free session';
         }
-        return `Book kickoff for R${state.priceZar}`;
+        return `Book full hunt for R${state.priceZar}`;
     }
 
     function updatePriceLabels() {
@@ -1421,6 +1421,13 @@
                     event.preventDefault();
                 }
                 selectOffer(offer);
+            });
+        });
+        document.querySelectorAll('[data-job-hunt-select-offer]').forEach((btn) => {
+            btn.addEventListener('click', (event) => {
+                event.preventDefault();
+                const offer = btn.getAttribute('data-job-hunt-select-offer');
+                if (offer) selectOffer(offer);
             });
         });
         els.backToSlots.addEventListener('click', () => {

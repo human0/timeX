@@ -255,13 +255,17 @@ nav {
 .download-buttons {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.2rem 0.55rem;
+    gap: 0.35rem 0.65rem;
     align-items: center;
     justify-content: flex-start;
 }
 
 .store-badge {
     display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    overflow: hidden;
     line-height: 0;
     text-decoration: none;
     transition: transform 0.15s ease, opacity 0.15s ease;
@@ -273,16 +277,16 @@ nav {
 }
 
 .store-badge img {
-    height: 54px;
+    height: 48px;
     width: auto;
     display: block;
 }
 
+/* Google Play art includes transparent padding — scale + crop to match Apple box */
 .store-badge--google img {
-    height: 80px;
-    margin: -13px 0;
+    height: 70px;
+    margin: -11px -12px;
 }
-
 .download-trust {
     margin: 0 !important;
     font-size: 0.8rem !important;
@@ -2988,15 +2992,21 @@ body.job-hunt-checkout-open {
 
     .download-buttons {
         justify-content: flex-start;
+        align-items: center;
+        gap: 0.35rem 0.5rem;
+    }
+
+    .store-badge {
+        height: 44px;
     }
 
     .store-badge img {
-        height: 48px;
+        height: 44px;
     }
 
     .store-badge--google img {
-        height: 72px;
-        margin: -12px 0;
+        height: 64px;
+        margin: -10px -11px;
     }
 
     .phone-mockup {
