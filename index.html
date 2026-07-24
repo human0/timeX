@@ -138,10 +138,10 @@
                             <div class="download-text">
                                 <p class="download-kicker">Get the app</p>
                                 <p class="download-lead">
-                                    Unlock services with time
+                                    Spend time on Time X
                                 </p>
                                 <p class="download-body">
-                                    Got an hour? Share your skills on Time X and unlock an hour of help from someone else.                                </p>
+                                    Got an hour? Spend time on Time X collaborating with freelancers, creatives, students, professionals and more.</p>
                                 <div class="download-cta">
                                     <div class="download-buttons" aria-label="Download Time X">
                                         <a
@@ -219,8 +219,7 @@
         <section class="features">
             <div class="container">
                 <h4 style="text-align: center;">
-                    A Time X is a community of people who help each other by exchanging services. As more people serve each other, skills grow, careers move forward, and the community gets stronger.
-                </h4>
+                    Time X is a community of people spending time together and exchanging services. The app uses your location and search radius to find service requests and offers near you. Your time wallet is automatically credited and debited as you exchange services. This is the heartbeat of Time X. Real-time notifications keep you updated on activities that matter. Our design is simple, accessible and daily useable.</h4>
                  <div class="features-grid">
                     <div class="feature-card">
                         <h3>Professional services</h3>
@@ -386,7 +385,7 @@
                 <p class="job-hunt-headline">Fast, easy and effective job applications</p>
                 <p class="job-hunt-lead">This tool will match you to various relevant jobs, customizes your CV for each one, and help you send applications at scale.</p>
                 <div class="job-hunt-hero-actions">
-                    <a href="#book-consultation" class="job-hunt-hero-btn" data-job-hunt-select-offer="free_trial">Free trial</a>
+                    <a href="#book-consultation" class="job-hunt-hero-btn" data-job-hunt-select-offer="free_trial">Get help now</a>
                 </div>
                 <ul class="job-hunt-trust-row">
                     <li><i class="fa fa-user" aria-hidden="true"></i> No account needed</li>
@@ -401,7 +400,7 @@
                 <div class="job-hunt-offer-grid" role="list">
                     <button type="button" class="job-hunt-offer-card job-hunt-offer-card--free" data-job-hunt-offer="free_trial" role="listitem">
                         <p class="job-hunt-offer-card-label">Promo</p>
-                        <h3>Free trial</h3>
+                        <h3>Get help</h3>
                         <p class="job-hunt-offer-card-price">30 min</p>
                         <p class="job-hunt-offer-card-text">First-time users? Run a 30 minute kickoff session to set up AI Job Hunt, and get a feel of the magic.</p>
                         <span class="job-hunt-offer-card-cta">Start a free trial</span>
@@ -445,16 +444,26 @@
                         <p id="jobHuntSelectedSlot" class="job-hunt-selected-slot"></p>
                         <form id="jobHuntBookingForm">
                             <div class="form-group">
-                                <input type="text" id="jobHuntName" name="name" placeholder="Full name" required>
+                                <label for="jobHuntName">Full name</label>
+                                <input type="text" id="jobHuntName" name="name" placeholder="Full name" required autocomplete="name">
                             </div>
                             <div class="form-group">
-                                <input type="email" id="jobHuntEmail" name="email" placeholder="Email address" required>
+                                <label for="jobHuntEmail">Email address</label>
+                                <input type="email" id="jobHuntEmail" name="email" placeholder="Email address" required autocomplete="email">
                             </div>
                             <div class="form-group">
-                                <input type="tel" id="jobHuntPhone" name="phone" placeholder="Phone (optional)">
+                                <label for="jobHuntPhone">Phone <span class="form-optional">(optional)</span></label>
+                                <input type="tel" id="jobHuntPhone" name="phone" placeholder="Phone number" autocomplete="tel">
                             </div>
                             <div class="form-group">
-                                <textarea id="jobHuntNotes" name="notes" placeholder="Notes (optional)" rows="3"></textarea>
+                                <label for="jobHuntCoverLetter">Cover letter</label>
+                                <p class="form-hint">1 or 2 short paragraphs — used as the email body when we apply on your behalf.</p>
+                                <textarea id="jobHuntCoverLetter" name="coverLetter" rows="5" required maxlength="1500" placeholder="Introduce yourself and what you are looking for in 1–2 paragraphs."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="jobHuntCv">CV / résumé</label>
+                                <p class="form-hint">PDF or Word (.pdf, .doc, .docx), max 5MB.</p>
+                                <input type="file" id="jobHuntCv" name="cv" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required>
                             </div>
                             <div class="job-hunt-form-actions">
                                 <button type="submit" class="submit-btn" id="jobHuntSubmitBooking">Confirm booking</button>
@@ -677,7 +686,7 @@
                     <h3>AI applications</h3>
                     <p>AI Job Hunt can apply to up to 500 roles on your behalf. You approve every application or let AI run on autopilot. You remain <strong>solely responsible</strong> for every application sent.</p>
                     <h3>Data use</h3>
-                    <p>CVs and session notes are used only to deliver AI Job Hunt and are handled per our <a href="#privacy-policy" onclick="navigateToSection('policies', 'privacy-policy'); return false;">Privacy Policy</a>.</p>
+                    <p>CVs and cover letters are used only to deliver AI Job Hunt and are handled per our <a href="#privacy-policy" onclick="navigateToSection('policies', 'privacy-policy'); return false;">Privacy Policy</a>.</p>
                 </div>
             </div>
         </section>

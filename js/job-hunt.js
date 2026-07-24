@@ -1333,10 +1333,52 @@
         const name = document.getElementById('jobHuntName').value.trim();
         const email = document.getElementById('jobHuntEmail').value.trim();
         const phone = document.getElementById('jobHuntPhone').value.trim();
-        const notes = document.getElementById('jobHuntNotes').value.trim();
+        const coverLetter = document.getElementById('jobHuntCoverLetter').value.trim();
+        const cvInput = document.getElementById('jobHuntCv');
+        const cvFile = cvInput && cvInput.files && cvInput.files[0] ? cvInput.files[0] : null;
 
         if (!state.selectedSlot) {
             els.formError.textContent = 'Please select a time slot.';
+            els.formError.hidden = false;
+            return;
+        }
+
+        if (!coverLetter || coverLetter.length < 40) {
+            els.formError.textContent =
+                'Please write a short cover letter (1 or 2 paragraphs, at least 40 characters).';
+            els.formError.hidden = false;
+            return;
+        }
+
+        if (coverLetter.length > 1500) {
+            els.formError.textContent =
+                'Please keep the cover letter to 1 or 2 short paragraphs (max 1500 characters).';
+            els.formError.hidden = false;
+            return;
+        }
+
+        const paragraphs = coverLetter.split(/\n\s*\n/).filter((part) => part.trim());
+        if (paragraphs.length > 2) {
+            els.formError.textContent = 'Please keep the cover letter to 1 or 2 paragraphs.';
+            els.formError.hidden = false;
+            return;
+        }
+
+        if (!cvFile) {
+            els.formError.textContent = 'Please upload your CV (PDF or Word).';
+            els.formError.hidden = false;
+            return;
+        }
+
+        const allowedExt = /\.(pdf|doc|docx)$/i;
+        if (!allowedExt.test(cvFile.name || '')) {
+            els.formError.textContent = 'CV must be a PDF or Word document (.pdf, .doc, .docx).';
+            els.formError.hidden = false;
+            return;
+        }
+
+        if (cvFile.size > 5 * 1024 * 1024) {
+            els.formError.textContent = 'CV is too large. Maximum size is 5MB.';
             els.formError.hidden = false;
             return;
         }
@@ -1354,20 +1396,23 @@
             const slotPayload = bookingSlotPayload(state.selectedSlot);
             state.selectedSlot = { start: slotPayload.slotStart, end: slotPayload.slotEnd };
 
+            const formData = new FormData();
+            formData.append('slotStart', slotPayload.slotStart);
+            formData.append('slotEnd', slotPayload.slotEnd);
+            formData.append('name', name);
+            formData.append('email', email);
+            if (phone) formData.append('phone', phone);
+            formData.append('coverLetter', coverLetter);
+            formData.append('offer', state.selectedOffer === 'paid' ? 'paid' : 'free_trial');
+            formData.append('durationMinutes', String(offerDurationMinutes()));
+            if (state.customerTimezone) {
+                formData.append('customerTimezone', state.customerTimezone);
+            }
+            formData.append('cv', cvFile, cvFile.name);
+
             const res = await fetch(`${API_BASE}/consultations/book`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    slotStart: slotPayload.slotStart,
-                    slotEnd: slotPayload.slotEnd,
-                    name,
-                    email,
-                    phone: phone || undefined,
-                    notes: notes || undefined,
-                    offer: state.selectedOffer === 'paid' ? 'paid' : 'free_trial',
-                    durationMinutes: offerDurationMinutes(),
-                    customerTimezone: state.customerTimezone || undefined,
-                }),
+                body: formData,
             });
             const data = await res.json();
             if (!res.ok || !data.success) {

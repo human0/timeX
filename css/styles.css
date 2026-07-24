@@ -1237,6 +1237,25 @@ nav {
     margin-bottom: 1.5rem;
 }
 
+.form-group label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.form-group .form-optional {
+    font-weight: 400;
+    color: #64748b;
+}
+
+.form-hint {
+    margin: 0 0 0.55rem;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: #64748b;
+}
+
 .form-group input,
 .form-group textarea {
     width: 100%;
@@ -1245,6 +1264,12 @@ nav {
     border-radius: 10px;
     font-size: 1rem;
     transition: all 0.3s ease;
+}
+
+.form-group input[type="file"] {
+    padding: 0.75rem;
+    background: #f8fafc;
+    cursor: pointer;
 }
 
 .form-group input:focus,
