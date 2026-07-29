@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Download Time X on the App Store or Google Play." />
+  <meta property="og:title" content="Get Time X" />
+  <meta property="og:description" content="Download the official Time X app." />
+  <meta property="og:image" content="https://timexchange.co.za/photos/icon.png" />
+  <meta property="og:url" content="https://timexchange.co.za/app" />
+  <link rel="icon" href="https://timexchange.co.za/photos/icon.png" />
+  <link rel="canonical" href="https://timexchange.co.za/app" />
+  <title>Get Time X</title>
+  <style>
+    :root {
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --brand: #2563eb;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 500px at 50% -10%, #dbeafe 0%, transparent 55%),
+        var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin: 0 auto 1.25rem;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand img {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+    }
+
+    h1 {
+      margin: 0 0 0.5rem;
+      font-size: 1.45rem;
+      line-height: 1.25;
+    }
+
+    .lead {
+      margin: 0 auto 1.5rem;
+      color: var(--muted);
+      font-size: 0.98rem;
+      line-height: 1.55;
+    }
+
+    .store-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+
+    .store-badge img {
+      display: block;
+      height: auto;
+    }
+
+    .store-badge--google img {
+      width: 180px;
+    }
+  </style>
+  <script>
+    (function () {
+      var iosStore = 'https://apps.apple.com/za/app/time-x/id6748560628';
+      var androidStore = 'https://play.google.com/store/apps/details?id=com.timeexchange.timebank';
+      var home = 'https://timexchange.co.za/';
+      var ua = navigator.userAgent || '';
+      if (/iPhone|iPad|iPod/i.test(ua)) {
+        window.location.replace(iosStore);
+      } else if (/Android/i.test(ua)) {
+        window.location.replace(androidStore);
+      } else {
+        window.location.replace(home);
+      }
+    })();
+  </script>
+</head>
+<body>
+  <section class="card">
+    <a class="brand" href="https://timexchange.co.za/" aria-label="Time X home">
+      <img src="https://timexchange.co.za/photos/icon.png" width="44" height="44" alt="Time X app icon" />
+      <span>Time X</span>
+    </a>
+    <h1>Get the app</h1>
+    <p class="lead">Download Time X on the App Store or Google Play.</p>
+    <div class="store-row" aria-label="Download Time X">
+      <a
+        class="store-badge"
+        href="https://apps.apple.com/za/app/time-x/id6748560628"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Download on the App Store"
+      >
+        <img
+          src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83"
+          alt="Download on the App Store"
+          width="150"
+          height="50"
+        />
+      </a>
+      <a
+        class="store-badge store-badge--google"
+        href="https://play.google.com/store/apps/details?id=com.timeexchange.timebank"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Get it on Google Play"
+      >
+        <img
+          src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+          alt="Get it on Google Play"
+          width="180"
+          height="70"
+        />
+      </a>
+    </div>
+  </section>
+</body>
+</html>
