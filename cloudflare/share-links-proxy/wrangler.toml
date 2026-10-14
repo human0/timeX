@@ -1,0 +1,28 @@
+name = "share-links-proxy"
+main = "src/index.js"
+compatibility_date = "2024-06-01"
+
+# Same account that owns timexchange.co.za in Cloudflare
+# Deployed by .github/workflows/worker.yml on push to main (manual: npx wrangler deploy)
+
+# Only the paths the Worker handles (see src/index.js). Everything else goes straight to
+# GitHub Pages without a Worker invocation, so page views don't count against the free plan.
+[[routes]]
+pattern = "timexchange.co.za/.well-known/*"
+zone_name = "timexchange.co.za"
+
+[[routes]]
+pattern = "timexchange.co.za/request/*"
+zone_name = "timexchange.co.za"
+
+[[routes]]
+pattern = "timexchange.co.za/invite/*"
+zone_name = "timexchange.co.za"
+
+[[routes]]
+pattern = "timexchange.co.za/app"
+zone_name = "timexchange.co.za"
+
+[[routes]]
+pattern = "timexchange.co.za/app/"
+zone_name = "timexchange.co.za"

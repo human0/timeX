@@ -1,0 +1,46 @@
+name: CI
+
+# Website + share-link Worker checks on pull requests and pushes to main.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  website:
+    name: Website HTML
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - name: Validate HTML
+        # Report-only until the existing markup errors are fixed; then remove continue-on-error.
+        continue-on-error: true
+        run: npx --yes html-validate@9 "*.html" "app/*.html"
+      - name: Check internal links
+        uses: lycheeverse/lychee-action@v2
+        continue-on-error: true
+        with:
+          args: --offline --no-progress "**/*.html"
+          fail: true
+
+  worker:
+    name: Share-link Worker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - name: Wrangler dry run
+        working-directory: cloudflare/share-links-proxy
+        run: npx --yes wrangler@4 deploy --dry-run --outdir dist
