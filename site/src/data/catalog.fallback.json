@@ -1,0 +1,167 @@
+{
+  "statuses": [
+    {
+      "id": "pending",
+      "label": "Pending",
+      "description": "Waiting for the helper to confirm."
+    },
+    {
+      "id": "scheduled",
+      "label": "Scheduled",
+      "description": "Confirmed, not started yet."
+    },
+    {
+      "id": "active",
+      "label": "In progress",
+      "description": "Time is being spent now."
+    },
+    {
+      "id": "paused",
+      "label": "Paused",
+      "description": "Temporarily stopped."
+    },
+    {
+      "id": "completed",
+      "label": "Completed",
+      "description": "Finished; time has moved on."
+    },
+    {
+      "id": "canceled",
+      "label": "Cancelled",
+      "description": "Stopped before completion."
+    }
+  ],
+  "services": [
+    {
+      "id": "garden-clean-up",
+      "name": "Garden clean-up",
+      "category": "household",
+      "minHours": 3.0,
+      "maxHours": 3.0
+    },
+    {
+      "id": "matric-maths-prep",
+      "name": "Matric maths prep",
+      "category": "education",
+      "minHours": 4.0,
+      "maxHours": 6.0
+    },
+    {
+      "id": "tax-return-review",
+      "name": "Tax return review",
+      "category": "professional",
+      "minHours": 2.0,
+      "maxHours": 3.0
+    },
+    {
+      "id": "contract-review",
+      "name": "Contract review",
+      "category": "professional",
+      "minHours": 1.0,
+      "maxHours": 2.0
+    },
+    {
+      "id": "essay-editing",
+      "name": "Essay editing",
+      "category": "education",
+      "minHours": 1.0,
+      "maxHours": 1.0
+    },
+    {
+      "id": "fix-a-leaking-tap",
+      "name": "Fix a leaking tap",
+      "category": "household",
+      "minHours": 1.0,
+      "maxHours": 1.0
+    },
+    {
+      "id": "logo-design",
+      "name": "Logo design",
+      "category": "professional",
+      "minHours": 3.0,
+      "maxHours": 5.0
+    },
+    {
+      "id": "meal-prep-for-the-week",
+      "name": "Meal prep for the week",
+      "category": "household",
+      "minHours": 3.0,
+      "maxHours": 3.0
+    },
+    {
+      "id": "piano-lesson",
+      "name": "Piano lesson",
+      "category": "education",
+      "minHours": 1.0,
+      "maxHours": 1.0
+    },
+    {
+      "id": "booking-website",
+      "name": "Booking website",
+      "category": "professional",
+      "minHours": 6.0,
+      "maxHours": 10.0
+    },
+    {
+      "id": "furniture-assembly",
+      "name": "Furniture assembly",
+      "category": "household",
+      "minHours": 1.0,
+      "maxHours": 2.0
+    },
+    {
+      "id": "thesis-statistics-help",
+      "name": "Thesis statistics help",
+      "category": "education",
+      "minHours": 2.0,
+      "maxHours": 4.0
+    },
+    {
+      "id": "language-tutoring",
+      "name": "Language tutoring",
+      "category": "education",
+      "minHours": 1.0,
+      "maxHours": 1.0
+    },
+    {
+      "id": "paint-one-room",
+      "name": "Paint one room",
+      "category": "household",
+      "minHours": 4.0,
+      "maxHours": 6.0
+    },
+    {
+      "id": "portfolio-shoot",
+      "name": "Portfolio shoot",
+      "category": "professional",
+      "minHours": 1.5,
+      "maxHours": 3.0
+    },
+    {
+      "id": "cv-review",
+      "name": "CV review",
+      "category": "professional",
+      "minHours": 1.0,
+      "maxHours": 1.0
+    },
+    {
+      "id": "moving-help",
+      "name": "Moving help",
+      "category": "household",
+      "minHours": 3.0,
+      "maxHours": 4.0
+    },
+    {
+      "id": "university-applications",
+      "name": "University applications",
+      "category": "education",
+      "minHours": 2.0,
+      "maxHours": 3.0
+    }
+  ],
+  "categories": [
+    "professional",
+    "household",
+    "education"
+  ]
+}
