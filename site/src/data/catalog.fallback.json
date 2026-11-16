@@ -163,5 +163,11 @@
     "professional",
     "household",
     "education"
-  ]
+  ],
+  "stats": {
+    "hoursExchanged": null,
+    "ratings": null,
+    "professions": null,
+    "cities": null
+  }
 }

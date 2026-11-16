@@ -14,7 +14,14 @@ export type Service = {
   minHours: number;
   maxHours: number;
 };
+export type Stats = {
+  hoursExchanged: number | null;
+  ratings: { average: number; count: number } | null;
+  professions: number | null;
+  cities: number | null;
+};
 export type Catalog = {
+  stats?: Stats;
   statuses: ExchangeStatus[];
   services: Service[];
   categories: string[];

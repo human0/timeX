@@ -9,6 +9,14 @@ const byCategory = catalog.categories.map((category) => ({
   services: catalog.services.filter((s) => s.category === category),
 }));
 const popular = catalog.services.slice(0, 5);
+const fmt = (n: number) => n.toLocaleString('en-US');
+const stats = catalog.stats ?? { hoursExchanged: null, ratings: null, professions: null, cities: null };
+const heroStats = [
+  stats.hoursExchanged != null ? { value: `${fmt(stats.hoursExchanged)}+h`, label: 'time traded' } : null,
+  stats.ratings ? { value: stats.ratings.average.toFixed(1), label: `average session rating · ${fmt(stats.ratings.count)} ratings` } : null,
+  stats.professions != null ? { value: `${fmt(stats.professions)}+`, label: 'professions represented' } : null,
+  stats.cities != null ? { value: `${fmt(stats.cities)}+`, label: 'cities with members' } : null,
+].filter((x): x is { value: string; label: string } => x !== null);
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -23,6 +31,15 @@ const popular = catalog.services.slice(0, 5);
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style is:global>
 [hidden]{display:none!important}
+.hero-stats.n4{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+.states-block{margin-top:32px}
+.states-h{margin:0 0 12px;font-size:14px;font-weight:600;color:var(--mist)}
+.states{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.state{padding:14px 16px;border-radius:var(--radius-lg)}
+.state b{display:block;font-weight:700;font-size:15px}
+.state span{display:block;margin-top:4px;color:var(--mist);font-size:13px;line-height:1.4}
+@media (max-width:620px){.states{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){.hero-stats.n4{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 /* Plan: a members’ network for professionals and communities., by choice (single theme). Liquid-glass panels float over slow colour fields;
    the hero is a live orbit where time, cash and gifts travel between members. Boldness lives in the orbit; the rest stays quiet. */
 :root{
@@ -639,7 +656,7 @@ footer .wrap.fbottom{border-top:0;position:relative}footer .wrap.fbottom::before
 .ax-tr svg{width:30px;height:30px;stroke-width:2.2;animation:axspin 6s linear infinite}
 @keyframes axspin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.ax-tr svg{animation:none}}
-.ax-state{font-size:9px;font-weight:600;color:#27ae60;margin-top:-2px}
+.ax-state{font-size:11px;font-weight:600;color:#27ae60;margin-top:-2px}
 /* nav: highlight the section in view */
 .nav ul{gap:6px!important}
 .nav ul a{display:block;padding:7px 12px;border-radius:999px;transition:color .2s,background .2s}
@@ -724,8 +741,8 @@ section[id]{scroll-margin-top:96px}
     <div class="hcopy">
       <form class="ask glass" id="ask" role="search" aria-label="Find help">
         <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
-        <label class="sr" for="askInput">What do you need help with?</label>
-        <input id="askInput" type="text" placeholder="What do you need help with?" autocomplete="off">
+        <label class="sr" for="askInput">What task do you need help with today?</label>
+        <input id="askInput" type="text" placeholder="What task do you need help with today?" autocomplete="off">
         <button class="btn primary" type="submit">Find help</button>
       </form>
       <div class="popular" aria-label="Popular tasks" hidden>
@@ -741,11 +758,13 @@ section[id]{scroll-margin-top:96px}
       <ul class="trust" aria-label="Why members trust Time Xchange">
         <li><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><circle cx="12" cy="12" r="10" /><path d="m9 12 2 2 4-4" /></svg>Verified members</li><li><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><circle cx="12" cy="12" r="10" /><path d="m9 12 2 2 4-4" /></svg>Rated after every session</li><li><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><circle cx="12" cy="12" r="10" /><path d="m9 12 2 2 4-4" /></svg>Payments through the App Store and Google Play</li>
       </ul>
-      <div class="stats hero-stats">
-      <div class="stat glass"><b>[00,000]h</b><span>time traded</span></div>
-      <div class="stat glass"><b>[000]</b><span>professions represented</span></div>
-      <div class="stat glass"><b>[4.9]</b><span>average session rating</span></div>
-    </div>
+      {heroStats.length > 0 && (
+      <div class={`stats hero-stats n${heroStats.length}`}>
+        {heroStats.map((st) => (
+          <div class="stat glass"><b>{st.value}</b><span>{st.label}</span></div>
+        ))}
+      </div>
+      )}
     </div>
   </section>
 
@@ -782,6 +801,14 @@ section[id]{scroll-margin-top:96px}
     </div>
     <div class="chain glass" id="chain" role="tabpanel" aria-labelledby="tab-pro" aria-label="Example chain of tasks"></div>
     <p class="payline">Pay in time, add cash or a gift when the job calls for it.</p>
+    <div class="states-block">
+      <p class="states-h">Every booking moves through these states</p>
+      <ul class="states" aria-label="Booking states">
+        {catalog.statuses.map((st) => (
+          <li class="state glass"><b>{st.label}</b><span>{st.description}</span></li>
+        ))}
+      </ul>
+    </div>
 
   </section>
 
@@ -980,7 +1007,7 @@ const STORIES = [
          "A month later, Margaret’s geyser burst on a Sunday night. She posted a request on Time X and Sipho answered within the hour. The repair took three hours, paid from the time Margaret had earned, plus R650 in cash for the new parts.",
          "Sipho still has three hours left over, which he plans to spend on help with his business accounts."] }
 ];
-const STORY_BG = {"farm-guitar": "assets/img/stories/scene-farm-guitar.jpg", "laptop": "assets/img/stories/scene-laptop.jpg", "geyser": "assets/img/stories/scene-geyser.jpg"};
+const STORY_BG = {"farm-guitar": "/new/assets/img/stories/scene-farm-guitar.jpg", "laptop": "/new/assets/img/stories/scene-laptop.jpg", "geyser": "/new/assets/img/stories/scene-geyser.jpg"};
 const CUT = {"44": "assets/img/stories/person-44.webp", "45": "assets/img/stories/person-45.webp", "46": "assets/img/stories/person-46.webp", "47": "assets/img/stories/person-47.webp", "48": "assets/img/stories/person-48.webp", "49": "assets/img/stories/person-49.webp", "52": "assets/img/stories/person-52.webp"};
 const cutFace = n => CUT[n] || face(n);
 const chipIc = {gift:'<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg>', time:clockSvg, plan:'<svg aria-hidden=\"true\" width=\"13\" height=\"13\" viewBox=\"0 0 24 24\" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.5 2.3a.5.5 0 0 1 1 0l2.3 4.7a2 2 0 0 0 1.6 1.1l5.2.8a.5.5 0 0 1 .3.9l-3.7 3.6a2 2 0 0 0-.6 1.9l.9 5.1a.5.5 0 0 1-.8.6l-4.6-2.4a2 2 0 0 0-2 0l-4.6 2.4a.5.5 0 0 1-.8-.6l.9-5.1a2 2 0 0 0-.6-1.9L1.1 9.8a.5.5 0 0 1 .3-.9l5.2-.8a2 2 0 0 0 1.6-1.1z"/></svg>', save:'<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29a1 1 0 0 0 1.41 0l8.59-8.59a1 1 0 0 0 0-1.41z"/><circle cx="7" cy="7" r="1.5"/></svg>', cash:'<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/></svg>'};
