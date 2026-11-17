@@ -44,3 +44,19 @@ jobs:
       - name: Wrangler dry run
         working-directory: cloudflare/share-links-proxy
         run: npx --yes wrangler@4 deploy --dry-run --outdir dist
+
+  site:
+    name: Astro site build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      # Builds the /new page. The catalogue is fetched from TBServer; if it is unreachable the
+      # build falls back to site/src/data/catalog.fallback.json, so this job does not depend on the API.
+      - name: Build
+        working-directory: site
+        run: |
+          npm ci
+          npx astro build
