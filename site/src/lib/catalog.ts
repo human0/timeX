@@ -15,7 +15,7 @@ export type Service = {
   maxHours: number;
 };
 export type Stats = {
-  hoursExchanged: number | null;
+  secondsExchanged: number | null;
   ratings: { average: number; count: number } | null;
   professions: number | null;
   cities: number | null;

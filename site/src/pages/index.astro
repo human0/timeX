@@ -13,10 +13,10 @@ const byCategory = catalog.categories.map((category) => ({
 }));
 const popular = catalog.services.slice(0, 5);
 const fmt = (n: number) => n.toLocaleString('en-US');
-const stats = catalog.stats ?? { hoursExchanged: null, ratings: null, professions: null, cities: null };
+const stats = catalog.stats ?? { secondsExchanged: null, ratings: null, professions: null, cities: null };
 const heroStats = [
-  stats.hoursExchanged != null ? { value: `${fmt(stats.hoursExchanged)}h`, label: 'time traded' } : null,
-  stats.ratings ? { value: stats.ratings.average.toFixed(1), label: `average session rating · ${fmt(stats.ratings.count)} ratings` } : null,
+  stats.secondsExchanged != null ? { value: fmt(stats.secondsExchanged), label: 'time traded' } : null,
+  stats.ratings ? { value: stats.ratings.average.toFixed(1), label: 'average session rating' } : null,
   stats.professions != null ? { value: `${fmt(stats.professions)}+`, label: 'professions represented' } : null,
   stats.cities != null ? { value: `${fmt(stats.cities)}+`, label: 'cities with members' } : null,
 ].filter((x): x is { value: string; label: string } => x !== null);
@@ -732,6 +732,8 @@ section[id]{scroll-margin-top:96px}
       <li><a href="#exchanges">Network</a></li>
       <li><a href="#stories">Stories</a></li>
       <li><a href="#faq">FAQ</a></li>
+      <li><a href="/privacy/">Privacy</a></li>
+      <li><a href="/terms/">Terms</a></li>
     </ul>
     <div class="nav-end"><button class="theme glass" id="themeBtn" type="button" aria-label="Switch to light mode">
       <svg aria-hidden="true" class="i-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" /><path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" /><path d="M2 12h2" /><path d="M20 12h2" /><path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" /></svg>
@@ -875,7 +877,7 @@ section[id]{scroll-margin-top:96px}
   <div class="qr"><div id="qrSheet" class="qrbox" aria-label="QR code to download the app"></div><small>On a computer? Scan this with your phone.</small></div>
 </div>
 <div class="dlbar glass" id="dlbar"><span><b>Time Xchange</b><small>Trade time with members near you</small></span><a class="btn primary" href="https://timexchange.co.za/app">Get the app</a></div>
-  <section id="policies" class="band band-grain legal-band" aria-labelledby="policies-h">
+  <section id="policies" class="band band-grain legal-band" aria-labelledby="policies-h" hidden>
     <div class="legal-wrap">
       <h2 id="policies-h" class="sr">Policies</h2>
       <PrivacyPolicy />
@@ -895,7 +897,7 @@ section[id]{scroll-margin-top:96px}
     </div>
     <nav class="fcol" aria-label="Product"><h4>Product</h4><a href="#how">How it works</a><a href="#tasks" hidden>Tasks</a><a href="#stories">Example stories</a><a href="https://timexchange.co.za/app" data-sheet>Get the app</a></nav>
     <nav class="fcol" aria-label="Company"><h4>Company</h4><a href="https://timexchange.co.za/meettheteam.html">Meet the team</a><a href="#earn">Offer your skills</a><a href="/legacy/#job-hunt">Smart Job Hunt</a><a href="mailto:support@timexchange.co.za">Contact support</a></nav>
-    <nav class="fcol" aria-label="Legal"><h4>Legal</h4><a href="https://timexchange.co.za/#privacy-policy">Privacy policy</a><a href="https://timexchange.co.za/#terms-of-service">Terms of service</a></nav>
+    <nav class="fcol" aria-label="Legal"><h4>Legal</h4><a href="/privacy/">Privacy policy</a><a href="/terms/">Terms of service</a></nav>
   </div>
   <div class="wrap fbottom"><span>© 2026 Time Xchange (Pty) Ltd · Registered in South Africa</span><span>Portraits are AI-generated placeholders (Personified by All SVG Icons) and show people who don’t exist · Scene photos: Unsplash · Icons: Lucide</span></div>
 </footer>
@@ -1146,8 +1148,10 @@ else {
 <script is:inline>
 (function(){
   var archived = {about:1, 'job-hunt':1, 'job-hunt-offers':1, 'career-help':1, 'book-consultation':1, subscription:1};
+  var pages = {'privacy-policy':'/privacy/', 'policies':'/privacy/', 'terms-of-service':'/terms/', 'auto-renewable-subscriptions':'/terms/#auto-renewable-subscriptions'};
   var h = location.hash.slice(1);
-  if (archived[h]) location.replace('/legacy/#' + h);
+  if (pages[h]) location.replace(pages[h]);
+  else if (archived[h]) location.replace('/legacy/#' + h);
 })();
 </script>
 </body>
