@@ -165,7 +165,7 @@
     "education"
   ],
   "stats": {
-    "hoursExchanged": null,
+    "secondsExchanged": null,
     "ratings": null,
     "professions": null,
     "cities": null
