@@ -1,9 +1,10 @@
 import { defineConfig } from 'astro/config';
 
-// Built output goes to ../new so GitHub Pages serves it at timexchange.co.za/new/ with no extra setup.
+// The homepage is served at the domain root. Build output goes to dist/, and
+// scripts/publish.mjs copies the homepage, its assets and the legal pages to the repository root.
 export default defineConfig({
   site: 'https://timexchange.co.za',
-  base: '/new/',
-  outDir: '../new',
-  build: { format: 'file' },
+  base: '/',
+  outDir: 'dist',
+  build: { format: 'directory' },
 });

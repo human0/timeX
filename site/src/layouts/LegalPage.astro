@@ -1,0 +1,35 @@
+---
+interface Props { title: string; description: string; path: string }
+const { title, description, path } = Astro.props;
+const canonical = new URL(path, 'https://timexchange.co.za').href;
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{title}</title>
+  <meta name="description" content={description}>
+  <link rel="canonical" href={canonical}>
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="/photos/icon.png">
+  <style is:global>
+    body{margin:0;background:#F9F9FB;color:#2B2F35;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.6}
+    .legal-page{max-width:760px;margin:0 auto;padding:48px 24px 72px}
+    .legal-page .home{display:inline-block;margin-bottom:24px;color:#0D74CE;text-decoration:none;font-weight:600}
+    .legal h2{font-size:28px;margin:0 0 6px;color:#1C2024}
+    .legal h3{font-size:19px;margin:32px 0 8px;color:#1C2024}
+    .legal h4{font-size:16px;margin:20px 0 6px;color:#1C2024}
+    .legal p,.legal li{font-size:15px;color:#2B2F35}
+    .legal ul{padding-left:20px}
+    .legal-date{color:#60646C;font-size:13px}
+    .legal a{color:#0D74CE}
+  </style>
+</head>
+<body>
+  <main class="legal-page">
+    <a class="home" href="/">← Time X Change home</a>
+    <slot />
+  </main>
+</body>
+</html>

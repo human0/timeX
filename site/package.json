@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "publish": "astro build && node scripts/publish.mjs",
     "check": "astro check"
   },
   "dependencies": {

@@ -1,5 +1,8 @@
 ---
 import { loadCatalog, formatHours, categoryTitle } from '../lib/catalog';
+import PrivacyPolicy from '../components/PrivacyPolicy.astro';
+import TermsOfUse from '../components/TermsOfUse.astro';
+import Contact from '../components/Contact.astro';
 
 // Read-only data from the server (GET /public/catalog), fetched once at build time.
 const catalog = await loadCatalog();
@@ -32,6 +35,16 @@ const heroStats = [
 <style is:global>
 [hidden]{display:none!important}
 .hero-stats.n4{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+.legal-wrap{max-width:820px;margin:0 auto}
+.legal{padding:8px 0 40px}
+.legal h2{font-size:clamp(28px,4vw,40px);margin:0 0 6px;color:var(--ink)}
+.legal h3{font-size:20px;margin:32px 0 8px;color:var(--ink)}
+.legal h4{font-size:16px;margin:20px 0 6px;color:var(--ink)}
+.legal p,.legal li{font-size:15px;color:var(--mist);line-height:1.6}
+.legal ul{padding-left:20px}
+.legal-date{font-size:13px}
+.legal a{color:var(--indigo)}
+.legal-band + .legal-band{padding-top:0}
 .states-block{margin-top:32px}
 .states-h{margin:0 0 12px;font-size:14px;font-weight:600;color:var(--mist)}
 .states{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
@@ -862,6 +875,17 @@ section[id]{scroll-margin-top:96px}
   <div class="qr"><div id="qrSheet" class="qrbox" aria-label="QR code to download the app"></div><small>On a computer? Scan this with your phone.</small></div>
 </div>
 <div class="dlbar glass" id="dlbar"><span><b>Time Xchange</b><small>Trade time with members near you</small></span><a class="btn primary" href="https://timexchange.co.za/app">Get the app</a></div>
+  <section id="policies" class="band band-grain legal-band" aria-labelledby="policies-h">
+    <div class="legal-wrap">
+      <h2 id="policies-h" class="sr">Policies</h2>
+      <PrivacyPolicy />
+      <TermsOfUse />
+    </div>
+  </section>
+  <section id="contact-band" class="band band-frost legal-band">
+    <div class="legal-wrap"><Contact /></div>
+  </section>
+
 <footer>
   <div class="wrap fgrid">
     <div class="fbrand">
@@ -870,7 +894,7 @@ section[id]{scroll-margin-top:96px}
       <div class="fstores"><a class="sbadge" href="https://apps.apple.com/za/app/time-x/id6748560628"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.4 12.6c0-2.4 2-3.6 2.1-3.7-1.1-1.7-2.9-1.9-3.5-1.9-1.5-.2-2.9.9-3.7.9-.8 0-1.9-.9-3.2-.8-1.6 0-3.1 1-4 2.4-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.1-.8 1.5 0 1.9.8 3.2.8 1.3 0 2.2-1.2 3-2.4.9-1.4 1.3-2.7 1.3-2.8-.1 0-2.5-1-2.5-3.9zM14 5.3c.7-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.5-.6.7-1.2 1.8-1 2.9 1.1.1 2.1-.6 2.8-1.4z"/></svg><span><small>Download on the</small>App Store</span></a><a class="sbadge" href="https://play.google.com/store/apps/details?id=com.timeexchange.timebank"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4.2 2.6 13.6 12l-9.4 9.4c-.4-.2-.7-.7-.7-1.3V3.9c0-.6.3-1.1.7-1.3zm10.6 10.6 2.5 2.5-11.1 6.3 8.6-8.8zm3.9-3.9 2.6 1.5c.9.5.9 1.9 0 2.4l-2.6 1.5-2.8-2.7 2.8-2.7zM6.2 1.9l11.1 6.3-2.5 2.5-8.6-8.8z"/></svg><span><small>Get it on</small>Google Play</span></a></div>
     </div>
     <nav class="fcol" aria-label="Product"><h4>Product</h4><a href="#how">How it works</a><a href="#tasks" hidden>Tasks</a><a href="#stories">Example stories</a><a href="https://timexchange.co.za/app" data-sheet>Get the app</a></nav>
-    <nav class="fcol" aria-label="Company"><h4>Company</h4><a href="https://timexchange.co.za/meettheteam.html">Meet the team</a><a href="#earn">Offer your skills</a><a href="mailto:support@timexchange.co.za">Contact support</a></nav>
+    <nav class="fcol" aria-label="Company"><h4>Company</h4><a href="https://timexchange.co.za/meettheteam.html">Meet the team</a><a href="#earn">Offer your skills</a><a href="/legacy/#job-hunt">Smart Job Hunt</a><a href="mailto:support@timexchange.co.za">Contact support</a></nav>
     <nav class="fcol" aria-label="Legal"><h4>Legal</h4><a href="https://timexchange.co.za/#privacy-policy">Privacy policy</a><a href="https://timexchange.co.za/#terms-of-service">Terms of service</a></nav>
   </div>
   <div class="wrap fbottom"><span>© 2026 Time Xchange (Pty) Ltd · Registered in South Africa</span><span>Portraits are AI-generated placeholders (Personified by All SVG Icons) and show people who don’t exist · Scene photos: Unsplash · Icons: Lucide</span></div>
@@ -1007,7 +1031,7 @@ const STORIES = [
          "A month later, Margaret’s geyser burst on a Sunday night. She posted a request on Time X and Sipho answered within the hour. The repair took three hours, paid from the time Margaret had earned, plus R650 in cash for the new parts.",
          "Sipho still has three hours left over, which he plans to spend on help with his business accounts."] }
 ];
-const STORY_BG = {"farm-guitar": "/new/assets/img/stories/scene-farm-guitar.jpg", "laptop": "/new/assets/img/stories/scene-laptop.jpg", "geyser": "/new/assets/img/stories/scene-geyser.jpg"};
+const STORY_BG = {"farm-guitar": "/assets/img/stories/scene-farm-guitar.jpg", "laptop": "/assets/img/stories/scene-laptop.jpg", "geyser": "/assets/img/stories/scene-geyser.jpg"};
 const CUT = {"44": "assets/img/stories/person-44.webp", "45": "assets/img/stories/person-45.webp", "46": "assets/img/stories/person-46.webp", "47": "assets/img/stories/person-47.webp", "48": "assets/img/stories/person-48.webp", "49": "assets/img/stories/person-49.webp", "52": "assets/img/stories/person-52.webp"};
 const cutFace = n => CUT[n] || face(n);
 const chipIc = {gift:'<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg>', time:clockSvg, plan:'<svg aria-hidden=\"true\" width=\"13\" height=\"13\" viewBox=\"0 0 24 24\" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.5 2.3a.5.5 0 0 1 1 0l2.3 4.7a2 2 0 0 0 1.6 1.1l5.2.8a.5.5 0 0 1 .3.9l-3.7 3.6a2 2 0 0 0-.6 1.9l.9 5.1a.5.5 0 0 1-.8.6l-4.6-2.4a2 2 0 0 0-2 0l-4.6 2.4a.5.5 0 0 1-.8-.6l.9-5.1a2 2 0 0 0-.6-1.9L1.1 9.8a.5.5 0 0 1 .3-.9l5.2-.8a2 2 0 0 0 1.6-1.1z"/></svg>', save:'<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29a1 1 0 0 0 1.41 0l8.59-8.59a1 1 0 0 0 0-1.41z"/><circle cx="7" cy="7" r="1.5"/></svg>', cash:'<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/></svg>'};
@@ -1117,6 +1141,13 @@ else {
   const total = 2*3600, start = 1*3600 + 42*60 + 18; let s = start;
   const f = n => { const h = Math.floor(n/3600), m = Math.floor(n%3600/60), x = n%60; return String(h).padStart(2,"0")+"h "+String(m).padStart(2,"0")+"m "+String(x).padStart(2,"0")+"s"; };
   setInterval(() => { s = s >= total ? start : s + 1; sp.textContent = f(s); lf.textContent = f(total - s); }, 1000);
+})();
+</script>
+<script is:inline>
+(function(){
+  var archived = {about:1, 'job-hunt':1, 'job-hunt-offers':1, 'career-help':1, 'book-consultation':1, subscription:1};
+  var h = location.hash.slice(1);
+  if (archived[h]) location.replace('/legacy/#' + h);
 })();
 </script>
 </body>
