@@ -14,7 +14,10 @@ const popular = catalog.services.slice(0, 5);
 const fmt = (n: number) => n.toLocaleString('en-US');
 const stats = catalog.stats ?? { secondsExchanged: null, ratings: null, professions: null, cities: null };
 const heroStats = [
-  stats.secondsExchanged != null ? { value: fmt(stats.secondsExchanged), label: 'time traded' } : null,
+  // Sent in seconds; shown as whole hours, once there is at least an hour.
+  stats.secondsExchanged != null && stats.secondsExchanged >= 3600
+    ? { value: `${fmt(Math.floor(stats.secondsExchanged / 3600))}+h`, label: 'time traded' }
+    : null,
   stats.ratings ? { value: stats.ratings.average.toFixed(1), label: 'average rating' } : null,
   stats.professions != null ? { value: `${fmt(stats.professions)}+`, label: 'professions' } : null,
   stats.cities != null ? { value: `${fmt(stats.cities)}+`, label: 'cities' } : null,
