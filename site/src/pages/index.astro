@@ -2,7 +2,6 @@
 import { loadCatalog, formatHours, categoryTitle } from '../lib/catalog';
 import PrivacyPolicy from '../components/PrivacyPolicy.astro';
 import TermsOfUse from '../components/TermsOfUse.astro';
-import Contact from '../components/Contact.astro';
 
 // Read-only data from the server (GET /public/catalog), fetched once at build time.
 const catalog = await loadCatalog();
@@ -16,9 +15,9 @@ const fmt = (n: number) => n.toLocaleString('en-US');
 const stats = catalog.stats ?? { secondsExchanged: null, ratings: null, professions: null, cities: null };
 const heroStats = [
   stats.secondsExchanged != null ? { value: fmt(stats.secondsExchanged), label: 'time traded' } : null,
-  stats.ratings ? { value: stats.ratings.average.toFixed(1), label: 'average session rating' } : null,
-  stats.professions != null ? { value: `${fmt(stats.professions)}+`, label: 'professions represented' } : null,
-  stats.cities != null ? { value: `${fmt(stats.cities)}+`, label: 'cities with members' } : null,
+  stats.ratings ? { value: stats.ratings.average.toFixed(1), label: 'average rating' } : null,
+  stats.professions != null ? { value: `${fmt(stats.professions)}+`, label: 'professions' } : null,
+  stats.cities != null ? { value: `${fmt(stats.cities)}+`, label: 'cities' } : null,
 ].filter((x): x is { value: string; label: string } => x !== null);
 ---
 <!DOCTYPE html>
@@ -816,14 +815,6 @@ section[id]{scroll-margin-top:96px}
     </div>
     <div class="chain glass" id="chain" role="tabpanel" aria-labelledby="tab-pro" aria-label="Example chain of tasks"></div>
     <p class="payline">Pay in time, add cash or a gift when the job calls for it.</p>
-    <div class="states-block">
-      <p class="states-h">Every booking moves through these states</p>
-      <ul class="states" aria-label="Booking states">
-        {catalog.statuses.map((st) => (
-          <li class="state glass"><b>{st.label}</b><span>{st.description}</span></li>
-        ))}
-      </ul>
-    </div>
 
   </section>
 
@@ -883,9 +874,6 @@ section[id]{scroll-margin-top:96px}
       <PrivacyPolicy />
       <TermsOfUse />
     </div>
-  </section>
-  <section id="contact-band" class="band band-frost legal-band">
-    <div class="legal-wrap"><Contact /></div>
   </section>
 
 <footer>
