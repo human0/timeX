@@ -15,7 +15,7 @@ const popular = catalog.services.slice(0, 5);
 const fmt = (n: number) => n.toLocaleString('en-US');
 const stats = catalog.stats ?? { hoursExchanged: null, ratings: null, professions: null, cities: null };
 const heroStats = [
-  stats.hoursExchanged != null ? { value: `${fmt(stats.hoursExchanged)}+h`, label: 'time traded' } : null,
+  stats.hoursExchanged != null ? { value: `${fmt(stats.hoursExchanged)}h`, label: 'time traded' } : null,
   stats.ratings ? { value: stats.ratings.average.toFixed(1), label: `average session rating · ${fmt(stats.ratings.count)} ratings` } : null,
   stats.professions != null ? { value: `${fmt(stats.professions)}+`, label: 'professions represented' } : null,
   stats.cities != null ? { value: `${fmt(stats.cities)}+`, label: 'cities with members' } : null,
