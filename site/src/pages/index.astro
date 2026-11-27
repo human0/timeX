@@ -1061,10 +1061,12 @@ function spawn(delay, staticT, forceKind){
   const k = Math.floor(Math.random()*edges.length); let [a,b] = edges[k]; if (Math.random()<.5) [a,b]=[b,a];
   const A=nodes[a],B=nodes[b],C=ctrl(A,B), p = pathEls[k];
   const kind = forceKind || pick(); const label = kind.labels[Math.floor(Math.random()*kind.labels.length)];
-  const t = document.createElement("div"); t.className = "token " + kind.k; t.innerHTML = icons[kind.k] + label; orbit.appendChild(t);
+  const t = document.createElement("div"); t.className = "token " + kind.k; t.innerHTML = icons[kind.k] + label; t.style.opacity = "0"; orbit.appendChild(t);
   const place = u => { const P=q(A,C,B,u); const w=orbit.clientWidth, h=orbit.clientHeight; t.style.transform=`translate(${P.x/100*w - t.offsetWidth/2}px,${P.y/100*h - t.offsetHeight/2}px)`; };
   p.classList.add("hot", kind.k);
-  if (staticT !== undefined){ place(staticT); return; }
+  /* place before the first paint so a token never shows at the orbit's top-left corner */
+  if (staticT !== undefined){ place(staticT); t.style.opacity = "1"; return; }
+  place(0);
   const dur = 2800 + Math.random()*900; let start;
   const step = ts => { if(!start) start = ts + delay; const u = Math.min(1, Math.max(0,(ts-start)/dur)); const e = u<.5 ? 2*u*u : 1-Math.pow(-2*u+2,2)/2; place(e); t.style.opacity = u<.08 ? u/.08 : u>.92 ? (1-u)/.08 : 1;
     if (u<1) requestAnimationFrame(step); else { t.remove(); p.classList.remove("hot","time","cash","gift"); B.el.classList.add("got"); setTimeout(()=>B.el.classList.remove("got"),450); if (running) spawn(200+Math.random()*900); } };
