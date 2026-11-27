@@ -726,6 +726,10 @@ section[id]{scroll-margin-top:96px}
 .story .art.photo img,.sp img{background:rgba(255,255,255,.28)!important;-webkit-backdrop-filter:blur(14px) saturate(150%);backdrop-filter:blur(14px) saturate(150%);
   border:2px solid rgba(255,255,255,.75)!important;box-shadow:0 10px 24px -10px rgba(0,0,0,.45);object-fit:cover;object-position:50% 20%}
 .sp img{background:rgba(52,152,219,.14)!important;border:2px solid var(--saffron)!important;box-shadow:none}
+/* story dialog: larger member photos, a short intro per person, and a reach-out box */
+.sp{width:170px}.sp img{width:140px;height:140px}
+.sabout{font-style:normal;font-size:12px;line-height:1.4;color:var(--mist);max-width:160px}
+.sreach{padding:16px 18px;margin:18px 0}.sreach b{display:block;margin-bottom:6px}.sreach p{margin:0}
 .story .txt > p{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden}
 .ill{position:absolute;z-index:2;top:10px;right:10px;font-size:10px;font-weight:600;letter-spacing:.04em;color:#fff;background:rgba(0,0,0,.45);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:3px 9px}
 </style>
@@ -959,24 +963,29 @@ const STORIES = [
  { bg:"farm-guitar", faces:[44,45], names:["Palesa","Mercury"], roles:["Farming founder","Music producer"], col:"#F50A0A",
    cat:"Founder → Music producer → Recruiter",
    title:"Guitar lessons after a long day on the farm",
-   teaser:"Palesa runs a farming business by day and wanted to play the guitar she already owned. Mercury, a music producer, teaches her every week, paid in time.",
+   teaser:"Palesa runs a farm business by day. Mercury, a music producer, teaches her guitar every week, paid in time. Could your spare hour unlock the thing you keep putting off?",
+   about:["Runs a farming business and works long days to grow it.","A music producer who trades studio skills for time."],
+   reach:"Want to learn an instrument, or need a hand with a farm project? Message Palesa or Mercury in the Time Xchange app and see what you could exchange.",
    chips:[["time","1h weekly lessons"],["plan","Gold: 1h a day for R300/month"],["save","R500 a lesson outside the app"]],
    body:["Palesa founded a farming business and works long days to grow it. In the evenings she likes to unwind with music. She owns a guitar, but she had never learned to play.",
          "With her money invested in the farm, she turned to Time Xchange. There she met Mercury, a music producer, who agreed to give her weekly guitar lessons in exchange for time.",
          "Her schedule is tight, so Palesa subscribed to the Time Xchange Gold membership for R300 a month. It gives her a 1-hour time allowance every day, more than enough for weekly lessons that would cost about R500 each outside the app.",
-         "Mercury spent the time he earned with a recruitment specialist, who helped him land a side job that now funds his music production."] },
+         "Mercury spent the time he earned with a recruitment specialist, who helped him land a side job that now funds his music production.",
+         "Your skills and spare hours are the currency. Whether you want to learn something new or grow what you already do, the first step is one message in the app."] },
  { bg:"laptop", faces:[47,48], names:["Vikie","Abimbola Ogundipe"], roles:["Founder","Web developer"], col:"#3498DB",
    cat:"Founder → Web developer",
    title:"From an idea to a funded prototype",
-   teaser:"Vikie had a website idea but no budget. Abimbola built a working prototype in exchange for time, and it helped her get the idea funded.",
+   teaser:"Vikie had a website idea but no budget. Abimbola built a working prototype in exchange for time, and it helped her get the idea funded. Got an idea waiting?",
+   about:["Had a website idea and needed a developer she could trust.","A web developer who turns rough ideas into working prototypes."],
+   reach:"Have an idea but no budget yet? Message Abimbola or Vikie in the Time Xchange app and ask what a first booking could look like.",
    chips:[["time","Prototype paid in time"],["gift","Gift: bottle of wine"],["cash","Then a paid contract"]],
    body:["Vikie had a website idea she couldn’t stop thinking about. She searched for a web developer on Time Xchange, and Abimbola Ogundipe responded.",
          "After just one meeting, Abimbola understood the concept and started building. Vikie kept her expectations low, since she had no budget for the idea yet.",
          "Then, on a day she least expected it, Abimbola surprised her with a working prototype that brought her idea to life and helped her get it funded.",
          "To say thank you, Vikie added a gift to the booking: a bottle of good wine to celebrate the funding.",
-         "Vikie kept Abimbola on the project with a paid contract, and together they’ve taken the website beyond her original vision."] },
-];
-const STORY_BG = {"farm-guitar": "/assets/img/stories/scene-farm-guitar.jpg", "laptop": "/assets/img/stories/scene-laptop.jpg"};
+         "Vikie kept Abimbola on the project with a paid contract, and together they’ve taken the website beyond her original vision.",
+         "Ideas often stall when money is the only way in. Time Xchange gives you another route: list what you’re good at, find the person who needs it, and start building with your hours."] },
+];const STORY_BG = {"farm-guitar": "/assets/img/stories/scene-farm-guitar.jpg", "laptop": "/assets/img/stories/scene-laptop.jpg"};
 const CUT = {"44": "assets/img/stories/real-palesa.webp", "45": "assets/img/stories/real-mercury.webp", "47": "assets/img/stories/real-victoria.webp", "48": "assets/img/stories/real-abimbola.webp"};
 const cutFace = n => CUT[n] || face(n);
 const chipIc = {gift:'<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg>', time:clockSvg, plan:'<svg aria-hidden=\"true\" width=\"13\" height=\"13\" viewBox=\"0 0 24 24\" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.5 2.3a.5.5 0 0 1 1 0l2.3 4.7a2 2 0 0 0 1.6 1.1l5.2.8a.5.5 0 0 1 .3.9l-3.7 3.6a2 2 0 0 0-.6 1.9l.9 5.1a.5.5 0 0 1-.8.6l-4.6-2.4a2 2 0 0 0-2 0l-4.6 2.4a.5.5 0 0 1-.8-.6l.9-5.1a2 2 0 0 0-.6-1.9L1.1 9.8a.5.5 0 0 1 .3-.9l5.2-.8a2 2 0 0 0 1.6-1.1z"/></svg>', save:'<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29a1 1 0 0 0 1.41 0l8.59-8.59a1 1 0 0 0 0-1.41z"/><circle cx="7" cy="7" r="1.5"/></svg>', cash:'<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/></svg>'};
@@ -987,9 +996,9 @@ document.getElementById("storyGrid").innerHTML = STORIES.map((s,i) => `
 const sdlg = document.getElementById("storyDlg"), sbg = document.getElementById("storyBg"); let sLast = null;
 const openStory = i => { const s = STORIES[i]; sLast = document.activeElement;
   document.getElementById("storyBody").innerHTML = `<div class="eyebrow">${s.cat}</div><h3 id="storyT">${s.title}</h3>
-   <div class="sppl">${s.faces.map((f,k)=>`${k?'<span class="sarrow">→</span>':""}<span class="sp"><img alt="" src="${cutFace(f)}"><b>${s.names[k]}</b>${s.roles[k]?`<small>${s.roles[k]}</small>`:""}</span>`).join("")}</div>
-   ${s.body.map(p=>`<p>${p}</p>`).join("")}<div class="schips">${s.chips.map(chipHTML).join("")}</div>
-   <div class="cta"><a class="btn primary" href="https://timexchange.co.za/app" data-sheet>Get the app</a></div>`;
+   <div class="sppl">${s.faces.map((f,k)=>`${k?'<span class="sarrow">→</span>':""}<span class="sp"><img alt="" src="${cutFace(f)}"><b>${s.names[k]}</b>${s.roles[k]?`<small>${s.roles[k]}</small>`:""}${s.about[k]?`<em class="sabout">${s.about[k]}</em>`:""}</span>`).join("")}</div>
+   ${s.body.map(p=>`<p>${p}</p>`).join("")}<div class="sreach glass"><b>Want to reach out?</b><p>${s.reach}</p></div><div class="schips">${s.chips.map(chipHTML).join("")}</div>
+   <div class="cta"><a class="btn primary" href="https://apps.apple.com/za/app/time-x/id6748560628">Download the app</a><a class="btn" href="https://timexchange.co.za/app" data-sheet>Open Time Xchange</a></div>`;
   sdlg.hidden = false; sbg.hidden = false; document.getElementById("storyX").focus(); };
 const closeStory = () => { sdlg.hidden = true; sbg.hidden = true; if (sLast) sLast.focus(); };
 document.getElementById("storyX").addEventListener("click", closeStory); sbg.addEventListener("click", closeStory);
