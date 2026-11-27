@@ -727,8 +727,16 @@ section[id]{scroll-margin-top:96px}
   border:2px solid rgba(255,255,255,.75)!important;box-shadow:0 10px 24px -10px rgba(0,0,0,.45);object-fit:cover;object-position:50% 20%}
 .sp img{background:rgba(52,152,219,.14)!important;border:2px solid var(--saffron)!important;box-shadow:none}
 /* story dialog: larger member photos, a short intro per person, and a reach-out box */
-.sp{width:170px}.sp img{width:140px;height:140px}
-.sabout{font-style:normal;font-size:12px;line-height:1.4;color:var(--mist);max-width:160px}
+.sfigs{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:4px 0 26px}
+.sfig{margin:0}
+.sfig img{display:block;width:100%;aspect-ratio:4/3;height:auto;object-fit:cover;border-radius:14px;background:none!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.sfig figcaption{margin-top:10px;font-size:14px;line-height:1.45;color:var(--mist)}
+.sfig figcaption b{display:block;font-size:16px;color:inherit}
+.sfig .srole{display:block;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--saffron)}
+.sbody{font-size:17px}
+.sbody p{font-size:17px;line-height:1.75}
+.sbody p:first-child{font-size:20px;line-height:1.6;color:inherit}
+@media (max-width:560px){.sfigs{grid-template-columns:1fr}}
 .sreach{padding:16px 18px;margin:18px 0}.sreach b{display:block;margin-bottom:6px}.sreach p{margin:0}
 .story .txt > p{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden}
 .ill{position:absolute;z-index:2;top:10px;right:10px;font-size:10px;font-weight:600;letter-spacing:.04em;color:#fff;background:rgba(0,0,0,.45);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:3px 9px}
@@ -996,8 +1004,8 @@ document.getElementById("storyGrid").innerHTML = STORIES.map((s,i) => `
 const sdlg = document.getElementById("storyDlg"), sbg = document.getElementById("storyBg"); let sLast = null;
 const openStory = i => { const s = STORIES[i]; sLast = document.activeElement;
   document.getElementById("storyBody").innerHTML = `<div class="eyebrow">${s.cat}</div><h3 id="storyT">${s.title}</h3>
-   <div class="sppl">${s.faces.map((f,k)=>`${k?'<span class="sarrow">→</span>':""}<span class="sp"><img alt="" src="${cutFace(f)}"><b>${s.names[k]}</b>${s.roles[k]?`<small>${s.roles[k]}</small>`:""}${s.about[k]?`<em class="sabout">${s.about[k]}</em>`:""}</span>`).join("")}</div>
-   ${s.body.map(p=>`<p>${p}</p>`).join("")}<div class="sreach glass"><b>Want to reach out?</b><p>${s.reach}</p></div><div class="schips">${s.chips.map(chipHTML).join("")}</div>
+   <div class="sfigs">${s.faces.map((f,k)=>`<figure class="sfig"><img alt="Photo of ${s.names[k]}" src="${cutFace(f)}"><figcaption><b>${s.names[k]}</b>${s.roles[k]?`<span class="srole">${s.roles[k]}</span>`:""}${s.about[k]?`<span>${s.about[k]}</span>`:""}</figcaption></figure>`).join("")}</div>
+   <div class="sbody">${s.body.map(p=>`<p>${p}</p>`).join("")}</div><div class="sreach glass"><b>Want to reach out?</b><p>${s.reach}</p></div><div class="schips">${s.chips.map(chipHTML).join("")}</div>
    <div class="cta"><a class="btn primary" href="https://apps.apple.com/za/app/time-x/id6748560628">Download the app</a><a class="btn" href="https://timexchange.co.za/app" data-sheet>Open Time Xchange</a></div>`;
   sdlg.hidden = false; sbg.hidden = false; document.getElementById("storyX").focus(); };
 const closeStory = () => { sdlg.hidden = true; sbg.hidden = true; if (sLast) sLast.focus(); };
