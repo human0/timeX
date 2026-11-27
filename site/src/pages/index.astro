@@ -761,7 +761,7 @@ section[id]{scroll-margin-top:96px}
 <main class="wrap" id="top">
   <section class="hero" aria-labelledby="h1">
     <div class="hero-title">
-      <h1 id="h1" style="margin-top:18px"><span class="line">Trade time for <em class="swap" id="w1">design</em>.</span></h1>
+      <h1 id="h1" style="margin-top:18px"><span class="line">Trade time for</span><span class="line"><em class="swap" id="w1">services</em>.</span></h1>
     </div>
     <div class="orbit" id="orbit" aria-label="Animated network of members trading time, cash and gifts">
       <div class="ring" style="inset:8%"></div><div class="ring dash" style="inset:20%"></div><div class="ring" style="inset:30%"></div><div class="glow" aria-hidden="true"></div>
@@ -1007,7 +1007,10 @@ document.getElementById("storyGrid").addEventListener("click", e => { const b = 
 sdlg.addEventListener("click", e => { if (e.target.closest("[data-sheet]")) closeStory(); });
 
 /* headline rotation: slow blur between skills after "Trade time for" */
-const skills = ["design","tax advice","legal advice","physio","code","photography","coaching","French lessons"];
+/* "services" opens the list and comes back after every three skills */
+const skillItems = ["design","tax advice","legal advice","physio","code","photography","coaching","French lessons","plumbing","gardening","music lessons","copywriting","accounting","childcare","translation","web development","hair styling"];
+const skills = [];
+skillItems.forEach((item, i) => { if (i % 3 === 0) skills.push("services"); skills.push(item); });
 let si = 0;
 if (!reduce) setInterval(() => {
   const w1 = document.getElementById("w1"); w1.classList.add("out");
